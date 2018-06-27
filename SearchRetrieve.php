@@ -15,6 +15,9 @@
 
 // To change this to an update page after the sql query
 
+if(isset($_POST["studentID"])){
+	$studentID = $_POST["studentID"];
+}
 
 if(isset($_POST["firstname"])){
 	$firstname = $_POST["firstname"];
@@ -52,9 +55,11 @@ if(isset($_POST["status"])){
 	$status = $_POST["status"];
 }
 
-
 // build sql query
 $sql = "Select * from students where ";
+		if (!empty($studentID) ){
+			$sql = $sql . "student_id = '" . $studentID . "'";
+		}
 		if (!empty($firstname) ){
 		$sql = $sql . "first_name = '" . $firstname . "'";
 		}
@@ -95,10 +100,20 @@ if($sql != "Select * from students where "){
 
 $num_rows = mysqli_num_rows($result);
 
+//Checks if student in database
+
+if(empty($insert)){
+	$insert = 'SearchRetrieve.php';
+	}
+
+if($num_rows == 0){
+  echo "Do you want to create a new student?";
+}
+
 //reset vars based on SQL query
 
 if ($num_rows == 1){
-
+		$studentID = $row["student_id"];
 		$firstname = $row["first_name"];
         $lastname = $row["last_name"];
 		$streetaddress = $row["street_address"];
@@ -130,4 +145,16 @@ include 'DataInsert.php';
 $conn->close();
 
 ?>
+
+<!-- <html>
+<body>
+
+<form action= "savingdata.php" method="post">
+<input type="submit" name = "Yes" value = "Add New Student"><br /><br />
+</form>
+
+We need to send post data from this page with this form!!!!!!
+
+</body>
+</html> -->
 

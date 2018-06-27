@@ -13,6 +13,8 @@ $checked1 = 'checked = \"checked\"'
 
 <form action= "<?php echo $action ?>"  method="post">
 
+Student ID: <input type="text" name="studentID" value="<?php echo $studentID?>"><br />
+
 First name: <input type="text" name="firstname" value="<?php echo $firstname ?>"><br />
 
 Last name: <input type="text" name="lastname" value="<?php echo $lastname ?>"><br />
