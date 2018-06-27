@@ -1,5 +1,9 @@
 <?php
 
+if(empty($action)){
+	$action = 'SearchRetrieve.php';
+	}
+
 $checked1 = 'checked = \"checked\"'
 
 ?>

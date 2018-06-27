@@ -15,7 +15,6 @@
 
 // To change this to an update page after the sql query
 
-$action = '\"helloworld.php\"';
 
 if(isset($_POST["firstname"])){
 	$firstname = $_POST["firstname"];
@@ -110,7 +109,7 @@ if ($num_rows == 1){
 		$altphone = $row["phone_alt"];
 		$status = $row["inactive"];
 
-		// $action = '\"Dataupdate.php\"';
+		$action = 'Dataupdate.php';
 
 }
 
