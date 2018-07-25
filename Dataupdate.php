@@ -13,45 +13,21 @@
   	   die("Connection failed: " . $conn->connect_error);
     }
 
-if(isset($_POST["studentID"])){
-	$studentID = $_POST["studentID"];
-}
+$sql = "Select * from students where student_id = '" . $_GET["studentid"] . "'";
+$result = $conn->query($sql)
+or trigger_error($conn->error);
+$row = $result->fetch_array(MYSQLI_BOTH);
+$studentID = $row["student_id"];
+$firstname = $row["first_name"];
+$lastname = $row["last_name"];
+$streetaddress = $row["street_address"];
+$postcode = $row["address_code"];
+$town = $row["town"];
+$email = $row["email"];
+$mainphone = $row["phone_main"];
+$altphone = $row["phone_alt"];
+$status = $row["inactive"];
 
-if(isset($_POST["firstname"])){
-	$firstname = $_POST["firstname"];
-}
-
-if(isset($_POST["lastname"])){
-	$lastname = $_POST["lastname"];
-}
-
-if(isset($_POST["streetaddress"])){
-	$streetaddress = $_POST["streetaddress"];
-}
-
-if(isset($_POST["postcode"])){
-	$postcode = $_POST["postcode"];
-}
-
-if(isset($_POST["town"])){
-	$town = $_POST["town"];
-}
-
-if(isset($_POST["email"])){
-	$email = $_POST["email"];
-}
-
-if(isset($_POST["mainphone"])){
-	$mainphone = $_POST["mainphone"];
-}
-
-if(isset($_POST["altphone"])){
-	$altphone = $_POST["altphone"];
-}
-
-if(isset($_POST["status"])){
-	$status = $_POST["status"];
-}
 
 // SQL Query
 

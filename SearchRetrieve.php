@@ -130,19 +130,33 @@ if ($num_rows == 1){
 
 // More than one result -- needs to be worked on
 if ($num_rows > 1){
-echo "<table border =\"1\"> <tr> <td> studentID </td> <td> First Name </td> <td> Last Name </td> <td> Street Address, postcode, town </td><td> email </td>
-<td> Main Phone </td><td> Alt Phone </td><td> Status </td></tr>";
+echo "<table border =\"1\"> <tr> <td>  studentID </td>
+                            <td> First Name  </td>
+                            <td> Last Name </td>
+                            <td> Street Address, postcode, town </td>
+                            <td>  email </td>
+                            <td>  Main Phone </td>
+                            <td>  Alt Phone </td>
+                            <td>  Status  </td></tr>";
+
 $counter = 0;
 while ($counter <  $num_rows){
 
-		echo "<tr> <td> " . $row["student_id"] . " </td> <td> " . $row["first_name"] . " </td> <td> " . $row["last_name"] . " </td> <td> " . $row["street_address"] . ",
-		" . $row["address_code"] . ", " . $row["town"] . " </td><td> " . $row["email"] . " </td> <td> " . $row["phone_main"] . " </td><td> " . $row["phone_alt"] . "
-		</td><td> " . $row["inactive"] . " </td></tr>";
+		echo
+		"<tr> <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["student_id"] . "</a> </td>
+		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["first_name"] . " </a> </td>
+		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["last_name"] . " </a> </td>
+		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["street_address"] . "," . $row["address_code"] . ", " . $row["town"] . " </a> </td>
+		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["email"] . " </a> </td>
+		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["phone_main"] . " </a> </td>
+		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["phone_alt"] . " </a> </td>
+		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["inactive"] . " </a> </td></tr>";
 
 		$row = $result->fetch_array(MYSQLI_BOTH);
 		$counter++;
 		}
 echo "</table>";
+
 }
 
 
@@ -158,6 +172,9 @@ include 'DataInsert.php';
 $conn->close();
 
 ?>
+
+
+
 
 <!-- <html>
 <body>
