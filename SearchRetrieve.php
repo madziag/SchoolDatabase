@@ -102,9 +102,9 @@ $num_rows = mysqli_num_rows($result);
 
 //Checks if student in database
 
-if(empty($insert)){
+/*if(empty($insert)){
 	$insert = 'SearchRetrieve.php';
-	}
+	} */
 
 if($num_rows == 0){
   echo "Do you want to create a new student?";
@@ -130,8 +130,21 @@ if ($num_rows == 1){
 
 // More than one result -- needs to be worked on
 if ($num_rows > 1){
-echo "foo";
+echo "<table border =\"1\"> <tr> <td> studentID </td> <td> First Name </td> <td> Last Name </td> <td> Street Address, postcode, town </td><td> email </td>
+<td> Main Phone </td><td> Alt Phone </td><td> Status </td></tr>";
+$counter = 0;
+while ($counter <  $num_rows){
+
+		echo "<tr> <td> " . $row["student_id"] . " </td> <td> " . $row["first_name"] . " </td> <td> " . $row["last_name"] . " </td> <td> " . $row["street_address"] . ",
+		" . $row["address_code"] . ", " . $row["town"] . " </td><td> " . $row["email"] . " </td> <td> " . $row["phone_main"] . " </td><td> " . $row["phone_alt"] . "
+		</td><td> " . $row["inactive"] . " </td></tr>";
+
+		$row = $result->fetch_array(MYSQLI_BOTH);
+		$counter++;
+		}
+echo "</table>";
 }
+
 
 
 
