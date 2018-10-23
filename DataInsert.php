@@ -4,6 +4,34 @@ if(empty($action)){
 	$action = 'SearchRetrieve.php';
 	}
 
+if(empty($studentID)){
+	$studentID= '';
+	}
+if(empty($firstname)){
+	$firstname= '';
+	}
+if(empty($lastname)){
+	$lastname= '';
+	}
+if(empty($streetaddress)){
+	$streetaddress= '';
+}
+if(empty($postcode)){
+	$postcode= '';
+}
+if(empty($town)){
+	$town= '';
+	}
+if(empty($email)){
+	$email= '';
+}
+if(empty($mainphone)){
+	$mainphone= '';
+}
+if(empty($altphone)){
+	$altphone= '';
+}
+
 $checked1 = 'checked = \"checked\"'
 
 ?>

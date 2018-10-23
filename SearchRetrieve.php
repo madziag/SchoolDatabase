@@ -61,7 +61,7 @@ $sql = "Select * from students where ";
 			$sql = $sql . "student_id = '" . $studentID . "'";
 		}
 		if (!empty($firstname) ){
-		$sql = $sql . "first_name = '" . $firstname . "'";
+		$sql = $sql . "and first_name = '" . $firstname . "'";
 		}
 		if (!empty($lastname) ){
 		$sql = $sql . " and last_name = '" . $lastname . "'";
@@ -84,10 +84,12 @@ $sql = "Select * from students where ";
 		if (!empty($email) ){
 		$sql = $sql . " and email = '" . $email . "'";
 		}
-		if (!empty($status) ){
+		if (isset($status) ){
 		$sql = $sql . " and inactive = '" . $status . "'";
 		}
 		$sql = preg_replace('/where\s+and/','where', $sql);
+
+echo $sql;
 
 
 // Running query
@@ -95,10 +97,63 @@ if($sql != "Select * from students where "){
 			$result = $conn->query($sql)
 	        or trigger_error($conn->error);
 			$row = $result->fetch_array(MYSQLI_BOTH);
-		}
 
+			$num_rows = mysqli_num_rows($result);
+			if($num_rows == 0){
+			  echo "Do you want to create a new student?";
+			}
+			//reset vars based on SQL query
 
-$num_rows = mysqli_num_rows($result);
+			/*if ($num_rows == 1){
+					$studentID = $row["student_id"];
+					$firstname = $row["first_name"];
+			        $lastname = $row["last_name"];
+					$streetaddress = $row["street_address"];
+					$postcode = $row["address_code"];
+					$town = $row["town"];
+					$email = $row["email"];
+					$mainphone = $row["phone_main"];
+					$altphone = $row["phone_alt"];
+					$status = $row["inactive"];
+
+					$action = 'Dataupdate.php';
+
+				}*/
+			// More than one result -- needs to be worked on
+
+			if ($num_rows > 0){
+			echo "<table border =\"1\"> <tr> <td> </td>
+										<td>  studentID </td>
+			                            <td> First Name  </td>
+			                            <td> Last Name </td>
+			                            <td> Street Address, postcode, town </td>
+			                            <td>  email </td>
+			                            <td>  Main Phone </td>
+			                            <td>  Alt Phone </td>
+			                            <td>  Status  </td></tr>";
+
+			$counter = 0;
+			while ($counter <  $num_rows){
+
+					echo
+					"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </td>
+
+						  <td> " . $row["student_id"] . " </td>
+					      <td> " . $row["first_name"] . " </td>
+					      <td> " . $row["last_name"] . "  </td>
+					      <td> " . $row["street_address"] . "," . $row["address_code"] . ", " . $row["town"] . " </td>
+					      <td> " . $row["email"] . " </td>
+					      <td> " . $row["phone_main"] . " </td>
+					      <td> " . $row["phone_alt"] . "  </td>
+					      <td> " . $row["inactive"] . " </td></tr>";
+
+					$row = $result->fetch_array(MYSQLI_BOTH);
+					$counter++;
+					}
+					echo "</table>";
+
+					}
+			}
 
 //Checks if student in database
 
@@ -106,58 +161,9 @@ $num_rows = mysqli_num_rows($result);
 	$insert = 'SearchRetrieve.php';
 	} */
 
-if($num_rows == 0){
-  echo "Do you want to create a new student?";
-}
 
-//reset vars based on SQL query
 
-if ($num_rows == 1){
-		$studentID = $row["student_id"];
-		$firstname = $row["first_name"];
-        $lastname = $row["last_name"];
-		$streetaddress = $row["street_address"];
-		$postcode = $row["address_code"];
-		$town = $row["town"];
-		$email = $row["email"];
-		$mainphone = $row["phone_main"];
-		$altphone = $row["phone_alt"];
-		$status = $row["inactive"];
 
-		$action = 'Dataupdate.php';
-
-}
-
-// More than one result -- needs to be worked on
-if ($num_rows > 1){
-echo "<table border =\"1\"> <tr> <td>  studentID </td>
-                            <td> First Name  </td>
-                            <td> Last Name </td>
-                            <td> Street Address, postcode, town </td>
-                            <td>  email </td>
-                            <td>  Main Phone </td>
-                            <td>  Alt Phone </td>
-                            <td>  Status  </td></tr>";
-
-$counter = 0;
-while ($counter <  $num_rows){
-
-		echo
-		"<tr> <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["student_id"] . "</a> </td>
-		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["first_name"] . " </a> </td>
-		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["last_name"] . " </a> </td>
-		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["street_address"] . "," . $row["address_code"] . ", " . $row["town"] . " </a> </td>
-		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["email"] . " </a> </td>
-		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["phone_main"] . " </a> </td>
-		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["phone_alt"] . " </a> </td>
-		      <td> <a href = \"DataUpdate.php?studentid=" . $row["student_id"] . "\"> " . $row["inactive"] . " </a> </td></tr>";
-
-		$row = $result->fetch_array(MYSQLI_BOTH);
-		$counter++;
-		}
-echo "</table>";
-
-}
 
 
 
@@ -174,8 +180,6 @@ $conn->close();
 ?>
 
 
-
-
 <!-- <html>
 <body>
 
@@ -188,3 +192,4 @@ We need to send post data from this page with this form!!!!!!
 </body>
 </html> -->
 
+<!-- TO DO USE TABLE TO SHOW MAIN INFO E.G. PAYMENT-->
