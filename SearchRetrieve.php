@@ -1,5 +1,10 @@
 <?php
 
+ $servername = 'localhost';
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
+ $dbname = 'englishschooldb';
+
 
  // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -131,7 +136,9 @@ if($sql != "Select * from students where "){
 			while ($counter <  $num_rows){
 
 					echo
-					"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </td>
+					"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </br>
+							   <a href = \"CreateContract.php?studentID=" . $row["student_id"] . "\" > add contract </a>
+					      </td>
 
 						  <td> " . $row["student_id"] . " </td>
 					      <td> " . $row["first_name"] . " </td>
