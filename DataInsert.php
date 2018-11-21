@@ -11,7 +11,7 @@ if(empty($firstname)){
 	$firstname= '';
 	}
 if(empty($lastname)){
-	$lastname= '';
+	$lastname= ' ';
 	}
 if(empty($streetaddress)){
 	$streetaddress= '';
@@ -68,5 +68,8 @@ value="1">Inactive <br />
 
 <input type="submit">
 </form>
+
+<?php echo $action ?>
+
 </body>
 </html>

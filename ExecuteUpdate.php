@@ -1,5 +1,10 @@
 <?php
 
+ $servername = 'localhost';
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
+ $dbname = 'englishschooldb';
+
 
  // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -18,12 +23,6 @@
 	email = '" . $_POST['email'] . "', phone_main = '" . $_POST['mainphone'] . "', phone_alt = '" . $_POST['altphone']. "',
 	inactive = '" . $statusint . "' ";}
 
-
-if (isset($_POST['studentID']))
-{
-	$sql = $sql . "WHERE student_id = " . $_POST['studentID'];
-}
-echo $sql;
 
 
 if(strpos($sql, 'student_id') !== false)
