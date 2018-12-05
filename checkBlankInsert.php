@@ -1,6 +1,6 @@
 <?php
    session_start();
-   $_SESSION['post'] = $_POST;
+   $_SESSION['post_insert'] = $_POST;
 
 
 

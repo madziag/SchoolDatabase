@@ -1,17 +1,13 @@
-<!-- We need to be able to insert new student after Q: 'Ace'Do you want to create a new student? in SearchRetrieve
-- Do we create another button to take us to another page to add new student?
-- or do we use datainsert to add New Student?
-- we also need user to be able to enter contract (create contract)/payment info
--- account for special characters when entering new data
--- DOESN'T WORK -  PAGE DOES NOT REFRESH - INSERTS AGAIN ON RELOADING; EXECUTE INSERT DOES NOT WORK YET
 
--- PLAN FOR Next time: create middle page btween addNS and ExecIS. Page checks to see if last name is filled from ADDNS. If not filled -> back to AddNS,
--- If filled -> ExecuteInseST (how do we pass the post array between pages?
--->
 
 <?php
 
  session_start();
+
+ if(isset($_SESSION['post_sr'])){
+  	$_POST =  $_SESSION['post_sr'];
+ 	}
+
 
  $servername = 'localhost';
  $username = 'MadziaG';
@@ -26,14 +22,45 @@
   	   die("Connection failed: " . $conn->connect_error);
     }
 
-		if(isset($_POST["firstname"]) && isset($_POST["lastname"])){
-			echo 'Student ' . $_POST["firstname"] .' ' . $_POST["lastname"] . ' added to database.';
-	}
 
 
     $studentID= 'ID set automatically';
     $action = 'checkBlankInsert.php';
 	$status = 0;
+
+
+if(isset($_POST["firstname"])){
+	$firstname = $_POST["firstname"];
+}
+
+if(isset($_POST["lastname"])){
+	$lastname = $_POST["lastname"];
+}
+
+if(isset($_POST["streetaddress"])){
+	$streetaddress = $_POST["streetaddress"];
+}
+
+if(isset($_POST["postcode"])){
+	$postcode = $_POST["postcode"];
+}
+
+if(isset($_POST["town"])){
+	$town = $_POST["town"];
+}
+
+if(isset($_POST["email"])){
+	$email = $_POST["email"];
+}
+
+if(isset($_POST["mainphone"])){
+	$mainphone = $_POST["mainphone"];
+}
+
+if(isset($_POST["altphone"])){
+	$altphone = $_POST["altphone"];
+}
+
 
 	include 'DataInsert.php';
 

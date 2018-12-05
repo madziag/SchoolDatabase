@@ -1,7 +1,7 @@
 <?php
 
  session_start();
-$_POST =  $_SESSION['post'];
+$_POST =  $_SESSION['post_insert'];
 
  $servername = 'localhost';
  $username = 'MadziaG';
@@ -52,6 +52,8 @@ if($sql != $sql2){
 
 
 	$conn->close();
+
+session_destroy();
 
 header('Refresh: 5; URL = AddNewStudent.php');
 ?>

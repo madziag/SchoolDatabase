@@ -1,3 +1,16 @@
+<!--
+- we also need user to be able to enter contract (create contract)/payment info
+-- update button should allow user to update info.
+-- create new contract (part of addnewstudent?)
+-- insert same student by 2 different users/ 2 users trying to isert students at te same time
+-- shared network drive/webserver -- /remote desktop
+
+
+-- account for special characters when entering new data
+-- automated email remainders -- contract & payment.
+
+-->
+
 <?php
 
 $servername = 'localhost';

@@ -1,4 +1,8 @@
+
 <?php
+
+ session_start();
+ $_SESSION['post_sr'] = $_POST;
 
  $servername = 'localhost';
  $username = 'MadziaG';
@@ -89,8 +93,6 @@ $sql = "Select * from students where ";
 		}
 		$sql = preg_replace('/where\s+and/','where', $sql);
 
-echo $sql;
-
 
 // Running query
 if($sql != "Select * from students where "){
@@ -100,8 +102,13 @@ if($sql != "Select * from students where "){
 
 			$num_rows = mysqli_num_rows($result);
 			if($num_rows == 0){
-			  echo "Do you want to create a new student?";
+			  echo "<br />";
+			  echo "Student not found. Do you want to create a new student? ";
+			  echo "<button><a href= AddNewStudent.php> Yes </a></button>";
+			  echo "<br />";
 			}
+
+
 			//reset vars based on SQL query
 
 			/*if ($num_rows == 1){

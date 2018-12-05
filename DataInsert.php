@@ -69,7 +69,6 @@ value="1">Inactive <br />
 <input type="submit">
 </form>
 
-<?php echo $action ?>
 
 </body>
 </html>
