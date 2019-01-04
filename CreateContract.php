@@ -1,40 +1,34 @@
+<!--
 - we also need user to be able to enter contract (create contract)/payment info)
-
+-->
 <?php
 
+ session_start();
+$_POST =  $_SESSION['post_insert'];
+
+
+  echo " Name: " . $_POST['firstname'] . " " . $_POST['lastname'] . "<br \>";
+  echo "Address: " . $_POST['streetaddress'] . " " . $_POST['postcode'] . " " . $_POST['town'] . "<br \>";
+  echo "Contact: "  . $_POST['email'] .  " " . $_POST['mainphone']  . " " . $_POST['altphone'] . "<br \>";
+  echo "Status: " . $_POST['status'];
+
+
 if(empty($action)){
-	$action = 'SearchRetrieve.php';
+	$action = 'CheckBlankContract.php';
 	}
 
-if(empty($studentID)){
-	$studentID= '';
+if(empty($level)){
+	$level= '';
 	}
-if(empty($firstname)){
-	$firstname= '';
+if(empty($location)){
+	$location= '';
 	}
-if(empty($lastname)){
-	$lastname= '';
+if(empty($rate)){
+	$rate= '';
 	}
-if(empty($streetaddress)){
-	$streetaddress= '';
-}
-if(empty($postcode)){
-	$postcode= '';
-}
-if(empty($town)){
-	$town= '';
-	}
-if(empty($email)){
-	$email= '';
-}
-if(empty($mainphone)){
-	$mainphone= '';
-}
-if(empty($altphone)){
-	$altphone= '';
-}
 
-$checked1 = 'checked = \"checked\"'
+$checked1 = 'checked = \"checked\"';
+session_destroy();
 
 ?>
 
@@ -43,28 +37,36 @@ $checked1 = 'checked = \"checked\"'
 
 <form action= "<?php echo $action ?>"  method="post">
 
-Student ID: <input type="text" name="studentID" value="<?php echo $studentID?>"><br />
+Class Level:
 
-First name: <input type="text" name="firstname" value="<?php echo $firstname ?>"><br />
+<select name="level">
+  <option>not set</option>
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+</select><br />
 
-Last name: <input type="text" name="lastname" value="<?php echo $lastname ?>"><br />
+Location:
+	  <select name="location">
+	  <option>not set</option>
+	  <option value="Zator">Zator</option>
+	  <option value="Grodzisko">Grodzisko</option>
+	  <option value="Laskowa">Laskowa</option>
+</select><br />
 
-Street address: <input type="text" name="streetaddress" value="<?php echo $streetaddress ?>"><br />
-Postcode: <input type="text" name="postcode" value="<?php echo $postcode ?>"><br />
-Town: <input type="text" name="town" value="<?php echo $town ?>"><br />
+Payment Rate:
+		  <select name="rate">
+		  <option>not set</option>
+		  <option value="1">90</option>
+		  <option value="2">408</option>
+</select><br />
 
-E-mail: <input type="text" name="email" value="<?php echo $email ?>"><br />
+Starter Pack:
+<input type="checkbox" name="starter" checked = "checked"> <br />
 
-Main Phone: <input type="text" name="mainphone" value="<?php echo $mainphone ?>"><br />
-Alt Phone: <input type="text" name="altphone" value="<?php echo $altphone ?>"><br />
 
-Status:
-<input type="radio" name="status"
-<?php if (isset($status) && $status=="0") echo $checked1;?>
-value="0">Active
-<input type="radio" name="status"
-<?php if (isset($status) && $status=="1") echo $checked1;?>
-value="1">Inactive <br />
+Book:
+<input type="checkbox" name="book" checked = "checked"> <br />
 
 
 

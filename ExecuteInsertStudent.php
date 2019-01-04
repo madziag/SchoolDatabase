@@ -53,9 +53,9 @@ if($sql != $sql2){
 
 	$conn->close();
 
-session_destroy();
 
-header('Refresh: 5; URL = AddNewStudent.php');
+header("Location: CreateContract.php");
+
 ?>
 
 <html>

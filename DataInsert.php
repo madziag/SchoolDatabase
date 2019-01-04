@@ -11,7 +11,7 @@ if(empty($firstname)){
 	$firstname= '';
 	}
 if(empty($lastname)){
-	$lastname= ' ';
+	$lastname= '';
 	}
 if(empty($streetaddress)){
 	$streetaddress= '';

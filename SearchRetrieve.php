@@ -59,9 +59,13 @@ if(isset($_POST["status"])){
 	$status = $_POST["status"];
 }
 
+
 // build sql query
-$sql = "Select * from students where ";
-		if (!empty($studentID) ){
+$sql = "select  a.*, totalamount, totalamountpaid, max(start_date) as start_date from students a join contracts b on a.student_id = b.student_id where ";
+
+
+
+	if (!empty($studentID) ){
 			$sql = $sql . "student_id = '" . $studentID . "'";
 		}
 		if (!empty($firstname) ){
@@ -92,10 +96,23 @@ $sql = "Select * from students where ";
 		$sql = $sql . " and inactive = '" . $status . "'";
 		}
 		$sql = preg_replace('/where\s+and/','where', $sql);
+		$sql = $sql . " group by a.student_id";
+
+
+$sql2 = "select  a.*, totalamount, totalamountpaid, max(start_date) as start_date from students a join contracts b on a.student_id = b.student_id where  group by a.student_id";
+
+echo $sql;
+echo "<br>";
+echo $sql2;
+
+
+$myfile = fopen("newfile.txt", "w") or die("Unable to open file!");
+fwrite($myfile, $sql);
+fclose($myfile);
 
 
 // Running query
-if($sql != "Select * from students where "){
+if($sql != $sql2){
 			$result = $conn->query($sql)
 	        or trigger_error($conn->error);
 			$row = $result->fetch_array(MYSQLI_BOTH);
@@ -104,7 +121,7 @@ if($sql != "Select * from students where "){
 			if($num_rows == 0){
 			  echo "<br />";
 			  echo "Student not found. Do you want to create a new student? ";
-			  echo "<button><a href= AddNewStudent.php> Yes </a></button>";
+			  echo "<a href= \"AddNewStudent.php\"> Yes </a>";
 			  echo "<br />";
 			}
 
@@ -137,10 +154,17 @@ if($sql != "Select * from students where "){
 			                            <td>  email </td>
 			                            <td>  Main Phone </td>
 			                            <td>  Alt Phone </td>
-			                            <td>  Status  </td></tr>";
+			                            <td>  Status  </td>
+			                            <td> Contract Signed </td>
+			                            <td> Next Due Date  </td></tr>";
 
 			$counter = 0;
 			while ($counter <  $num_rows){
+					$firstpaydate = date_create('2017-09-01');
+					$lastpaydate = date_add($firstpaydate, date_interval_create_from_date_string('5 months'));
+					$monthslefttopay = ceil(($row["totalamount"] - $row["totalamountpaid"])/90);
+					$nextpaymonth = date_sub($lastpaydate, date_interval_create_from_date_string($monthslefttopay . ' months'));
+					$nextdate = date_format($nextpaymonth,"Y-m-d");
 
 					echo
 					"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </br>
@@ -154,7 +178,10 @@ if($sql != "Select * from students where "){
 					      <td> " . $row["email"] . " </td>
 					      <td> " . $row["phone_main"] . " </td>
 					      <td> " . $row["phone_alt"] . "  </td>
-					      <td> " . $row["inactive"] . " </td></tr>";
+					      <td> " . $row["inactive"] . " </td>
+						  <td> " . $row["contract_signed"] . " </td>
+						  <td> " . $nextdate . "  </td>
+					      </tr>";
 
 					$row = $result->fetch_array(MYSQLI_BOTH);
 					$counter++;

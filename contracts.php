@@ -1,14 +1,42 @@
 <!--
+Note for Next Week:
+
+Post data is not being carried over from AddNewStudent to CheckBlankContract -- we need to append the 2 post data'
+
 - we also need user to be able to enter contract (create contract)/payment info
+- make sort buttons work in contracts
 -- update button should allow user to update info.
 -- create new contract (part of addnewstudent?)
 -- insert same student by 2 different users/ 2 users trying to isert students at te same time
 -- shared network drive/webserver -- /remote desktop
 
+- search for students with payment due -- SearchRetrieve?
+- Add contract/payment to new student?
+- Edit payment info
+- Case sensitivitiy in search
 
 -- account for special characters when entering new data
 -- automated email remainders -- contract & payment.
+-- if student quits = user able to adjust amount owed...
+-- be able to zero out months that student will no longer be attending but, in will still be able to show when student stillowes for the months they went
 
+
+-- check boxes for books/starter pack
+-- free text notes field -- contracts
+
+===== Questions =====
+-- Link class level to new contract. When contract is updated, the class level should be updated as well -- option to manually adjust to different level.
+-- is there a group level hierachy. Every level, different locations?
+-- billing lower amounts e.g. 60 -- discount or partial payment?
+-- set of possible payment schedules she stay to.
+-- which classes have a book fee -- option to join with kalss
+-- why some students have starter pack and others not?
+-- do students change locations when they go up a level - relationship between groups and locations. how many locations do they have?
+select klass and location together or separately? what does klas 3/2 mean?
+-- contract.php table?
+-- add notes column mysql -- archive old notes instead of delete??
+-- individual students -- 2 students, 1 row (sylwia Majkut? who pays. Do students prepay or pay after the lessons. is there a contract?
+--
 -->
 
 <?php

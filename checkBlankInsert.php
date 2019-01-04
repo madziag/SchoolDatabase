@@ -4,9 +4,9 @@
 
 
 
-	if($_POST["lastname"] === ' '){
-	 echo 'the same';
-	   header("Location: AddNewStudent.php");
+	if($_POST["lastname"] === ''){
+	   echo 'Last name must be entered to add a new student!';
+	   header('Refresh: 2; URL = AddNewStudent.php');
       die();
 	} else {
 		   header("Location: ExecuteInsertStudent.php");
