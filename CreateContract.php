@@ -4,13 +4,43 @@
 <?php
 
  session_start();
-$_POST =  $_SESSION['post_insert'];
+ if(isset($_SESSION['post_sr'])){
+ 	$studentID =  $_GET['studentID'];
+  	$sql = "Select * from students where student_id = " . $studentID;
+
+  	 $servername = 'localhost';
+	 $username = 'MadziaG';
+	 $password = 'P$i@krew2018User';
+	 $dbname = 'englishschooldb';
 
 
-  echo " Name: " . $_POST['firstname'] . " " . $_POST['lastname'] . "<br \>";
-  echo "Address: " . $_POST['streetaddress'] . " " . $_POST['postcode'] . " " . $_POST['town'] . "<br \>";
-  echo "Contact: "  . $_POST['email'] .  " " . $_POST['mainphone']  . " " . $_POST['altphone'] . "<br \>";
-  echo "Status: " . $_POST['status'];
+	 // Create connection
+	    $conn = new mysqli($servername, $username, $password, $dbname);
+	 // Check connection
+	     if ($conn->connect_error) {
+	  	   die("Connection failed: " . $conn->connect_error);
+    }
+
+
+  	$result = $conn->query($sql)
+		      or trigger_error($conn->error);
+	$row = $result->fetch_array(MYSQLI_BOTH);
+
+	echo " Name: " . $row["first_name"] . " " . $row["last_name"] . "<br \>";
+	echo "Address: " . $row["street_address"] . " " . $row["address_code"]. " " . $row["town"] . "<br \>";
+	echo "Contact: "  . $row["email"] .  " " . $row["phone_main"]  . " " . $row["phone_alt"] . "<br \>";
+    echo "Status: " . $row["inactive"];
+ 	}
+
+ if(isset($_SESSION['post_insert'])){
+  	$_POST =  $_SESSION['post_insert'];
+  	 echo " Name: " . $_POST['firstname'] . " " . $_POST['lastname'] . "<br \>";
+	 echo "Address: " . $_POST['streetaddress'] . " " . $_POST['postcode'] . " " . $_POST['town'] . "<br \>";
+	 echo "Contact: "  . $_POST['email'] .  " " . $_POST['mainphone']  . " " . $_POST['altphone'] . "<br \>";
+     echo "Status: " . $_POST['status'];
+ 	}
+
+
 
 
 if(empty($action)){
