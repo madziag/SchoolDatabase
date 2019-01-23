@@ -62,45 +62,315 @@ session_destroy();
 
 ?>
 
-<html>
-<body>
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
 
-<form action= "<?php echo $action ?>"  method="post">
+ <title>3 level dynamic drop down list using javascript</title>
 
-Class Level:
+ <script language="javascript" type="text/javascript">
+ <!--
+ var loc = "";
+ function listboxchange1(p_index) {
 
-<select name="level">
-  <option>not set</option>
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-</select><br />
+	 //Clear Current options in subcategory1
+	 document.form1.subcategory1.options.length = 0;
 
-Location:
-	  <select name="location">
-	  <option>not set</option>
-	  <option value="Zator">Zator</option>
-	  <option value="Grodzisko">Grodzisko</option>
-	  <option value="Laskowa">Laskowa</option>
-</select><br />
+	 //Clear Current options in subcategory2
+	 document.form1.subcategory2.options.length = 0;
+	 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 
-Payment Rate:
-		  <select name="rate">
-		  <option>not set</option>
-		  <option value="1">90</option>
-		  <option value="2">408</option>
-</select><br />
+		 switch (p_index) {
 
-Starter Pack:
-<input type="checkbox" name="starter" checked = "checked"> <br />
+		 case "Brzeznica":
+		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
+		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
+		 document.form1.subcategory1.options[2] = new Option("DirectTeens", "DirectTeens");
+		 loc = "Brzeznica";
+		 break;
+
+		 case "Bachowice":
+		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
+		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
+		 document.form1.subcategory1.options[2] = new Option("DirectTeens", "DirectTeens");
+		 loc = "Bachowice";
+		 break;
+
+		 case "Zator":
+		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
+		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
+		 document.form1.subcategory1.options[2] = new Option("DirectTeens", "DirectTeens");
+		 document.form1.subcategory1.options[3] = new Option("CallanAdults", "CallanAdults");
+		 loc = "Zator";
+ 		 break;
+
+		 case "Przeciszów":
+		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
+		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
+		 loc = "Przeciszów";
+ 		 break;
+
+ 		 case "Laskowa":
+		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
+		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
+		 document.form1.subcategory1.options[2] = new Option("DirectTeens", "DirectTeens");
+		 loc = "Laskowa";
+ 		 break;
+
+		 case "Grodzisko":
+		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
+		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
+		 loc = "Grodzisko";
+ 		 break;
+
+		 case "Ryczów":
+		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
+		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
+		 document.form1.subcategory1.options[2] = new Option("DirectTeens", "DirectTeens");
+		 loc = "Ryczów";
+ 		 break;
+
+		 case "Laczany":
+		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
+		 loc = "Laczany";
+		 break;
 
 
-Book:
-<input type="checkbox" name="book" checked = "checked"> <br />
+		 }
+	 return true;
+ }
+ //-->
+ </script>
+
+ <script language="javascript" type="text/javascript">
+ <!--
+
+ function listboxchange(p_index) {
+
+	 //Clear Current options in subcategory
+	 document.form1.subcategory2.options.length = 0;
+
+	 if(loc === "Brzeznica"){
+		 switch (p_index) {
+
+		 case "DirectKids":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("0", "0");
+		 document.form1.subcategory2.options[2] = new Option("1", "1");
+		 document.form1.subcategory2.options[3] = new Option("2", "2");
+		 document.form1.subcategory2.options[4] = new Option("3", "3");
+		 document.form1.subcategory2.options[5] = new Option("4", "4");
+		 document.form1.subcategory2.options[6] = new Option("5", "5");
+		 document.form1.subcategory2.options[7] = new Option("6", "6");
+		 break;
+
+		 case "DirectTeens":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("1", "1");
+		 document.form1.subcategory2.options[2] = new Option("2", "2");
+		 document.form1.subcategory2.options[3] = new Option("3", "3");
+		 document.form1.subcategory2.options[4] = new Option("4", "4");
+		 break;
+		 }
+	 }
+
+	if(loc === "Bachowice"){
+		 switch (p_index) {
+
+		 case "DirectKids":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("0", "0");
+		 document.form1.subcategory2.options[2] = new Option("1", "1");
+		 document.form1.subcategory2.options[3] = new Option("2", "2");
+		 document.form1.subcategory2.options[4] = new Option("3", "3");
+		 document.form1.subcategory2.options[5] = new Option("4", "4");
+		 document.form1.subcategory2.options[6] = new Option("5", "5");
+		 document.form1.subcategory2.options[7] = new Option("6", "6");
+		 break;
+
+		 case "DirectTeens":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("1", "1");
+		 document.form1.subcategory2.options[2] = new Option("2", "2");
+		 document.form1.subcategory2.options[3] = new Option("3", "3");
+		 document.form1.subcategory2.options[4] = new Option("4", "4");
+		 break;
+		}
+	}
+
+	 if(loc === "Zator"){
+		 switch (p_index) {
+
+		 case "DirectKids":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("0", "0");
+		 document.form1.subcategory2.options[2] = new Option("1", "1");
+		 document.form1.subcategory2.options[3] = new Option("2", "2");
+		 document.form1.subcategory2.options[4] = new Option("3", "3");
+		 document.form1.subcategory2.options[5] = new Option("4", "4");
+		 document.form1.subcategory2.options[6] = new Option("5", "5");
+		 document.form1.subcategory2.options[7] = new Option("6", "6");
+		 break;
+
+		 case "DirectTeens":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("1", "1");
+		 document.form1.subcategory2.options[2] = new Option("2", "2");
+		 document.form1.subcategory2.options[3] = new Option("3", "3");
+		 document.form1.subcategory2.options[4] = new Option("4", "4");
+		 break;
+
+		 case "CallanAdults":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("1", "1");
+		 document.form1.subcategory2.options[2] = new Option("2", "2");
+		 document.form1.subcategory2.options[3] = new Option("3", "3");
+		 document.form1.subcategory2.options[4] = new Option("4", "4");
+		 document.form1.subcategory2.options[5] = new Option("5", "5");
+		 document.form1.subcategory2.options[6] = new Option("6", "6");
+		 document.form1.subcategory2.options[7] = new Option("7", "7");
+		 document.form1.subcategory2.options[8] = new Option("8", "8");
+		 document.form1.subcategory2.options[9] = new Option("9", "9");
+		 document.form1.subcategory2.options[10] = new Option("10", "10");
+		 document.form1.subcategory2.options[11] = new Option("11", "11");
+		 document.form1.subcategory2.options[12] = new Option("12", "12");
+         break;
+
+		 }
+	 }
+
+	if(loc === "Przeciszów"){
+		 switch (p_index) {
+
+		 case "DirectKids":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("0", "0");
+		 document.form1.subcategory2.options[2] = new Option("1", "1");
+		 document.form1.subcategory2.options[3] = new Option("2", "2");
+		 document.form1.subcategory2.options[4] = new Option("3", "3");
+		 document.form1.subcategory2.options[5] = new Option("4", "4");
+		 document.form1.subcategory2.options[6] = new Option("5", "5");
+         document.form1.subcategory2.options[7] = new Option("6", "6");
+		 break;
+
+		 }
+	 }
+
+	if(loc === "Laskowa"){
+		 switch (p_index) {
+
+		 case "DirectKids":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("0", "0");
+		 document.form1.subcategory2.options[2] = new Option("1", "1");
+		 document.form1.subcategory2.options[3] = new Option("2", "2");
+		 document.form1.subcategory2.options[4] = new Option("3", "3");
+		 document.form1.subcategory2.options[5] = new Option("4", "4");
+		 document.form1.subcategory2.options[6] = new Option("5", "5");
+		 document.form1.subcategory2.options[7] = new Option("6", "6");
+		 break;
+
+		 case "DirectTeens":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("1", "1");
+		 document.form1.subcategory2.options[2] = new Option("2", "2");
+		 document.form1.subcategory2.options[3] = new Option("3", "3");
+		 document.form1.subcategory2.options[4] = new Option("4", "4");
+		 break;
+		 }
+ }
+
+	if(loc === "Grodzisko"){
+		 switch (p_index) {
+
+		 case "DirectKids":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("0", "0");
+		 document.form1.subcategory2.options[2] = new Option("1", "1");
+		 document.form1.subcategory2.options[3] = new Option("2", "2");
+		 document.form1.subcategory2.options[4] = new Option("3", "3");
+		 document.form1.subcategory2.options[5] = new Option("4", "4");
+		 document.form1.subcategory2.options[6] = new Option("5", "5");
+		 document.form1.subcategory2.options[7] = new Option("6", "6");
+		 break;
+
+	 		 }
+	 }
+
+	 if(loc === "Ryczów"){
+		 switch (p_index) {
+
+		 case "DirectKids":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("0", "0");
+		 document.form1.subcategory2.options[2] = new Option("1", "1");
+		 document.form1.subcategory2.options[3] = new Option("2", "2");
+		 document.form1.subcategory2.options[4] = new Option("3", "3");
+		 document.form1.subcategory2.options[5] = new Option("4", "4");
+		 document.form1.subcategory2.options[6] = new Option("5", "5");
+		 document.form1.subcategory2.options[7] = new Option("6", "6");
+		 break;
+
+		 case "DirectTeens":
+		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
+		 document.form1.subcategory2.options[1] = new Option("1", "1");
+		 document.form1.subcategory2.options[2] = new Option("2", "2");
+		 document.form1.subcategory2.options[3] = new Option("3", "3");
+		 document.form1.subcategory2.options[4] = new Option("4", "4");
+		 break;
+		 }
+	 }
+
+	 return true;
+ }
+ //-->
+ </script>
+
+ </head>
+ <body>
+ <form action= "<?php echo $action ?>"  method="post" id="form1" name="form1">
+ <select name="category" id="category" onchange="javascript: listboxchange1(this.options[this.selectedIndex].value);">
+ <option value="">Select Location</option>
+ <option value="Brzeznica">Brze&#378;nica</option>
+ <option value="Bachowice">Bachowice</option>
+ <option value="Zator">Zator</option>
+ <option value="Przeciszów">Przecisz&oacute;w</option>
+ <option value="Laskowa">Laskowa</option>
+ <option value="Grodzisko">Grodzisko</option>
+ <option value="Ryczów">Rycz&oacute;w</option>
+ <option value="Laczany">&#321;&#261;czany</option>
+ </select>
+
+ <script type="text/javascript" language="javascript">
+ <!--
+ document.write('<select name="subcategory1" onChange="javascript: listboxchange(this.options[this.selectedIndex].value);"><option value="">Select Type</option></select>')
+ -->
+ </script>
+
+
+ <script type="text/javascript" language="javascript">
+ <!--
+ document.write('<select name="subcategory2"><option value="">Select Level</option></select>')
+ -->
+ </script>
+<br />
+ Payment Rate:
+ 		  <select name="rate">
+ 		  <option>not set</option>
+ 		  <option value="1">90</option>
+ 		  <option value="2">408</option>
+ </select><br />
+
+ Starter Pack:
+ <input type="checkbox" name="starter" checked = "checked"> <br />
+
+
+ Book:
+ <input type="checkbox" name="book" checked = "checked"> <br />
 
 
 
-<input type="submit">
-</form>
-</body>
-</html>
+ <input type="submit">
+
+ </form>
+ </body>
+ </html>
