@@ -42,19 +42,35 @@ if(isset($_POST["lastname"])){
 
 $sql2 = "INSERT INTO englishschooldb.students (first_name, last_name, street_address, address_code, town, phone_main, phone_alt, email, inactive) VALUES (, , , , , , , , 0)";
 
+$sql3 = "SELECT student_id from englishschooldb.students where
+	  first_name = '" . $_POST['firstname'] . "' and
+	  last_name =  '" . $_POST['lastname'] . "' and
+	  street_address = '" . $_POST['streetaddress'] . "' and
+	  address_code = '" . $_POST['postcode'] . "' and
+	  town = '" . $_POST['town'] . "' and
+	  email = '" . $_POST['email'] . "' and
+	  phone_main = '" . $_POST['mainphone'] . "' and
+	  phone_alt = '" . $_POST['altphone']. "';";
 
 if($sql != $sql2){
 			$result = $conn->query($sql)
 	        or trigger_error($conn->error);
+	        sleep(1);
+	        $result2 = $conn->query($sql3)
+		    or trigger_error($conn->error);
+	     	$row = $result2->fetch_array(MYSQLI_BOTH);
 
 	        $_POST = array();
 			}
 
 
+
+	$studentID= $row["student_id"];
 	$conn->close();
 
 
-header("Location: CreateContract.php");
+
+header("Location: CreateContract.php?studentID=$studentID");
 
 ?>
 
@@ -64,6 +80,7 @@ header("Location: CreateContract.php");
 <?php
 echo 'Student ' . $firstname .' ' . $lastname . ' added to database.';
 ?>
+
 
 <a href = "AddNewStudent.php"> Go back to AddNewStudent page </a>
 
