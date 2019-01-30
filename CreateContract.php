@@ -1,5 +1,8 @@
 <!--
-- we also need user to be able to enter contract (create contract)/payment info)
+- Category = Location
+- Subcategory1 = Kids, Teens or Adults
+- Subcategory2 = Level
+
 -->
 <?php
 
@@ -44,7 +47,9 @@
 
 
 if(empty($action)){
-	$action = 'CheckBlankContract.php';
+	$action = "CheckBlankContract.php?studentID=" . $studentID;
+
+	echo $action;
 	}
 
 if(empty($level)){
