@@ -37,6 +37,19 @@ if(empty($action)){
 	}
 
 $checked1 = 'checked = \"checked\"';
+
+
+$day = date("d");
+$month = date('m');
+
+if($month < 2 or $month > 9 or ($month == 9 and $day > 1)){
+	  $selectedFeb = 'selected = \"selected\"';
+	  $selectedSept = '';
+} else {
+     $selectedFeb = '';
+     $selectedSept = 'selected = \"selected\"';
+}
+
 session_destroy();
 ?>
 
@@ -333,14 +346,14 @@ session_destroy();
   &nbsp;&nbsp;&nbsp;Month:
 			<select name="month">
 			<option value="1">January</option>
-			<option value="2">February</option>
+			<option value="2" <?php echo $selectedFeb; ?>>February</option>
 			<option value="3">March</option>
 			<option value="4">April</option>
 			<option value="5">May</option>
 			<option value="6">June</option>
 			<option value="7">July</option>
 			<option value="8">August</option>
-			<option value="9">September</option>
+			<option value="9" <?php echo $selectedSept; ?>>September</option>
 			<option value="10">October</option>
 			<option value="11">November</option>
 			<option value="12">December</option>
