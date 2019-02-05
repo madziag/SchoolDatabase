@@ -1,9 +1,9 @@
 <!--
-Note for Next Week:
-
-Post data is not being carried over from AddNewStudent to CheckBlankContract -- we need to append the 2 post data'
+Note for Next Week Feb 5:
+Option in create contract: to find a way to predefine the number of lessons and startdate, and let user change them. Use of calendar widget?
 
 - we also need user to be able to enter contract (create contract)/payment info
+-- calculate due date by month and amount due by the number of lessons.
 - make sort buttons work in contracts
 -- update button should allow user to update info.
 -- create new contract (part of addnewstudent?)
@@ -36,7 +36,10 @@ select klass and location together or separately? what does klas 3/2 mean?
 -- contract.php table?
 -- add notes column mysql -- archive old notes instead of delete??
 -- individual students -- 2 students, 1 row (sylwia Majkut? who pays. Do students prepay or pay after the lessons. is there a contract?
---
+-- option to add new student regardelss of whether there are results or not.
+
+
+
 -->
 
 <?php
