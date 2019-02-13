@@ -41,6 +41,7 @@ $checked1 = 'checked = \"checked\"';
 
 $day = date("d");
 $month = date('m');
+$year = date('Y');
 
 if($month < 2 or $month > 9 or ($month == 9 and $day > 1)){
 	  $selectedFeb = 'selected = \"selected\"';
@@ -49,6 +50,31 @@ if($month < 2 or $month > 9 or ($month == 9 and $day > 1)){
      $selectedFeb = '';
      $selectedSept = 'selected = \"selected\"';
 }
+
+$selected19 = '';
+$selected20 = '';
+$selected21 = '';
+$selected22 = '';
+$selected23 = '';
+$selected24 = '';
+$selected25 = '';
+$selected26 = '';
+$selected27 = '';
+$selected28 = '';
+
+if($year == 2019 and $month < 9){$selected19 = 'selected = \"selected\"';}
+if(($year == 2019 and $month >= 9) or ($year == 2020 and $month < 9)){$selected20 = 'selected = \"selected\"';}
+if(($year == 2020 and $month >= 9) or ($year == 2021 and $month < 9)){$selected21 = 'selected = \"selected\"';}
+if(($year == 2021 and $month >= 9) or ($year == 2022 and $month < 9)){$selected22 = 'selected = \"selected\"';}
+if(($year == 2022 and $month >= 9) or ($year == 2023 and $month < 9)){$selected23 = 'selected = \"selected\"';}
+if(($year == 2023 and $month >= 9) or ($year == 2024 and $month < 9)){$selected24 = 'selected = \"selected\"';}
+if(($year == 2024 and $month >= 9) or ($year == 2025 and $month < 9)){$selected25 = 'selected = \"selected\"';}
+if(($year == 2025 and $month >= 9) or ($year == 2026 and $month < 9)){$selected26 = 'selected = \"selected\"';}
+if(($year == 2026 and $month >= 9) or ($year == 2027 and $month < 9)){$selected27 = 'selected = \"selected\"';}
+if(($year == 2027 and $month >= 9) or ($year == 2028 and $month < 9)){$selected28 = 'selected = \"selected\"';}
+
+
+
 
 session_destroy();
 ?>
@@ -361,16 +387,16 @@ session_destroy();
 
   &nbsp;&nbsp;&nbsp;Year:
 		    <select name="year">
-			<option value="1">2019</option>
-			<option value="2">2020</option>
-			<option value="3">2021</option>
-			<option value="4">2022</option>
-			<option value="5">2023</option>
-			<option value="6">2024</option>
-			<option value="7">2025</option>
-			<option value="8">2026</option>
-			<option value="9">2027</option>
-			<option value="10">2028</option>
+			<option value="2019"<?php echo $selected19; ?>>2019</option>
+			<option value="2020"<?php echo $selected20; ?>>2020</option>
+			<option value="2021"<?php echo $selected21; ?>>2021</option>
+			<option value="2022"<?php echo $selected22; ?>>2022</option>
+			<option value="2023"<?php echo $selected23; ?>>2023</option>
+			<option value="2024"<?php echo $selected24; ?>>2024</option>
+			<option value="2025"<?php echo $selected25; ?>>2025</option>
+			<option value="2026"<?php echo $selected26; ?>>2026</option>
+			<option value="2027"<?php echo $selected27; ?>>2027</option>
+			<option value="2028"<?php echo $selected28; ?>>2028</option>
 			</select><br />
 
 <br />

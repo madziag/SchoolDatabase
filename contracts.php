@@ -1,6 +1,12 @@
 <!--
+2/13/2019:
+-- How are the dates for the classes stored? Google calendar? Can it be exported and linked to the php?
+-- Possibility of creating a calendar where she can put in the dates and the dates can be stored in the form of an array
+-- Create table in sql where each location age group and level gives a unique id
+-- Possibility to manually enter new locations -- levels and age -groups should be the same.
+
 Note for Next Week Feb 5:
-Option in create contract: to find a way to predefine the number of lessons and startdate, and let user change them. Use of calendar widget?
+Option in create contract: to find a way to predefine the number of lessons and startdate, and let user change them.
 
 - we also need user to be able to enter contract (create contract)/payment info
 -- calculate due date by month and amount due by the number of lessons.
@@ -23,6 +29,7 @@ Option in create contract: to find a way to predefine the number of lessons and 
 
 -- check boxes for books/starter pack
 -- free text notes field -- contracts
+-- need check box for new signed contract received
 
 ===== Questions =====
 -- Link class level to new contract. When contract is updated, the class level should be updated as well -- option to manually adjust to different level.
