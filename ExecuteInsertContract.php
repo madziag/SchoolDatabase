@@ -24,11 +24,12 @@
 
 // SQL Query
 
- $sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, start_date) VALUES
+ $sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, start_date) VALUES
  ('" . $studentID . "', '"
      . $_POST['category'] . "', '"
      . $_POST['subcategory1'] . "', '"
      . $_POST['subcategory2'] . "', '"
+     . $_POST['rate'] . "', '"
      . $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'] . "');";
 
 

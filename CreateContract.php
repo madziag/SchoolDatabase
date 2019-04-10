@@ -1,6 +1,9 @@
 
 <!--
 - we also need user to be able to enter contract (create contract)/payment info)
+- the sql query pulls out all options of age groups. We need to take into account also semester start so that only active groups are pulled out.
+- drop down not working. We need to look closely at the string!
+
 -->
 <?php
  session_start();
@@ -104,6 +107,30 @@ $locationstring = "<select name=\"category\" id=\"category\" onchange=\"javascri
 
 $locationstring .=  "</select>";
 
+$js_age_gp = "";
+
+
+for( $i = 0; $i<sizeof($locations); $i++ ){
+    	 $js_age_gp .= 'case \"' . $locations[$i][0] . '\";\n';
+    	 $js_age_gp .=	'document.form1.subcategory1.options[0] = new Option(\"Select Type\", \"\");\n';
+    	 $sql = 'select distinct age_group from englishschooldb.locationgroupslevels where location = \'' . $locations[$i][0] . '\'';
+    	 echo $sql;
+    	 $result_a = $conn->query($sql)
+		 or trigger_error($conn->error);
+		 $rows_a = $result_a->fetch_all(MYSQLI_NUM);
+		 $x = 1;
+		 	for( $j= 0; $j<sizeof($rows_a); $j++ ){
+		 		$js_age_gp .= "document.form1.subcategory1.options[" . $x. "] = new Option(\"" . $rows_a[$j][0] . "\", \"" . $rows_a[$j][0] . "\");\n";
+		 		$x++;
+		 	}
+		 $js_age_gp .= 'loc = \"' . $locations[$i][0] . '\";\n';
+		 $js_age_gp .= 'break;\n';
+    	 }
+
+
+//echo $js_age_gp;
+
+
 
 
 session_destroy();
@@ -126,6 +153,7 @@ session_destroy();
  locations.length;
 
 
+
  var loc = "";
  function listboxchange1(p_index) {
 	 //Clear Current options in subcategory1
@@ -134,51 +162,7 @@ session_destroy();
 	 document.form1.subcategory2.options.length = 0;
 	 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 switch (p_index) {
-		 case "Brzeznica":
-		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
-		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
-		 document.form1.subcategory1.options[2] = new Option("<?php echo $dt ?>", "<?php echo $dt ?>");
-		 loc = "Brzeznica";
-		 break;
-		 case "Bachowice":
-		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
-		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
-		 document.form1.subcategory1.options[2] = new Option("DirectTeens", "DirectTeens");
-		 loc = "Bachowice";
-		 break;
-		 case "Zator":
-		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
-		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
-		 document.form1.subcategory1.options[2] = new Option("DirectTeens", "DirectTeens");
-		 document.form1.subcategory1.options[3] = new Option("CallanAdults", "CallanAdults");
-		 loc = "Zator";
- 		 break;
-		 case "Przeciszów":
-		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
-		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
-		 loc = "Przeciszów";
- 		 break;
- 		 case "Laskowa":
-		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
-		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
-		 document.form1.subcategory1.options[2] = new Option("DirectTeens", "DirectTeens");
-		 loc = "Laskowa";
- 		 break;
-		 case "Grodzisko":
-		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
-		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
-		 loc = "Grodzisko";
- 		 break;
-		 case "Ryczów":
-		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
-		 document.form1.subcategory1.options[1] = new Option("DirectKids", "DirectKids");
-		 document.form1.subcategory1.options[2] = new Option("DirectTeens", "DirectTeens");
-		 loc = "Ryczów";
- 		 break;
-		 case "Laczany":
-		 document.form1.subcategory1.options[0] = new Option("Select Type", "");
-		 loc = "Laczany";
-		 break;
+			<?php echo $js_age_gp; ?>
 		 }
 	 return true;
  }
@@ -193,7 +177,7 @@ session_destroy();
  function listboxchange(p_index) {
 	 //Clear Current options in subcategory
 	 document.form1.subcategory2.options.length = 0;
-	 if(loc === "Brzeznica"){
+	 if(loc === "Brzenica"){
 		 switch (p_index) {
 		 case "DirectKids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
@@ -271,7 +255,7 @@ session_destroy();
          break;
 		 }
 	 }
-	if(loc === "Przeciszów"){
+	if(loc === "Przeciszw"){
 		 switch (p_index) {
 		 case "DirectKids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
@@ -320,7 +304,7 @@ session_destroy();
 		 break;
 	 		 }
 	 }
-	 if(loc === "Ryczów"){
+	 if(loc === "Ryczw"){
 		 switch (p_index) {
 		 case "DirectKids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
@@ -436,6 +420,7 @@ session_destroy();
  </script>
 
 
+
   <br />
 
 <br />
@@ -447,7 +432,7 @@ session_destroy();
  </select><br />
 
  Starter Pack:
- <input type="checkbox" name="starter" checked = "checked"> <br />
+ <input type="checkbox" name="starter" checked = "checked" onclick = "helloworld()"> <br />
 
 
  Book:
