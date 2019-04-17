@@ -111,11 +111,10 @@ for( $i = 0; $i<sizeof($locations); $i++ ){
 ';
 		$x++;
 		}
-	$js_age_gp .= 'loc = ' . preg_replace('/[^A-Za-z0-9\-]/', '', $locations[$i][0]) . ';
+	$js_age_gp .= ' loc = "' . preg_replace('/[^A-Za-z0-9\-]/', '', $locations[$i][0]) . '";
 	break;
 ';
 	}
-
 
 session_destroy();
 ?>
@@ -133,6 +132,7 @@ session_destroy();
  locations.length;
  var loc = "";
 
+
  function listboxchange1(p_index) {
 	 //Clear Current options in subcategory1
 	 document.form1.subcategory1.options.length = 0;
@@ -144,17 +144,13 @@ session_destroy();
 		 }
 	 return true;
  }
- //-->
- </script>
 
- <script language="javascript" type="text/javascript">
- <!--
- function listboxchange(p_index) {
+function listboxchange(p_index) {
 	 //Clear Current options in subcategory
 	 document.form1.subcategory2.options.length = 0;
-	 if(loc === "Brzeznica"){
+	 if(loc === "Brzenica"){
 		 switch (p_index) {
-		 case "DirectKids":
+		 case "Direct Kids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("0", "0");
 		 document.form1.subcategory2.options[2] = new Option("1", "1");
@@ -164,7 +160,7 @@ session_destroy();
 		 document.form1.subcategory2.options[6] = new Option("5", "5");
 		 document.form1.subcategory2.options[7] = new Option("6", "6");
 		 break;
-		 case "DirectTeens":
+		 case "Direct Teens":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("1", "1");
 		 document.form1.subcategory2.options[2] = new Option("2", "2");
@@ -175,7 +171,7 @@ session_destroy();
 	 }
 	if(loc === "Bachowice"){
 		 switch (p_index) {
-		 case "DirectKids":
+		 case "Direct Kids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("0", "0");
 		 document.form1.subcategory2.options[2] = new Option("1", "1");
@@ -185,7 +181,7 @@ session_destroy();
 		 document.form1.subcategory2.options[6] = new Option("5", "5");
 		 document.form1.subcategory2.options[7] = new Option("6", "6");
 		 break;
-		 case "DirectTeens":
+		 case "Direct Teens":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("1", "1");
 		 document.form1.subcategory2.options[2] = new Option("2", "2");
@@ -196,7 +192,7 @@ session_destroy();
 	}
 	 if(loc === "Zator"){
 		 switch (p_index) {
-		 case "DirectKids":
+		 case "Direct Kids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("0", "0");
 		 document.form1.subcategory2.options[2] = new Option("1", "1");
@@ -206,14 +202,14 @@ session_destroy();
 		 document.form1.subcategory2.options[6] = new Option("5", "5");
 		 document.form1.subcategory2.options[7] = new Option("6", "6");
 		 break;
-		 case "DirectTeens":
+		 case "Direct Teens":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("1", "1");
 		 document.form1.subcategory2.options[2] = new Option("2", "2");
 		 document.form1.subcategory2.options[3] = new Option("3", "3");
 		 document.form1.subcategory2.options[4] = new Option("4", "4");
 		 break;
-		 case "CallanAdults":
+		 case "Callan Method Adults":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("1", "1");
 		 document.form1.subcategory2.options[2] = new Option("2", "2");
@@ -230,9 +226,9 @@ session_destroy();
          break;
 		 }
 	 }
-	if(loc === "Przeciszów"){
+	if(loc === "Przeciszw"){
 		 switch (p_index) {
-		 case "DirectKids":
+		 case "Direct Kids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("0", "0");
 		 document.form1.subcategory2.options[2] = new Option("1", "1");
@@ -246,7 +242,7 @@ session_destroy();
 	 }
 	if(loc === "Laskowa"){
 		 switch (p_index) {
-		 case "DirectKids":
+		 case "Direct Kids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("0", "0");
 		 document.form1.subcategory2.options[2] = new Option("1", "1");
@@ -256,7 +252,7 @@ session_destroy();
 		 document.form1.subcategory2.options[6] = new Option("5", "5");
 		 document.form1.subcategory2.options[7] = new Option("6", "6");
 		 break;
-		 case "DirectTeens":
+		 case "Direct Teens":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("1", "1");
 		 document.form1.subcategory2.options[2] = new Option("2", "2");
@@ -267,7 +263,7 @@ session_destroy();
  }
 	if(loc === "Grodzisko"){
 		 switch (p_index) {
-		 case "DirectKids":
+		 case "Direct Kids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("0", "0");
 		 document.form1.subcategory2.options[2] = new Option("1", "1");
@@ -279,9 +275,9 @@ session_destroy();
 		 break;
 	 		 }
 	 }
-	 if(loc === "Ryczów"){
+	 if(loc === "Ryczw"){
 		 switch (p_index) {
-		 case "DirectKids":
+		 case "Direct Kids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("0", "0");
 		 document.form1.subcategory2.options[2] = new Option("1", "1");
@@ -291,7 +287,7 @@ session_destroy();
 		 document.form1.subcategory2.options[6] = new Option("5", "5");
 		 document.form1.subcategory2.options[7] = new Option("6", "6");
 		 break;
-		 case "DirectTeens":
+		 case "Direct Teens":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 document.form1.subcategory2.options[1] = new Option("1", "1");
 		 document.form1.subcategory2.options[2] = new Option("2", "2");
@@ -302,7 +298,7 @@ session_destroy();
 	 }
 	 return true;
  }
- //-->
+ -->
  </script>
 
  </head>
