@@ -1,4 +1,3 @@
-
 <!--
 - we also need user to be able to enter contract (create contract)/payment info)
 - the sql query pulls out all options of age groups. We need to take into account also semester start so that only active groups are pulled out.
@@ -14,24 +13,20 @@
 	 $username = 'MadziaG';
 	 $password = 'P$i@krew2018User';
 	 $dbname = 'englishschooldb';
-
 	// Create connection
 	    $conn = new mysqli($servername, $username, $password, $dbname);
 	 // Check connection
 	     if ($conn->connect_error) {
 	  	   die("Connection failed: " . $conn->connect_error);
     }
-
   	$result = $conn->query($sql)
 		      or trigger_error($conn->error);
-
 	$row = $result->fetch_array(MYSQLI_BOTH);
 	echo " Name: " . $row["first_name"] . " " . $row["last_name"] . "<br \>";
 	echo "Address: " . $row["street_address"] . " " . $row["address_code"]. " " . $row["town"] . "<br \>";
 	echo "Contact: "  . $row["email"] .  " " . $row["phone_main"]  . " " . $row["phone_alt"] . "<br \>";
     echo "Status: " . $row["inactive"];
  	}
-
  if(isset($_SESSION['post_insert'])){
   	$_POST =  $_SESSION['post_insert'];
   	 echo " Name: " . $_POST['firstname'] . " " . $_POST['lastname'] . "<br \>";
@@ -42,14 +37,10 @@
 if(empty($action)){
 	$action = "CheckBlankContract.php?studentID=" . $studentID;
 	}
-
 $checked1 = 'checked = \"checked\"';
-
-
 $day = date("d");
 $month = date('m');
 $year = date('Y');
-
 if($month < 2 or $month > 9 or ($month == 9 and $day > 1)){
 	  $selectedFeb = 'selected = \"selected\"';
 	  $selectedSept = '';
@@ -57,7 +48,6 @@ if($month < 2 or $month > 9 or ($month == 9 and $day > 1)){
      $selectedFeb = '';
      $selectedSept = 'selected = \"selected\"';
 }
-
 $selected19 = '';
 $selected20 = '';
 $selected21 = '';
@@ -68,7 +58,6 @@ $selected25 = '';
 $selected26 = '';
 $selected27 = '';
 $selected28 = '';
-
 if($year == 2019 and $month < 9){$selected19 = 'selected = \"selected\"';}
 if(($year == 2019 and $month >= 9) or ($year == 2020 and $month < 9)){$selected20 = 'selected = \"selected\"';}
 if(($year == 2020 and $month >= 9) or ($year == 2021 and $month < 9)){$selected21 = 'selected = \"selected\"';}
@@ -79,9 +68,6 @@ if(($year == 2024 and $month >= 9) or ($year == 2025 and $month < 9)){$selected2
 if(($year == 2025 and $month >= 9) or ($year == 2026 and $month < 9)){$selected26 = 'selected = \"selected\"';}
 if(($year == 2026 and $month >= 9) or ($year == 2027 and $month < 9)){$selected27 = 'selected = \"selected\"';}
 if(($year == 2027 and $month >= 9) or ($year == 2028 and $month < 9)){$selected28 = 'selected = \"selected\"';}
-
-
-$dt = 'DirectTeens';
 
 $sql = 'Select * from englishschooldb.locationgroupslevels';
 
@@ -108,29 +94,27 @@ $locationstring = "<select name=\"category\" id=\"category\" onchange=\"javascri
 $locationstring .=  "</select>";
 
 $js_age_gp = "";
-
-
 for( $i = 0; $i<sizeof($locations); $i++ ){
-    	 $js_age_gp .= 'case \"' . $locations[$i][0] . '\";\n';
-    	 $js_age_gp .=	'document.form1.subcategory1.options[0] = new Option(\"Select Type\", \"\");\n';
-    	 $sql = 'select distinct age_group from englishschooldb.locationgroupslevels where location = \'' . $locations[$i][0] . '\'';
-    	 echo $sql;
-    	 $result_a = $conn->query($sql)
-		 or trigger_error($conn->error);
-		 $rows_a = $result_a->fetch_all(MYSQLI_NUM);
-		 $x = 1;
-		 	for( $j= 0; $j<sizeof($rows_a); $j++ ){
-		 		$js_age_gp .= "document.form1.subcategory1.options[" . $x. "] = new Option(\"" . $rows_a[$j][0] . "\", \"" . $rows_a[$j][0] . "\");\n";
-		 		$x++;
-		 	}
-		 $js_age_gp .= 'loc = \"' . $locations[$i][0] . '\";\n';
-		 $js_age_gp .= 'break;\n';
-    	 }
+	$js_age_gp .= 'case "' . preg_replace('/[^A-Za-z0-9\-]/', '', $locations[$i][0]) . '":';
+	$js_age_gp .= '
+		 document.form1.subcategory1.options[0] = new Option("Select Type", "");';
 
+	$sql = 'select distinct age_group from englishschooldb.locationgroupslevels where location = \'' . $locations[$i][0] . '\'';
+    $result_a = $conn->query($sql)
+	or trigger_error($conn->error);
+	$rows_a = $result_a->fetch_all(MYSQLI_NUM);
 
-//echo $js_age_gp;
-
-
+	$x = 1;
+	for( $j= 0; $j<sizeof($rows_a); $j++ ){
+		$js_age_gp .= '
+			 document.form1.subcategory1.options[' . $x . '] = new Option("' . $rows_a[$j][0] . '", "' . $rows_a[$j][0] . '");
+';
+		$x++;
+		}
+	$js_age_gp .= 'loc = ' . preg_replace('/[^A-Za-z0-9\-]/', '', $locations[$i][0]) . ';
+	break;
+';
+	}
 
 
 session_destroy();
@@ -143,18 +127,12 @@ session_destroy();
 
  <script language="javascript" type="text/javascript">
  <!--
-
-
-
  var a = <?php echo json_encode($rows); ?>;
  var foo = (a[0][1]);
-
  var locations = <?php echo json_encode($locations); ?>;
  locations.length;
-
-
-
  var loc = "";
+
  function listboxchange1(p_index) {
 	 //Clear Current options in subcategory1
 	 document.form1.subcategory1.options.length = 0;
@@ -162,7 +140,7 @@ session_destroy();
 	 document.form1.subcategory2.options.length = 0;
 	 document.form1.subcategory2.options[0] = new Option("Select Level", "");
 		 switch (p_index) {
-			<?php echo $js_age_gp; ?>
+		 <?php echo $js_age_gp ?>
 		 }
 	 return true;
  }
@@ -171,13 +149,10 @@ session_destroy();
 
  <script language="javascript" type="text/javascript">
  <!--
-
-
-
  function listboxchange(p_index) {
 	 //Clear Current options in subcategory
 	 document.form1.subcategory2.options.length = 0;
-	 if(loc === "Brzenica"){
+	 if(loc === "Brzeznica"){
 		 switch (p_index) {
 		 case "DirectKids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
@@ -255,7 +230,7 @@ session_destroy();
          break;
 		 }
 	 }
-	if(loc === "Przeciszw"){
+	if(loc === "Przeciszów"){
 		 switch (p_index) {
 		 case "DirectKids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
@@ -304,7 +279,7 @@ session_destroy();
 		 break;
 	 		 }
 	 }
-	 if(loc === "Ryczw"){
+	 if(loc === "Ryczów"){
 		 switch (p_index) {
 		 case "DirectKids":
 		 document.form1.subcategory2.options[0] = new Option("Select Level", "");
@@ -420,7 +395,6 @@ session_destroy();
  </script>
 
 
-
   <br />
 
 <br />
@@ -432,7 +406,7 @@ session_destroy();
  </select><br />
 
  Starter Pack:
- <input type="checkbox" name="starter" checked = "checked" onclick = "helloworld()"> <br />
+ <input type="checkbox" name="starter" checked = "checked"> <br />
 
 
  Book:
