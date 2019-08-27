@@ -4,10 +4,14 @@
 - we also need user to be able to enter contract (create contract)/payment info)
 - the sql query pulls out all options of age groups. We need to take into account also semester start so that only active groups are pulled out.
 - drop down not working. We need to look closely at the string!
+- 8/27/2019: Based on start date chosen by user -> we determine semester and locations; We should have default location values if there is no matching semester
+
 
 -->
 <?php
  session_start();
+
+
  if(isset($_SESSION['post_sr'])){
  	$studentID =  $_GET['studentID'];
   	$sql = "Select * from students where student_id = " . $studentID;
@@ -76,8 +80,19 @@ $sql = 'Select * from englishschooldb.locationgroupslevels';
 $result = $conn->query($sql)
 or trigger_error($conn->error);
 
-$rows = $result->fetch_all(MYSQLI_NUM);
+while($row = $result->fetch_assoc()) {
+	        $loc[] = $row["location"];
+    }
+$locations = array_values(array_unique($loc));
 
+$locationstring = "<select name=\"category\" id=\"category\" onchange=\"javascript: listboxchange1(this.options[this.selectedIndex].value);\">
+ <option value=\"\">Select Location</option>";
+
+ for( $i = 0; $i<sizeof($locations); $i++ ) {
+	 $locationstring .= "<option value=\"".preg_replace('/[^A-Za-z0-9\-]/', '', $locations[$i])."\">".$locations[$i]."</option>\n";
+ }
+
+$locationstring .=  "</select>";
 
 // <td> " . $row["phone_alt"] . "  </td>
 
@@ -381,7 +396,7 @@ function listboxchange(p_index) {
 
 
  <br /> <br />
-	<?php include 'levels.php';?>
+	<?php echo $locationstring;?>
 
 
  <script type="text/javascript" language="javascript">
