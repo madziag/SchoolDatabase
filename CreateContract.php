@@ -1,4 +1,6 @@
 <!--
+- 6/19/2019: Use AJAX to get the levels out of the DB using the semester entered by the user. (see sandbox -- not working yet).
+
 - we also need user to be able to enter contract (create contract)/payment info)
 - the sql query pulls out all options of age groups. We need to take into account also semester start so that only active groups are pulled out.
 - drop down not working. We need to look closely at the string!
@@ -84,14 +86,6 @@ $result = $conn->query($sql)
 or trigger_error($conn->error);
 $locations = $result->fetch_all(MYSQLI_NUM);
 
-$locationstring = "<select name=\"category\" id=\"category\" onchange=\"javascript: listboxchange1(this.options[this.selectedIndex].value);\">
- <option value=\"\">Select Location</option>";
-
- for( $i = 0; $i<sizeof($locations); $i++ ) {
-	 $locationstring .= "<option value=\"".preg_replace('/[^A-Za-z0-9\-]/', '', $locations[$i][0])."\">".$locations[$i][0]."</option>\n";
- }
-
-$locationstring .=  "</select>";
 
 $js_age_gp = "";
 for( $i = 0; $i<sizeof($locations); $i++ ){
@@ -100,6 +94,10 @@ for( $i = 0; $i<sizeof($locations); $i++ ){
 		 document.form1.subcategory1.options[0] = new Option("Select Type", "");';
 
 	$sql = 'select distinct age_group from englishschooldb.locationgroupslevels where location = \'' . $locations[$i][0] . '\'';
+	// TODO: Select on semester
+
+
+
     $result_a = $conn->query($sql)
 	or trigger_error($conn->error);
 	$rows_a = $result_a->fetch_all(MYSQLI_NUM);
@@ -131,6 +129,15 @@ session_destroy();
  var locations = <?php echo json_encode($locations); ?>;
  locations.length;
  var loc = "";
+ var semester = "";
+
+function sem() {
+			var m = document.getElementById("month");
+			var y = document.getElementById("year");
+			semester = m.options[m.selectedIndex].value + '-' + y.options[y.selectedIndex].value ;
+		 }
+
+
 
 
  function listboxchange1(p_index) {
@@ -343,7 +350,7 @@ function listboxchange(p_index) {
              </select>
 
    &nbsp;&nbsp;&nbsp;Month:
- 			<select name="month">
+ 			<select name="month" id="month">
  			<option value="1">January</option>
  			<option value="2" <?php echo $selectedFeb; ?>>February</option>
  			<option value="3">March</option>
@@ -359,7 +366,7 @@ function listboxchange(p_index) {
  			</select>
 
    &nbsp;&nbsp;&nbsp;Year:
- 		    <select name="year">
+ 		    <select name="year" id="year" onchange = "sem()">
  			<option value="2019"<?php echo $selected19; ?>>2019</option>
  			<option value="2020"<?php echo $selected20; ?>>2020</option>
  			<option value="2021"<?php echo $selected21; ?>>2021</option>
@@ -374,7 +381,7 @@ function listboxchange(p_index) {
 
 
  <br /> <br />
-	<?php echo $locationstring; ?>
+	<?php include 'levels.php';?>
 
 
  <script type="text/javascript" language="javascript">
