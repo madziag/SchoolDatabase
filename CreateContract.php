@@ -3,10 +3,8 @@
 
 - we also need user to be able to enter contract (create contract)/payment info)
 - the sql query pulls out all options of age groups. We need to take into account also semester start so that only active groups are pulled out.
-- drop down not working. We need to look closely at the string!
 - 8/27/2019: Based on start date chosen by user -> we determine semester and locations; We should have default location values if there is no matching semester
-
-
+- 9/3/2019: We need to create contents of locSelect dropdown based on values in var result -> see todos in function sem()
 -->
 <?php
  session_start();
@@ -47,12 +45,22 @@ $checked1 = 'checked = \"checked\"';
 $day = date("d");
 $month = date('m');
 $year = date('Y');
+$selectedSemester = "";
+
 if($month < 2 or $month > 9 or ($month == 9 and $day > 1)){
 	  $selectedFeb = 'selected = \"selected\"';
 	  $selectedSept = '';
+	  $selectedSemester = '2-';
 } else {
      $selectedFeb = '';
      $selectedSept = 'selected = \"selected\"';
+     $selectedSemester = '9-';
+}
+if($month < 9 or ($month == 9 and $day == 1)){
+	$selectedSemester = $selectedSemester . $year;
+	}
+else{
+	$selectedSemester = $selectedSemester . ($year + 1);
 }
 $selected19 = '';
 $selected20 = '';
@@ -79,10 +87,17 @@ $sql = 'Select * from englishschooldb.locationgroupslevels';
 
 $result = $conn->query($sql)
 or trigger_error($conn->error);
+$resultArr = [];
+$loc = [];
+while($row = $result->fetch_assoc()) {
+	$resultArr[] = $row;
+	}
 
 while($row = $result->fetch_assoc()) {
-	        $loc[] = $row["location"];
-    }
+	if($row["semester_start"] == $selectedSemester){
+	  $loc[] = $row["location"];
+	 }
+  }
 $locations = array_values(array_unique($loc));
 
 $locationstring = "<select name=\"category\" id=\"category\" onchange=\"javascript: listboxchange1(this.options[this.selectedIndex].value);\">
@@ -106,7 +121,7 @@ $js_age_gp = "";
 for( $i = 0; $i<sizeof($locations); $i++ ){
 	$js_age_gp .= 'case "' . preg_replace('/[^A-Za-z0-9\-]/', '', $locations[$i][0]) . '":';
 	$js_age_gp .= '
-		 document.form1.subcategory1.options[0] = new Option("Select Type", "");';
+		 document.form1.ageGroup.options[0] = new Option("Select Type", "");';
 
 	$sql = 'select distinct age_group from englishschooldb.locationgroupslevels where location = \'' . $locations[$i][0] . '\'';
 	// TODO: Select on semester
@@ -120,7 +135,7 @@ for( $i = 0; $i<sizeof($locations); $i++ ){
 	$x = 1;
 	for( $j= 0; $j<sizeof($rows_a); $j++ ){
 		$js_age_gp .= '
-			 document.form1.subcategory1.options[' . $x . '] = new Option("' . $rows_a[$j][0] . '", "' . $rows_a[$j][0] . '");
+			 document.form1.ageGroup.options[' . $x . '] = new Option("' . $rows_a[$j][0] . '", "' . $rows_a[$j][0] . '");
 ';
 		$x++;
 		}
@@ -139,25 +154,76 @@ session_destroy();
 
  <script language="javascript" type="text/javascript">
  <!--
- var a = <?php echo json_encode($rows); ?>;
- var foo = (a[0][1]);
+
+var result = <?php echo json_encode($resultArr, JSON_PRETTY_PRINT) ?>;
+
+console.log(result);
+
  var locations = <?php echo json_encode($locations); ?>;
  locations.length;
  var loc = "";
- var semester = "";
+ var selSemester = "";
+
+
+
 
 function sem() {
-			var m = document.getElementById("month");
-			var y = document.getElementById("year");
-			semester = m.options[m.selectedIndex].value + '-' + y.options[y.selectedIndex].value ;
+			var m = document.getElementById("month").options[document.getElementById("month").selectedIndex].value;
+			var y = document.getElementById("year").options[document.getElementById("year").selectedIndex].value;
+
+			if (m >= 2 && m <= 6){
+				selSemester = '2-' + y;
+				}
+			else if (m >= 9 || m == 1){
+				selSemester = '9-' + y;
+				}
+			else (selSemester = "Undefined");
+
+			var locSet = locsOnSem();
+			locBoxPopulate(locSet);
+
 		 }
 
+function locsOnSem()	{
+			var i;
+			var locSet = new Set();
+
+			for (i = 0; i < result.length; i++) {
+				if (selSemester == result[i]["semester_start"]) {
+			  		locSet.add(result[i]["location"] );
+					}
+				}
+			return locSet;
+		}
 
 
+ function locBoxPopulate(locSet) {
+	 //Clear Current options in locSelect
+	document.form1.locSelect.options.length = 0;
+	document.form1.locSelect.options[0] = new Option("Select Location", "");
+	var i = 1;
+	for (let loc of locSet) {
+	  	document.form1.locSelect.options[i] = new Option(loc, loc);
+	  	i++;
+	}
+
+
+	 return true;
+
+ }
+
+ function locBoxChange(p_index) {
+	 //Clear Current options in locSelect
+	 document.form1.ageGroup.options.length = 0;
+
+     // TODO
+	 return true;
+
+ }
 
  function listboxchange1(p_index) {
-	 //Clear Current options in subcategory1
-	 document.form1.subcategory1.options.length = 0;
+	 //Clear Current options in ageGroup
+	 document.form1.ageGroup.options.length = 0;
 	 //Clear Current options in subcategory2
 	 document.form1.subcategory2.options.length = 0;
 	 document.form1.subcategory2.options[0] = new Option("Select Level", "");
@@ -324,7 +390,7 @@ function listboxchange(p_index) {
  </script>
 
  </head>
- <body>
+ <body onload="sem();">
  <form action= "<?php echo $action ?>"  method="post" id="form1" name="form1">
 
 
@@ -395,13 +461,20 @@ function listboxchange(p_index) {
  			</select><br />
 
 
+ <br />
+    <?php echo 'Selected Semester: ' . $selectedSemester;?>
  <br /> <br />
 	<?php echo $locationstring;?>
 
+ <script type="text/javascript" language="javascript">
+ <!--
+ document.write('<select name="locSelect" onChange="javascript: locBoxChange(this.options[this.selectedIndex].value);"><option value="">Select Location</option></select>')
+ -->
+ </script>
 
  <script type="text/javascript" language="javascript">
  <!--
- document.write('<select name="subcategory1" onChange="javascript: listboxchange(this.options[this.selectedIndex].value);"><option value="">Select Type</option></select>')
+ document.write('<select name="ageGroup" onChange="javascript: listboxchange(this.options[this.selectedIndex].value);"><option value="">Select Type</option></select>')
  -->
  </script>
 
