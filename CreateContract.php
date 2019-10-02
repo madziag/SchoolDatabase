@@ -4,7 +4,7 @@
 - we also need user to be able to enter contract (create contract)/payment info)
 - the sql query pulls out all options of age groups. We need to take into account also semester start so that only active groups are pulled out.
 - 8/27/2019: Based on start date chosen by user -> we determine semester and locations; We should have default location values if there is no matching semester
-- 9/3/2019: We need to create contents of locSelect dropdown based on values in var result -> see todos in function sem()
+- 9/18/2019: Select age_group based on the location selected (locBoxChange function)
 -->
 <?php
  session_start();
@@ -212,11 +212,33 @@ function locsOnSem()	{
 
  }
 
+
+
  function locBoxChange(p_index) {
 	 //Clear Current options in locSelect
-	 document.form1.ageGroup.options.length = 0;
 
-     // TODO
+	 document.form1.ageGroup.options.length = 0;
+	 selLoc = document.getElementById("locSelect").options[document.getElementById("locSelect").selectedIndex].value;
+
+	 var i;
+	 var ageSet = new Set();
+
+	 for (i = 0; i < result.length; i++) {
+	 	if (selSemester == result[i]["semester_start"] && selLoc == result[i]["location"]) {
+	 		ageSet.add(result[i]["age_group"] );
+	 			}
+	 		}
+
+	 console.log(ageSet);
+
+	 document.form1.ageGroup.options[0] = new Option("Select Age Group", "");
+	 	i = 1;
+	 	for (let age of ageSet) {
+	 	  	document.form1.ageGroup.options[i] = new Option(age, age);
+	 	  	i++;
+	 	}
+
+
 	 return true;
 
  }
@@ -466,22 +488,19 @@ function listboxchange(p_index) {
  <br /> <br />
 	<?php echo $locationstring;?>
 
+
+ <select id = "locSelect" name="locSelect" onChange="javascript: locBoxChange(this.options[this.selectedIndex].value);"><option value="">Select Location</option></select>
+
  <script type="text/javascript" language="javascript">
  <!--
- document.write('<select name="locSelect" onChange="javascript: locBoxChange(this.options[this.selectedIndex].value);"><option value="">Select Location</option></select>')
+ document.write('<select id = "ageGroup" name="ageGroup" onChange="javascript: listboxchange(this.options[this.selectedIndex].value);"><option value="">Select Type</option></select>')
  -->
  </script>
 
- <script type="text/javascript" language="javascript">
- <!--
- document.write('<select name="ageGroup" onChange="javascript: listboxchange(this.options[this.selectedIndex].value);"><option value="">Select Type</option></select>')
- -->
- </script>
-
 
  <script type="text/javascript" language="javascript">
  <!--
- document.write('<select name="subcategory2"><option value="">Select Level</option></select>')
+ document.write('<select id = "subcategory2" name="subcategory2"><option value="">Select Level</option></select>')
  -->
  </script>
 
