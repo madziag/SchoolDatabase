@@ -229,8 +229,6 @@ function locsOnSem()	{
 	 			}
 	 		}
 
-	 console.log(ageSet);
-
 	 document.form1.ageGroup.options[0] = new Option("Select Age Group", "");
 	 	i = 1;
 	 	for (let age of ageSet) {
@@ -238,10 +236,35 @@ function locsOnSem()	{
 	 	  	i++;
 	 	}
 
+	 return true;
+ }
+
+ function ageGroupChange(p_index) {
+	 //Clear Current options in levelSelect
+
+	 document.form1.levelSelect.options.length = 0;
+
+	 selAge = document.getElementById("ageGroup").options[document.getElementById("ageGroup").selectedIndex].value;
+
+	 var i;
+	 var levelSet = new Set();
+
+	 for (i = 0; i < result.length; i++) {
+	 	if (selSemester == result[i]["semester_start"] && selLoc == result[i]["location"] && selAge == result[i]["age_group"] ) {
+	 		levelSet.add(result[i]["levels"] );
+	 			}
+	 		}
+
+	 document.form1.levelSelect.options[0] = new Option("Select Level", "");
+	 	i = 1;
+	 	for (let lev of levelSet) {
+	 	  	document.form1.levelSelect.options[i] = new Option(lev, lev);
+	 	  	i++;
+	 	}
 
 	 return true;
-
  }
+
 
  function listboxchange1(p_index) {
 	 //Clear Current options in ageGroup
@@ -493,14 +516,14 @@ function listboxchange(p_index) {
 
  <script type="text/javascript" language="javascript">
  <!--
- document.write('<select id = "ageGroup" name="ageGroup" onChange="javascript: listboxchange(this.options[this.selectedIndex].value);"><option value="">Select Type</option></select>')
+ document.write('<select id = "ageGroup" name="ageGroup" onChange="javascript: ageGroupChange(this.options[this.selectedIndex].value);"><option value="">Select Type</option></select>')
  -->
  </script>
 
 
  <script type="text/javascript" language="javascript">
  <!--
- document.write('<select id = "subcategory2" name="subcategory2"><option value="">Select Level</option></select>')
+ document.write('<select id = "levelSelect" name="levelSelect"><option value="">Select Level</option></select>')
  -->
  </script>
 
