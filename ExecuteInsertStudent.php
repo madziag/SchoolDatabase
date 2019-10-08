@@ -70,7 +70,7 @@ if($sql != $sql2){
 
 
 
-header("Location: CreateContract.php?studentID=$studentID");
+header("Location: CreateContract.php?studentID=" . $studentID);
 
 ?>
 

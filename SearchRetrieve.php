@@ -61,7 +61,7 @@ if(isset($_POST["status"])){
 
 
 // build sql query
-$sql = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_date) as start_date from students a join contracts b on a.student_id = b.student_id where ";
+$sql = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_date) as start_date from students a left join contracts b on a.student_id = b.student_id where ";
 
 
 
@@ -99,7 +99,8 @@ $sql = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_da
 		$sql = $sql . " group by a.student_id";
 
 
-$sql2 = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_date) as start_date from students a join contracts b on a.student_id = b.student_id where  group by a.student_id";
+
+$sql2 = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_date) as start_date from students a left join contracts b on a.student_id = b.student_id where  group by a.student_id";
 
 /* echo $sql;
 echo "<br>";
@@ -188,7 +189,7 @@ if($sql != $sql2){
 					}
 					echo "</table>";
 				    echo "<br />";
-				    echo "Student not found. Do you want to create a new student? ";
+				    echo "Do you want to create a new student? ";
 				    echo "<a href= \"AddNewStudent.php\"> Yes </a>";
 			        echo "<br />";
 			        echo "<br />";

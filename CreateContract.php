@@ -27,11 +27,6 @@
 
  if(isset($_SESSION['post_insert'])){
   	$_POST =  $_SESSION['post_insert'];
-
-   	echo " Name: " . $_POST['firstname'] . " " . $_POST['lastname'] . "<br \>";
- 	echo "Address: " . $_POST['streetaddress'] . " " . $_POST['postcode'] . " " . $_POST['town'] . "<br \>";
-	echo "Contact: "  . $_POST['email'] .  " " . $_POST['mainphone']  . " " . $_POST['altphone'] . "<br \>";
-   	echo "Status: " . $_POST['status'];
  	}
 
 if(empty($action)){
@@ -113,8 +108,15 @@ function sem() {
 	var y = document.getElementById("year").options[document.getElementById("year").selectedIndex].value;
 
 	if (m >= 2 && m <= 6){selSemester = '2-' + y;}
-	else if (m >= 9 || m == 1){selSemester = '9-' + y;}
+	else if (m >= 9){selSemester = '9-' + y;}
+	else if (m == 1){
+		var intYear = parseInt(y, 10);
+		intYear = intYear - 1;
+		selSemester = '9-' + intYear;
+		}
 	else (selSemester = "Undefined");
+
+	document.getElementById("semDiv").innerHTML = selSemester;
 
 	var locSet = locsOnSem();
 	locBoxPopulate(locSet);
@@ -242,7 +244,7 @@ function locsOnSem() {
              </select>
 
    &nbsp;&nbsp;&nbsp;Month:
- 			<select name="month" id="month">
+ 			<select name="month" id="month" onchange = "sem()">
  			<option value="1">January</option>
  			<option value="2" <?php echo $selectedFeb; ?>>February</option>
  			<option value="3">March</option>
@@ -272,7 +274,7 @@ function locsOnSem() {
  			</select><br />
 
  <br />
-    <?php echo 'Selected Semester: ' . $selectedSemester;?>
+    Selected Semester: <div id="semDiv"> <?php echo $selectedSemester;?> </div>
  <br /> <br />
 
  <select id = "locSelect" name="locSelect" onChange="javascript: locBoxChange(this.options[this.selectedIndex].value);"><option value="">Select Location</option></select>

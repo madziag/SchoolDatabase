@@ -1,0 +1,6 @@
+1. Implement fuzzy matching
+2. Prevent duplicate entries in DB
+3. Adding new contract needs to be implemented
+
+INSERT INTO englishschooldb.students (first_name, last_name, street_address, address_code, town, email, phone_main, phone_alt, inactive) VALUES 
+('john', 'devoe', 'haarlemstraat', '99-888', 'Krakow', 'gamba_m@yahoo.com','99999999','','0' ); Student john devoe added to database. Go back to AddNewStudent page
