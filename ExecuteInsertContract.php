@@ -1,12 +1,10 @@
-<!--
-- put in start date into insert statement
-- Instead of 'New Contract Added, we can print Student Name, level, etc' after new contract added
--->
 <?php
 
  session_start();
  $_POST =  $_SESSION['insert_contract'];
  $studentID =  $_GET['studentID'];
+
+ var_dump($_SESSION['insert_contract']);
 
  $servername = 'localhost';
  $username = 'MadziaG';
@@ -21,56 +19,31 @@
   	   die("Connection failed: " . $conn->connect_error);
     }
 
+$starter = 0;
+if(isset($_POST["starter"])){
+	$starter = 1;
+}
+
+$book = 0;
+if(isset($_POST["book"])){
+	$book = 1;
+}
+
 
 // SQL Query
 
- $sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, start_date) VALUES
+ $sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, comments, start_date) VALUES
  ('" . $studentID . "', '"
-     . $_POST['category'] . "', '"
-     . $_POST['subcategory1'] . "', '"
-     . $_POST['subcategory2'] . "', '"
+     . $_POST['locSelect'] . "', '"
+     . $_POST['ageGroup'] . "', '"
+     . $_POST['levelSelect'] . "', '"
      . $_POST['rate'] . "', '"
+     . $starter . "', '"
+     . $book . "', '"
+     . $_POST['comments'] . "', '"
      . $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'] . "');";
 
-
-
-/*INSERT INTO `englishschooldb`.`contracts`
-(`contract_id`,
-`student_id`,
-`start_date`,
-`lesson_count`,
-`contract_signed`,
-`nrpayments`,
-`paidinfull`,
-`totalamountpaid`,
-`totalamount`,
-`grouplessons`,
-`individuallessons`,
-`location`,
-`age_group`,
-`level`)
-VALUES
-(<{contract_id: }>,
-<{student_id: }>,
-<{start_date: }>,
-<{lesson_count: }>,
-<{contract_signed: }>,
-<{nrpayments: }>,
-<{paidinfull: }>,
-<{totalamountpaid: }>,
-<{totalamount: }>,
-<{grouplessons: }>,
-<{individuallessons: }>,
-<{location: }>,
-<{age_group: }>,
-<{level: }>); */
-
-
-
-
-$sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level) VALUES (, , , );";
-
-
+$sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, comments, start_date) VALUES (, , , , , , , );";
 
 if($sql != $sql2){
 			$result = $conn->query($sql)
@@ -89,7 +62,6 @@ if($sql != $sql2){
 <?php
 echo 'New contract added to database.';
 ?>
-
 
 <a href = "SearchRetrieve.php"> Go back to Search page </a>
 

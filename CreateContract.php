@@ -309,7 +309,14 @@ function locsOnSem() {
  Book:
  <input type="checkbox" name="book" checked = "checked"> <br />
 
+<label>Comments</label>
+          <textarea id = "comments"
+          			name = "comments"
+                  	rows = "3"
+                  	cols = "80"
+                  	style = "vertical-align: text-top;"> </textarea>
 
+<br /><br />
 
  <input type="submit">
 

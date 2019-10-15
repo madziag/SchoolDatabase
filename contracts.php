@@ -1,4 +1,10 @@
 <!--
+** Nice to haves -- in create contracts:
+1. sql query with most recent contract from db
+2. get location, level and age group info
+3. select as default option that matches to those
+4. Works like selecting the year
+
 2/13/2019:
 -- How are the dates for the classes stored? Google calendar? Can it be exported and linked to the php?
 -- Possibility of creating a calendar where she can put in the dates and the dates can be stored in the form of an array
@@ -12,7 +18,6 @@ Option in create contract: to find a way to predefine the number of lessons and 
 -- calculate due date by month and amount due by the number of lessons.
 - make sort buttons work in contracts
 -- update button should allow user to update info.
--- create new contract (part of addnewstudent?)
 -- insert same student by 2 different users/ 2 users trying to isert students at te same time
 -- shared network drive/webserver -- /remote desktop
 
@@ -26,8 +31,6 @@ Option in create contract: to find a way to predefine the number of lessons and 
 -- if student quits = user able to adjust amount owed...
 -- be able to zero out months that student will no longer be attending but, in will still be able to show when student stillowes for the months they went
 
-
--- check boxes for books/starter pack
 -- free text notes field -- contracts
 -- need check box for new signed contract received
 
@@ -43,7 +46,6 @@ select klass and location together or separately? what does klas 3/2 mean?
 -- contract.php table?
 -- add notes column mysql -- archive old notes instead of delete??
 -- individual students -- 2 students, 1 row (sylwia Majkut? who pays. Do students prepay or pay after the lessons. is there a contract?
--- option to add new student regardelss of whether there are results or not.
 
 
 
