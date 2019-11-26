@@ -2,6 +2,11 @@
 
 $checked1 = 'checked = \"checked\"';
 
+ $servername = 'localhost';
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
+ $dbname = 'englishschooldb';
+
 
  // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -11,17 +16,27 @@ $checked1 = 'checked = \"checked\"';
     }
 
 $studentID = $_GET["studentID"];
-echo $studentID;
+
+$contractSigned = 'Contract Not Found';
 
 if (isset($studentID))
 {
 $sql = "Select * from students where student_id = '" . $studentID . "'";
-echo $sql;
+$sql2 = "Select * from contracts where student_id = '" . $studentID . "'";
 
 $result = $conn->query($sql)
 or trigger_error($conn->error);
+$result2 = $conn->query($sql2)
+or trigger_error($conn->error);
 
 $row = $result->fetch_array(MYSQLI_BOTH);
+$row2 = $result2->fetch_array(MYSQLI_BOTH);
+
+if ($row2["contract_signed"] == 1){$contractSigned = 'Contract Signed';}
+else if (!isset($row2["contract_signed"])){$contractSigned = 'Contract not found';}
+else{$contractSigned = '<input type="submit" name = "ContractReceived" value = "Sign Contract">';}
+
+
 $studentID = $row["student_id"];
 $firstname = $row["first_name"];
 $lastname = $row["last_name"];
@@ -45,13 +60,19 @@ $status = $row["inactive"];
 	$altphone =  '';
 }
 
+$action =  "ExecuteUpdate.php?studentID=" . $studentID;
+
+$action2 = "ExecuteUpdateContract.php?studentID=" . $studentID;
+
 
 ?>
 
 <html>
 <body>
 
-<form action= "ExecuteUpdate.php" method="post">
+<form action= <?php echo $action ?> method="post">
+
+
 Student ID: <input type="text" name="studentID" value="<?php echo $studentID?>"><br />
 First name: <input type="text" name="firstname" value="<?php echo $firstname ?>"><br />
 Last name: <input type="text" name="lastname" value="<?php echo $lastname ?>"><br />
@@ -67,8 +88,16 @@ Status:
 <input type="radio" name="status" value = "InActive"
 <?php echo (isset($status) && $status=="1") ? 'checked = "checked"': ''; ?> /> Inactive
 <br />
-<input type="submit" name = "update" value = "Submit Changes">
+<input type="submit" name = "update" value = "Change Contact Info">
 </form>
+
+<form action= <?php echo $action2 ?> method="post">
+
+<?php echo $contractSigned ?>
+
+</form>
+
+
 
 <a href = "SearchRetrieve.php"> Go back to Search page </a>
 

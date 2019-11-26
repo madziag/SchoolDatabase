@@ -149,6 +149,10 @@ $nextdate = date_format($nextpaymonth,"Y-m-d");
 
 if ($nextpayment == 0){$nextdate = 'Paid';}
 
+$contractSigned = $row["contract_signed"];
+if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
+else {$contractSigned = 'No';}
+
 echo
 "<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </td>
 
@@ -156,7 +160,7 @@ echo
 <td> " . $row["first_name"] . " </td>
 <td> " . $row["last_name"] . "  </td>
 <td> " . $row["start_date"] . " </td>
-<td> " . $row["contract_signed"] . " </td>
+<td> " . $contractSigned . " </td>
 <td> " . $row["nrpayments"] . "  </td>
 <td> " . $row["totalamountpaid"] . "  </td>
 <td> " . $row["totalamount"] . "  </td>
