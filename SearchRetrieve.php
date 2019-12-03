@@ -66,7 +66,7 @@ $sql = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_da
 
 
 	if (!empty($studentID) ){
-			$sql = $sql . "student_id = '" . $studentID . "'";
+			$sql = $sql . "a.student_id = '" . $studentID . "'";
 		}
 		if (!empty($firstname) ){
 		$sql = $sql . "and first_name = '" . $firstname . "'";

@@ -1,55 +1,4 @@
-<!--
-** Nice to haves -- in create contracts:
-1. sql query with most recent contract from db
-2. get location, level and age group info
-3. select as default option that matches to those
-4. Works like selecting the year
-
-2/13/2019:
--- How are the dates for the classes stored? Google calendar? Can it be exported and linked to the php?
--- Possibility of creating a calendar where she can put in the dates and the dates can be stored in the form of an array
--- Create table in sql where each location age group and level gives a unique id
--- Possibility to manually enter new locations -- levels and age -groups should be the same.
-
-Note for Next Week Feb 5:
-Option in create contract: to find a way to predefine the number of lessons and startdate, and let user change them.
-
-- we also need user to be able to enter contract (create contract)/payment info
--- calculate due date by month and amount due by the number of lessons.
-- make sort buttons work in contracts
--- update button should allow user to update info.
--- insert same student by 2 different users/ 2 users trying to isert students at te same time
--- shared network drive/webserver -- /remote desktop
-
-- search for students with payment due -- SearchRetrieve?
-- Add contract/payment to new student?
-- Edit payment info
-- Case sensitivitiy in search
-
--- account for special characters when entering new data
--- automated email remainders -- contract & payment.
--- if student quits = user able to adjust amount owed...
--- be able to zero out months that student will no longer be attending but, in will still be able to show when student stillowes for the months they went
-
--- free text notes field -- contracts
--- need check box for new signed contract received
-
-===== Questions =====
--- Link class level to new contract. When contract is updated, the class level should be updated as well -- option to manually adjust to different level.
--- is there a group level hierachy. Every level, different locations?
--- billing lower amounts e.g. 60 -- discount or partial payment?
--- set of possible payment schedules she stay to.
--- which classes have a book fee -- option to join with kalss
--- why some students have starter pack and others not?
--- do students change locations when they go up a level - relationship between groups and locations. how many locations do they have?
-select klass and location together or separately? what does klas 3/2 mean?
--- contract.php table?
--- add notes column mysql -- archive old notes instead of delete??
--- individual students -- 2 students, 1 row (sylwia Majkut? who pays. Do students prepay or pay after the lessons. is there a contract?
-
-
-
--->
+//http://localhost:8000/contracts.php?sortByCol=contract_signed&order=DESC
 
 <?php
 
@@ -66,6 +15,18 @@ $servername = 'localhost';
   	   die("Connection failed: " . $conn->connect_error);
     }
 
+$sortByCol = "last_name";
+$order = "ASC";
+
+if(isset($_GET["sortByCol"])){
+	$sortByCol  = $_GET["sortByCol"];
+}
+
+if(isset($_GET["order"])){
+	$order  = $_GET["order"];
+}
+ var_dump($sortByCol);
+ var_dump($order);
 
 $sql = "select contracts.*, last_name, first_name, received_date, amount
 from contracts join students on contracts.student_id = students.student_id
@@ -73,7 +34,9 @@ left outer join(select contract_id, max(received_date) as b from payment
 group by contract_id) as a
 on contracts.contract_id = a.contract_id
 left outer join payment on contracts.contract_id = payment.contract_id and a.b = payment.received_date
-where inactive = 0 ";
+where inactive = 0 order by " . $sortByCol . " " . $order;
+
+
 
 $result = $conn->query($sql)
 or trigger_error($conn->error);
