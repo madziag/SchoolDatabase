@@ -11,7 +11,7 @@ NOTE ON ADD PAYMENTS PAGE TO BE WORKED ON 10/29/2019
 8. consider error handling e.g. address code character limit 1103AM works 1103 AM does not
 ======================================================
 1. Implement fuzzy matching
-2. Prevent duplicate entries in DB
+2. Prevent duplicate entries in DB --> done via search and retrieve -> tells you if student in DB or not. 
 3. Adding new contract needs to be implemented
 4. Safeguard against entering blank contract info -- user needs to enter loc, age, level -- check blank contract
 <!--
@@ -30,10 +30,12 @@ Changes to be made:
 -> contracts.php table -- if there is no record in the table payments then it is not loading the cash value amounts in table contracts
 -> Interface to input amounts due and paid
 
+12/10/2019: THESE QUESTIONS NEED TO BE ANSWERED BEFORE WE PROCEED WITH CONTRACTS.PHP
 ***  is it possible for a contract to start in Sept and shorter than 1 school year -- ask IZA 
 *** if lessons cannot be done -> refund (possibly manually -- how often does this happen? Is it possible to do this by hand? --IZA
 -- interface where she can manually adjust payment due 
 *** can a student be enrolled in more than 1 class silmultaneously -- more than 1 active contract 
+--- what is the actual total amount -- are books and starter pack included?
 
 =====
 Notes from contracts.php

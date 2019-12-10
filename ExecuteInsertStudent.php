@@ -17,40 +17,67 @@ $_POST =  $_SESSION['post_insert'];
     }
 
 if(isset($_POST["firstname"])){
-	$firstname = $_POST["firstname"];
+	$firstname = trim($_POST["firstname"]);
 }
 
 if(isset($_POST["lastname"])){
-	$lastname = $_POST["lastname"];
+	$lastname = trim($_POST["lastname"]);
 }
+
+if(isset($_POST["streetaddress"])){
+	$streetaddress = trim($_POST["streetaddress"]);
+}
+
+if(isset($_POST["postcode"])){
+	$postcode = trim($_POST["postcode"]);
+}
+if(isset($_POST["town"])){
+	$town = trim($_POST["town"]);
+}
+
+if(isset($_POST["email"])){
+	$email = trim($_POST["email"]);
+}
+
+if(isset($_POST["mainphone"])){
+	$mainphone = trim($_POST["mainphone"]);
+}
+
+if(isset($_POST["altphone"])){
+	$altphone = trim($_POST["altphone"]);
+
+}
+
+if ($_POST['status'] == "InActive"){$statusint = 1;} else {$statusint = 0;}
 
 // SQL Query
 
- if ($_POST['status'] == "InActive"){$statusint = 1;} else {$statusint = 0;}
+
 
  $sql =  "INSERT INTO englishschooldb.students (first_name, last_name, street_address, address_code, town, email, phone_main, phone_alt, inactive) VALUES
- ('" . $_POST['firstname'] . "', '"
-     . $_POST['lastname'] . "', '"
-     . $_POST['streetaddress'] . "', '"
-     . $_POST['postcode'] . "', '"
-     . $_POST['town'] . "', '"
-     . $_POST['email'] . "','"
-     . $_POST['mainphone'] . "','"
-     . $_POST['altphone']. "','"
+ ('" . $firstname . "', '"
+     . $lastname . "', '"
+     . $streetaddress . "', '"
+     . $postcode . "', '"
+     . $town . "', '"
+     . $email . "','"
+     . $mainphone . "','"
+     . $altphone . "','"
      . $statusint . "' );";
 
 
 $sql2 = "INSERT INTO englishschooldb.students (first_name, last_name, street_address, address_code, town, phone_main, phone_alt, email, inactive) VALUES (, , , , , , , , 0)";
 
 $sql3 = "SELECT student_id from englishschooldb.students where
-	  first_name = '" . $_POST['firstname'] . "' and
-	  last_name =  '" . $_POST['lastname'] . "' and
-	  street_address = '" . $_POST['streetaddress'] . "' and
-	  address_code = '" . $_POST['postcode'] . "' and
-	  town = '" . $_POST['town'] . "' and
-	  email = '" . $_POST['email'] . "' and
-	  phone_main = '" . $_POST['mainphone'] . "' and
-	  phone_alt = '" . $_POST['altphone']. "';";
+	  first_name = '" . $firstname . "' and
+	  last_name =  '" . $lastname . "' and
+	  street_address = '" . $streetaddress . "' and
+	  address_code = '" . $postcode . "' and
+	  town = '" . $town . "' and
+	  email = '" . $email . "' and
+	  phone_main = '" . $mainphone . "' and
+	  phone_alt = '" . $altphone. "';";
+
 
 if($sql != $sql2){
 			$result = $conn->query($sql)

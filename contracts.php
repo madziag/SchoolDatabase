@@ -1,4 +1,4 @@
-//http://localhost:8000/contracts.php?sortByCol=contract_signed&order=DESC
+
 
 <?php
 
@@ -25,8 +25,7 @@ if(isset($_GET["sortByCol"])){
 if(isset($_GET["order"])){
 	$order  = $_GET["order"];
 }
- var_dump($sortByCol);
- var_dump($order);
+
 
 $sql = "select contracts.*, last_name, first_name, received_date, amount
 from contracts join students on contracts.student_id = students.student_id
@@ -53,23 +52,25 @@ echo "<table border =\"1\">
 	<td> </td>
 	<td> </td>
 	<td> </td>
+	<td> <center> <a href=\"http://localhost:8000/contracts.php?sortByCol=last_name&order=ASC\" class=\"button\">&#x25B2;</a>
+		          <a href=\"http://localhost:8000/contracts.php?sortByCol=last_name&order=DESC\" class=\"button\">&#x25BC;</a>
+         </center> </td>
 	<td> </td>
-	<td> </td>
-	<td> <center><button type=\"button\" onclick=\"alert('Hello world!')\" style = \"font-size:20px\">&#x25B2;</button>
-		 <button type=\"button\" onclick=\"alert('Hello world!')\" style = \"font-size:20px\">&#x25BC;</button>
+	<td> <center> <a href=\"http://localhost:8000/contracts.php?sortByCol=contract_signed&order=ASC\" class=\"button\">&#x25B2;</a>
+		          <a href=\"http://localhost:8000/contracts.php?sortByCol=contract_signed&order=DESC\" class=\"button\">&#x25BC;</a>
          </center>
     </td>
 	<td> </td>
 	<td> </td>
 	<td> </td>
-	<td> <center><button type=\"button\" onclick=\"alert('Hello world!')\" style = \"font-size:20px\">&#x25B2;</button>
-		 <button type=\"button\" onclick=\"alert('Hello world!')\" style = \"font-size:20px\">&#x25BC;</button>
-         </center>
+	<td> <!--<center><a href=\"http://localhost:8000/contracts.php?sortByCol=contract_signed&order=ASC\" class=\"button\">&#x25B2;</a>
+		          <a href=\"http://localhost:8000/contracts.php?sortByCol=contract_signed&order=DESC\" class=\"button\">&#x25BC;</a>
+         </center> -->
     </td>
 	<td> </td>
-	<td> <center><button type=\"button\" onclick=\"alert('Hello world!')\" style = \"font-size:20px\">&#x25B2;</button>
-		 <button type=\"button\" onclick=\"alert('Hello world!')\" style = \"font-size:20px\">&#x25BC;</button>
-         </center>
+	<td> <!--<center><a href=\"http://localhost:8000/contracts.php?sortByCol=contract_signed&order=ASC\" class=\"button\">&#x25B2;</a>
+		         <a href=\"http://localhost:8000/contracts.php?sortByCol=contract_signed&order=DESC\" class=\"button\">&#x25BC;</a>
+         </center> -->
 	</td>
 	<td> </td>
 	</tr>
@@ -82,7 +83,7 @@ echo "<table border =\"1\">
 	<td> Start date </td>
 	<td> Signed </td>
 	<td> Nr Payments </td>
-	<td> Total Paid</td>
+	<td> Total Paid </td>
 	<td> Total Amount </td>
 	<td> Last Pay Date </td>
 	<td> Last Pay Amt</td>
@@ -145,6 +146,18 @@ echo "</table>";
 ?>
 
 <html>
+<head>
+<style>
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+}
+</style>
+</head>
 <body>
 
 <button type="button" onclick="alert('Hello world!')">&circ;</button>

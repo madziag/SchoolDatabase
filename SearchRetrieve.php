@@ -169,7 +169,8 @@ if($sql != $sql2){
 
 					echo
 					"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </br>
-							   <a href = \"CreateContract.php?studentID=" . $row["student_id"] . "\" > add contract </a>
+							   <a href = \"CreateContract.php?studentID=" . $row["student_id"] . "\" > add contract </a> </br>
+							   <a href = \"ShowContracts.php?studentID=" . $row["student_id"] . "\" > show contracts </a>
 					      </td>
 
 						  <td> " . $row["student_id"] . " </td>
