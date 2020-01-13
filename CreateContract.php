@@ -1,7 +1,9 @@
 <?php
- session_start();
 
- if(isset($_SESSION['post_sr'])){
+session_start();
+
+
+ if(isset($_SESSION['post-sr'])){
 
  	$studentID =  $_GET['studentID'];
   	$sql = "Select * from students where student_id = " . $studentID;

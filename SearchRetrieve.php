@@ -1,8 +1,9 @@
 
 <?php
 
+ session_id("post-sr");
  session_start();
- $_SESSION['post_sr'] = $_POST;
+ $_SESSION['post-sr'] = $_POST;
 
  $servername = 'localhost';
  $username = 'MadziaG';

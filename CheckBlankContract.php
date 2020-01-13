@@ -1,12 +1,16 @@
 <?php
+
+
+
+
+   session_id("insert-contract");
    session_start();
-   $_SESSION['insert_contract'] = $_POST;
+   $_SESSION['insert-contract'] = $_POST;
    $studentID =  $_GET['studentID'];
 
-
-	if($_POST["subcategory2"] === ''){
+	if($_POST["levelSelect"] === ''){
 	   echo 'Level must be entered to add a new student!';
-	   header('Refresh: 2; URL = CreateContract.php');
+	   header('Refresh: 5; URL = CreateContract.php?studentID=' . $studentID);
       die();
 	}
 

@@ -1,7 +1,9 @@
 <?php
 
+
  session_start();
- $_POST =  $_SESSION['insert_contract'];
+
+ $_POST =  $_SESSION['insert-contract'];
  $studentID =  $_GET['studentID'];
 
  $servername = 'localhost';
@@ -60,25 +62,39 @@ $individuallessons = 0;
      . $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'] . "');";
 
 
+
 $sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, grouplessons, individuallessons, contract_signed, comments, start_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', '--');";
+$sql_student = "SELECT first_name, last_name  from englishschooldb.students where student_id = " . $studentID . ";";
+
+$message_string = "Error adding contract";
+$message_string2 = "";
+
 
 if($sql != $sql2){
 			$result = $conn->query($sql)
 	        or trigger_error($conn->error);
 
-	        $_POST = array();
+	        $result2 = $conn->query($sql_student)
+	        or trigger_error($conn->error);
+	        $row2 = $result2->fetch_array(MYSQLI_BOTH);
+
+			$message_string = "New contract added to database for " . $row2["first_name"] . " " . $row2["last_name"];
+			$message_string2 = $_POST["locSelect"] . ", " .  $_POST["ageGroup"] . ", " . $_POST["levelSelect"];
+			$_POST = array(); // Clears post data
 			}
 
+
+
 	$conn->close();
+
 
 ?>
 
 <html>
 <body>
 
-<?php
-echo 'New contract added to database.';
-?>
+<?php echo $message_string; ?> <br><br> <?php echo $message_string2; ?><br><br>
+
 
 <a href = "SearchRetrieve.php"> Go back to Search page </a>
 
