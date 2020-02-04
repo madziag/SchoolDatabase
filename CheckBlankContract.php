@@ -1,9 +1,6 @@
 <?php
 
 
-
-
-   session_id("insert-contract");
    session_start();
    $_SESSION['insert-contract'] = $_POST;
    $studentID =  $_GET['studentID'];

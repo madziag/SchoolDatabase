@@ -1,81 +1,62 @@
-12/3/2019: Contracts.php page. Middle of implementing sort on column. Need to make the buttons change the url - see example in contracts.php top of file
+2/4/2020:
+1. Bug: From Search and Retrieve -> Enter non existing student -> Does not save searched name after clicking do you want to add new student -> error when you try to 
+save (newly entered) student info. 
+2. Dataupdate page: If students contract sign = 0 and is in the contracts table in the db, then it shows as a button: 'sign contract'. Contract signed values in db 
+show as 0 => gives sign contract button php, 1 => signed contract, NULL => contract not found. We need to eliminate the NULL - should be either 0 or 1.
+Contracts.php shows under contracts_signed only 2 options: Yes/No. Does not distinguish between 'not signed' and 'no contract'.
 
+1/7/2020:
 
-11/26/2019:
-NOTE ON ADD PAYMENTS PAGE TO BE WORKED ON 10/29/2019
+Contracts
+-- Safeguard against entering blank contract info -- user needs to enter loc, age, level -- check blank contract -> Check to see if done
 
-1. Total amount to be paid due should be dependent on the number of lessons given (lesson count in db)
-3. Group vs Individual lessons 
-5. Implement option that pinpoints which contract is being paid for (if previous contract has not be paid in full) -- if payment given, it should go to the oldest due bill)
-7. At the moment we are working under assumption 1 contract per student. Need to adjust to see most recent contract (check if student can have more than 1 unsigned contracts)
-8. consider error handling e.g. address code character limit 1103AM works 1103 AM does not
-======================================================
-1. Implement fuzzy matching
-2. Prevent duplicate entries in DB --> done via search and retrieve -> tells you if student in DB or not. 
-3. Adding new contract needs to be implemented
-4. Safeguard against entering blank contract info -- user needs to enter loc, age, level -- check blank contract
-<!--
-- put in start date into insert statement
-- Instead of 'New Contract Added, we can print Student Name, level, etc' after new contract added
--->
+-- Contracts.php page. Middle of implementing sort on column. Need to make the buttons change the url - see example in contracts.php top of file
+-- Contract to be bound to school year and NOT semester
+-- Main contract page should show only active contracts
+-- Individual contract page should show all contracts, active and inactive (grey out?)/Does a student have old unpaid contracts? 
+-- In create contract -> show all active contracts (for the current date or unpaid)
+-- Get location, level and age group info => autofill with previous info (level up) for existing students
+-- Check box for new signed contract received
 
-12/3/2019: 
-Changes to be made: 
--> contract to be bound to school year and NOT semester - 
--> Nr of payments determined by number of months remaining in school year: paid in full = per semester
--> Amount due determined by number of lessons remaining in school year 
--> Does a student have old unpaid contracts?
--> contracts.php should show only current active contracts
--> make sort buttons work in contracts.php
--> contracts.php table -- if there is no record in the table payments then it is not loading the cash value amounts in table contracts
--> Interface to input amounts due and paid
+Payments 
+-- Enter Payments Area: Implement option that pinpoints which contract is being paid for (if previous contract has not be paid in full) -- 
+   if payment given, it should go to the oldest due bill)
+-- Nr of payments determined by number of months remaining in school year: paid in full = per semester
+-- Amount due determined by number of months remaining in school year
+-- If there is record in table payments, contract.php next due date shows as Paid which is incorrect 
+-- Interface to input amounts due and paid
+-- search for students with payment due -- contracts.php via sort buttons
 
-12/10/2019: THESE QUESTIONS NEED TO BE ANSWERED BEFORE WE PROCEED WITH CONTRACTS.PHP
-***  is it possible for a contract to start in Sept and shorter than 1 school year -- ask IZA 
-*** if lessons cannot be done -> refund (possibly manually -- how often does this happen? Is it possible to do this by hand? --IZA
--- interface where she can manually adjust payment due 
-*** can a student be enrolled in more than 1 class silmultaneously -- more than 1 active contract 
---- what is the actual total amount -- are books and starter pack included?
+Error Handling
+-- Consider error handling e.g. address code character limit 1103AM works 1103 AM does not, sensitive to extra spaces
 
-=====
-Notes from contracts.php
-<!--
-** Nice to haves -- in create contracts:
-1. sql query with most recent contract from db
-2. get location, level and age group info
-3. select as default option that matches to those
-4. Works like selecting the year
-
-2/13/2019:
--- How are the dates for the classes stored? Google calendar? Can it be exported and linked to the php?
--- Possibility of creating a calendar where she can put in the dates and the dates can be stored in the form of an array
--- Create table in sql where each location age group and level gives a unique id
--- Possibility to manually enter new locations -- levels and age -groups should be the same.
-
-Note for Next Week Feb 5:
-Option in create contract: to find a way to predefine the number of lessons and startdate, and let user change them.
-
-- we also need user to be able to enter contract (create contract)/payment info
--- calculate due date by month and amount due by the number of lessons.
-- make sort buttons work in contracts
--- update button should allow user to update info.
--- insert same student by 2 different users/ 2 users trying to isert students at te same time
--- shared network drive/webserver -- /remote desktop
-
-- search for students with payment due -- SearchRetrieve?
-- Add contract/payment to new student?
-- Edit payment info
-- Case sensitivitiy in search
-
--- account for special characters when entering new data
+Other
+-- Group vs Individual lessons 
+-- Implement fuzzy matching
+-- Interface for entering new classes (locations, age groups, levels, class dates)
+   Consider: 
+	- How are the dates for the classes stored? Google calendar? Can it be exported and linked to the php?
+	- Possibility of creating a calendar where she can put in the dates and the dates can be stored in the form of an array
+-- Insert same student by 2 different users/ 2 users trying to isert students at te same time: shared network drive/webserver -- /remote desktop
 -- automated email remainders -- contract & payment.
--- if student quits = user able to adjust amount owed...
--- be able to zero out months that student will no longer be attending but, in will still be able to show when student stillowes for the months they went
 
--- free text notes field -- contracts
--- need check box for new signed contract received
 
-===== Questions =====
+
+
+===================================================================================================================================================
+12/10/2019: THESE QUESTIONS NEED TO BE ANSWERED BEFORE WE PROCEED WITH CONTRACTS.PHP
+***  is it possible for a contract to start in Sept and shorter than 1 school year -- ask IZA ===> yes, students can resign, have to give 1 month advance
+Students pay one month in advance
+*** if lessons cannot be done -> refund (possibly manually -- how often does this happen? Is it possible to do this by hand? --IZA => can be done manually
+-- interface where she can manually adjust payment due 
+*** can a student be enrolled in more than 1 class silmultaneously -- more than 1 active contract => yes -- individual and group -- rarely
+--- what is the actual total amount -- are books and starter pack included? yes
+	total = book= 50 + sp = 50
+	1st rata incldes the sp /book/ 1st month = 196 (100 + 96) 96 => 6 lessons per month
+	paidin full = 450 + 50 + 50
+	maluchy = 50 zl per month, 1 x  week = 15 lessons per sem 16.66 zl per lesson/250 total/calosc 15.30 * 15 = 230
+	adults = 17zl * 30 = 510 /calosc 16 * 30 (480)
+
 -- Link class level to new contract. When contract is updated, the class level should be updated as well -- option to manually adjust to different level.
 -- is there a group level hierachy. Every level, different locations?
 -- billing lower amounts e.g. 60 -- discount or partial payment?
@@ -87,11 +68,9 @@ select klass and location together or separately? what does klas 3/2 mean?
 -- contract.php table?
 -- add notes column mysql -- archive old notes instead of delete??
 -- individual students -- 2 students, 1 row (sylwia Majkut? who pays. Do students prepay or pay after the lessons. is there a contract?
-
-
-
--->
-
-
-======================================================
-4. Bug: if post_sr isset then we will get 2 copies of student info in create contract!!! ==> cannot find problem!!
+1. Guardians Name needs to be included
+2. For groups, contract is from September 1 to June 30 -> sometimes groups will start in Feb --> umowa Feb 1 -> JUne 30
+3. Individuals -> Umowa nieukreslona, payment z gory 4 or 8 lessons. 
+4. Second semester changes every year. Every year the second semester starts in a different week (tury) -- there are 4 tury -- each wojewodstwo starts different tury 
+1-2 nd start in January, 3-4 start in feb. 2020 - is 3rd, 2021 will be 4th 2022 - 1, 2023 -2. 1st semester always september - can we just write first and second semester instead
+5. Added category == flash card english (0-3) and preschool (maluchy/zerowka)

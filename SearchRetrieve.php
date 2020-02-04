@@ -1,7 +1,6 @@
 
 <?php
 
- session_id("post-sr");
  session_start();
  $_SESSION['post-sr'] = $_POST;
 

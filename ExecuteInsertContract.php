@@ -87,6 +87,7 @@ if($sql != $sql2){
 
 	$conn->close();
 
+    session_destroy();
 
 ?>
 
