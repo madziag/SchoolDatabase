@@ -5,8 +5,8 @@
  $_SESSION['post_sr'] = $_POST;
 
  $servername = 'localhost';
- $username = 'MadziaG';
- $password = 'P$i@krew2018User';
+ $username = ;
+ $password = ;
  $dbname = 'englishschooldb';
 
 
