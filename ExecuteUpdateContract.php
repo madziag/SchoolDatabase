@@ -1,8 +1,8 @@
 <?php
 
  $servername = 'localhost';
- $username = 'MadziaG';
- $password = 'P$i@krew2018User';
+ $username = ;
+ $password = ;
  $dbname = 'englishschooldb';
 
  // Create connection
