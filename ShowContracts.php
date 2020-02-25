@@ -3,8 +3,8 @@
  session_start();
 
  $servername = 'localhost';
- $username = ;
- $password = ;
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
  $dbname = 'englishschooldb';
 
 
@@ -20,13 +20,12 @@ $sql = "select a.*, first_name, last_name from contracts a left join students b 
 $result = $conn->query($sql)
 or trigger_error($conn->error);
 $row = $result->fetch_array(MYSQLI_BOTH);
+$num_rows = mysqli_num_rows($result);
 
 echo $row["first_name"] . " " . $row["last_name"];
 
 echo "<table border =\"1\">
 	<tr>
-
-    <td> </td>
     <td> Start date </td>
 	<td> Signed </td>
 	<td> Nr Payments </td>
@@ -37,16 +36,39 @@ echo "<table border =\"1\">
 	<td> Location </td>
 	<td> Age Group </td>
 	<td> Level </td>
-	<td> Active </td>  <!-- not yet in db -- consider adding (to differentiate not paid contracts or with still active classes vs paid in full contract/all classes complete-->
-	</tr>"
+	<td> Active </td>
+	</tr>";
+
+for($i = 1; $i <= $num_rows; $i++){
+		$contractSigned = $row["contract_signed"];
+		if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
+		else if(is_null($row["contract_signed"])){$contractSigned = 'None';}
+		else if($row["contract_signed"] == 0){$contractSigned = 'No';}
+
+		echo 	"<tr>
+				<td> " . $row["start_date"] . " </td>
+				<td> " . $contractSigned . " </td>
+				<td> " . $row["nrpayments"] . "  </td>
+				<td> " . $row["totalamountpaid"] . "  </td>
+				<td> " . $row["totalamount"] . "  </td>
+				<td> " . $row["book"] . "  </td>
+				<td> " . $row["starter"] . "  </td>
+				<td> " . $row["location"] . "  </td>
+				<td> " . $row["age_group"] . "  </td>
+				<td> " . $row["level"] . "  </td>
+				<td> " . 'TODO' . "  </td>
+				</tr>";
+
+		$row = $result->fetch_array(MYSQLI_BOTH);
+	}
+
 
 echo "</table>";
 
 ?>
 <html>
 
-
-
+<!-- ACTIVE not yet in db -- consider adding (to differentiate not paid contracts or with still active classes vs paid in full contract/all classes complete-->
 
 
 </html>

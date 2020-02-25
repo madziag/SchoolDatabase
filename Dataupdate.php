@@ -3,8 +3,8 @@
 $checked1 = 'checked = \"checked\"';
 
  $servername = 'localhost';
- $username = ;
- $password = ;
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
  $dbname = 'englishschooldb';
 
 
@@ -17,7 +17,7 @@ $checked1 = 'checked = \"checked\"';
 
 $studentID = $_GET["studentID"];
 
-$contractSigned = 'Contract Not Found';
+$contractSigned = '';
 
 if (isset($studentID))
 {
@@ -32,9 +32,18 @@ or trigger_error($conn->error);
 $row = $result->fetch_array(MYSQLI_BOTH);
 $row2 = $result2->fetch_array(MYSQLI_BOTH);
 
-if ($row2["contract_signed"] == 1){$contractSigned = 'Contract Signed';}
-else if (!isset($row2["contract_signed"])){$contractSigned = 'Contract not found';}
-else{$contractSigned = '<input type="submit" name = "ContractReceived" value = "Sign Contract">';}
+$action2 = '';
+
+if ($row2["contract_signed"] == 1){
+		$contractSigned = 'Contract Signed';
+	}
+else if (!isset($row2["contract_signed"])){
+		$contractSigned = 'Contract not found. <input type="submit" name = "CreateContract" value = "Create Contract">';
+		$action2 = "CreateContract.php?studentID=" . $studentID;
+	}
+else{$contractSigned = '<input type="submit" name = "ContractReceived" value = "Sign Contract">';
+     	$action2 = "ExecuteUpdateContract.php?studentID=" . $studentID;
+     }
 
 
 $studentID = $row["student_id"];
@@ -62,7 +71,7 @@ $status = $row["inactive"];
 
 $action =  "ExecuteUpdate.php?studentID=" . $studentID;
 
-$action2 = "ExecuteUpdateContract.php?studentID=" . $studentID;
+
 
 
 ?>

@@ -5,8 +5,8 @@
  $_SESSION['post-sr'] = $_POST;
 
  $servername = 'localhost';
- $username = ;
- $password = ;
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
  $dbname = 'englishschooldb';
 
 
@@ -20,39 +20,39 @@
 // To change this to an update page after the sql query
 
 if(isset($_POST["studentID"])){
-	$studentID = $_POST["studentID"];
+	$studentID = trim($_POST["studentID"]);
 }
 
 if(isset($_POST["firstname"])){
-	$firstname = $_POST["firstname"];
+	$firstname = trim($_POST["firstname"]);
 }
 
 if(isset($_POST["lastname"])){
-	$lastname = $_POST["lastname"];
+	$lastname = trim($_POST["lastname"]);
 }
 
 if(isset($_POST["streetaddress"])){
-	$streetaddress = $_POST["streetaddress"];
+	$streetaddress = trim($_POST["streetaddress"]);
 }
 
 if(isset($_POST["postcode"])){
-	$postcode = $_POST["postcode"];
+	$postcode = trim($_POST["postcode"]);
 }
 
 if(isset($_POST["town"])){
-	$town = $_POST["town"];
+	$town = trim($_POST["town"]);
 }
 
 if(isset($_POST["email"])){
-	$email = $_POST["email"];
+	$email = trim($_POST["email"]);
 }
 
 if(isset($_POST["mainphone"])){
-	$mainphone = $_POST["mainphone"];
+	$mainphone = trim($_POST["mainphone"]);
 }
 
 if(isset($_POST["altphone"])){
-	$altphone = $_POST["altphone"];
+	$altphone = trim($_POST["altphone"]);
 }
 
 if(isset($_POST["status"])){

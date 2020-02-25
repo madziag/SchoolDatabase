@@ -1,10 +1,9 @@
 
-
 <?php
 
 $servername = 'localhost';
- $username = ;
- $password = ;
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
  $dbname = 'englishschooldb';
 
 
@@ -115,7 +114,9 @@ if ($nextpayment == 0){$nextdate = 'Paid';}
 
 $contractSigned = $row["contract_signed"];
 if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
-else {$contractSigned = 'No';}
+else if(is_null($row["contract_signed"])){$contractSigned = 'None';}
+else if($row["contract_signed"] == 0){$contractSigned = 'No';}
+
 
 echo
 "<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </td>
