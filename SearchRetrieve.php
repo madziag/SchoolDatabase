@@ -106,12 +106,6 @@ $sql2 = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_d
 echo "<br>";
 echo $sql2; */
 
-
-$myfile = fopen("newfile.txt", "w") or die("Unable to open file!");
-fwrite($myfile, $sql);
-fclose($myfile);
-
-
 // Running query
 if($sql != $sql2){
 			$result = $conn->query($sql)

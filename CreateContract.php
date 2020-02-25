@@ -15,6 +15,7 @@ session_start();
  if(isset($_SESSION['post_insert'])){
  		echo 'post_insert';
   		$_POST =  $_SESSION['post_insert'];
+  		if(isset($_GET['studentID'])){$studentID =  $_GET['studentID'];}
  	} else{
  	 	$studentID =  $_GET['studentID'];
 	  	$sql = "Select * from students where student_id = " . $studentID;
@@ -101,33 +102,30 @@ session_destroy();
 var result = <?php echo json_encode($resultArr, JSON_PRETTY_PRINT) ?>;
 
 var loc = "";
-var selSemester = "";
+var selSchoolYear = "";
 
-function sem() {
+function school_year() {
 	var m = document.getElementById("month").options[document.getElementById("month").selectedIndex].value;
-	var y = document.getElementById("year").options[document.getElementById("year").selectedIndex].value;
+  	var y = document.getElementById("year").options[document.getElementById("year").selectedIndex].value;
+    var nexty = parseInt(y, 10) + 1;
+    var lasty = parseInt(y, 10) - 1;
 
-	if (m >= 2 && m <= 6){selSemester = '2-' + y;}
-	else if (m >= 9){selSemester = '9-' + y;}
-	else if (m == 1){
-		var intYear = parseInt(y, 10);
-		intYear = intYear - 1;
-		selSemester = '9-' + intYear;
-		}
-	else (selSemester = "Undefined");
+	if (m >= 7 && m <= 12){selSchoolYear = y + '-' + nexty;}
+	else if (m < 7) {selSchoolYear = lasty + '-' + y;}
+	else (selSchoolYear = "Undefined");
 
-	document.getElementById("semDiv").innerHTML = selSemester;
+	document.getElementById("schoolYearDiv").innerHTML = selSchoolYear;
 
-	var locSet = locsOnSem();
+	var locSet = locsOnSchoolYear();
 	locBoxPopulate(locSet);
 }
 
-function locsOnSem() {
+function locsOnSchoolYear() {
 	var i;
 	var locSet = new Set();
 
 	for (i = 0; i < result.length; i++) {
-		if (selSemester == result[i]["semester_start"]) {
+		if (selSchoolYear == result[i]["school_year"]) {
 			locSet.add(result[i]["location"] );
 		}
 	}
@@ -162,7 +160,7 @@ function locsOnSem() {
 	 var ageSet = new Set();
 
 	 for (i = 0; i < result.length; i++) {
-	 	if (selSemester == result[i]["semester_start"] && selLoc == result[i]["location"]) {
+	 	if (selSchoolYear == result[i]["school_year"] && selLoc == result[i]["location"]) {
 	 		ageSet.add(result[i]["age_group"] );
 	 	}
 	 }
@@ -187,7 +185,7 @@ function locsOnSem() {
 	 var levelSet = new Set();
 
 	 for (i = 0; i < result.length; i++) {
-	 	if (selSemester == result[i]["semester_start"] && selLoc == result[i]["location"] && selAge == result[i]["age_group"] ) {
+	 	if (selSchoolYear == result[i]["school_year"] && selLoc == result[i]["location"] && selAge == result[i]["age_group"] ) {
 	 		levelSet.add(result[i]["levels"] );
 	 	}
 	 }
@@ -204,7 +202,7 @@ function locsOnSem() {
  </script>
 
  </head>
- <body onload="sem();">
+ <body onload="school_year();">
  <form action= "<?php echo $action ?>"  method="post" id="form1" name="form1">
 
  <br /> <br />
@@ -244,7 +242,7 @@ function locsOnSem() {
              </select>
 
    &nbsp;&nbsp;&nbsp;Month:
- 			<select name="month" id="month" onchange = "sem()">
+ 			<select name="month" id="month" onchange = "school_year()">
  			<option value="1">January</option>
  			<option value="2" <?php echo $selectedFeb; ?>>February</option>
  			<option value="3">March</option>
@@ -260,7 +258,7 @@ function locsOnSem() {
  			</select>
 
    &nbsp;&nbsp;&nbsp;Year:
- 		    <select name="year" id="year" onchange = "sem()">
+ 		    <select name="year" id="year" onchange = "school_year()">
  			<option value="2019"<?php echo $selected19; ?>>2019</option>
  			<option value="2020"<?php echo $selected20; ?>>2020</option>
  			<option value="2021"<?php echo $selected21; ?>>2021</option>
@@ -274,7 +272,7 @@ function locsOnSem() {
  			</select><br />
 
  <br />
-    Selected Semester: <div id="semDiv"> <?php echo $selectedSemester;?> </div>
+    Selected School Year: <div id="schoolYearDiv"> </div>
  <br /> <br />
 
  <select id = "locSelect" name="locSelect" onChange="javascript: locBoxChange(this.options[this.selectedIndex].value);"><option value="">Select Location</option></select>

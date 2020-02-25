@@ -32,7 +32,7 @@ left outer join(select contract_id, max(received_date) as b from payment
 group by contract_id) as a
 on contracts.contract_id = a.contract_id
 left outer join payment on contracts.contract_id = payment.contract_id and a.b = payment.received_date
-where inactive = 0 order by " . $sortByCol . " " . $order;
+where inactive = 0 order by trim(" . $sortByCol . ") " . $order;
 
 
 
