@@ -7,8 +7,8 @@
  $studentID =  $_GET['studentID'];
 
  $servername = 'localhost';
- $username = ;
- $password = ;
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
  $dbname = 'englishschooldb';
 
 
@@ -29,16 +29,15 @@ if(isset($_POST["book"])){
 	$book = 1;
 }
 
-// Implement nr of payments
 // Defaulting to group lessons
 
 $nrOfPayments = 0;
 
 if(isset($_POST["rate"]) && $_POST["rate"] == "installments"){
-	$nrOfPayments = 5;
+	$nrOfPayments = 10;
 }
 if(isset($_POST["rate"]) && $_POST["rate"] == "pay in full"){
-	$nrOfPayments = 1;
+	$nrOfPayments = 2;
 }
 
 $grouplessons = 1;
@@ -66,6 +65,9 @@ $individuallessons = 0;
 $sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, grouplessons, individuallessons, contract_signed, comments, start_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', '--');";
 $sql_student = "SELECT first_name, last_name  from englishschooldb.students where student_id = " . $studentID . ";";
 
+
+
+
 $message_string = "Error adding contract";
 $message_string2 = "";
 
@@ -92,13 +94,32 @@ if($sql != $sql2){
 ?>
 
 <html>
+<head>
+<style>
+div.page {
+        size: A4;
+        margin: 0;
+        width: 20cm;
+}
+</style>
+</head>
 <body>
-
-<?php echo $message_string; ?> <br><br> <?php echo $message_string2; ?><br><br>
-
-
+<div class="page">
+<div style="margin:2em;">
+<?php echo $row2["first_name"] . " " . $row2["last_name"]; ?><br/><br/>
+<?php echo $_POST['locSelect'] . "', '" . $_POST['ageGroup'] . "', '" . $_POST['levelSelect']; ?><br/><br/>
+<?php echo $_POST['rate']; ?><br/><br/>
+<?php echo $starter . ", " . $book; ?><br/><br/>
+<?php echo $nrOfPayments . ", " . $grouplessons . ", " . $individuallessons ; ?><br/><br/>
+<?php echo $_POST['comments']; ?><br/><br/>
+<?php echo $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day']; ?><br/><br/>
+</div>
+<?php echo $message_string; ?> <br><br>
 <a href = "SearchRetrieve.php"> Go back to Search page </a>
-
+</div>
+<script type="text/javascript">
+window.onload = function() { window.print(); }
+</script>
 </body>
 </html>
 

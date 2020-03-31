@@ -1,17 +1,14 @@
-2/4/2020:
-1. Bug: From Search and Retrieve -> Enter non existing student -> Does not save searched name after clicking do you want to add new student -> error when you try to 
-save (newly entered) student info. 
-2. Dataupdate page: If students contract sign = 0 and is in the contracts table in the db, then it shows as a button: 'sign contract'. Contract signed values in db 
-show as 0 => gives sign contract button php, 1 => signed contract, NULL => contract not found. We need to eliminate the NULL - should be either 0 or 1.
-Contracts.php shows under contracts_signed only 2 options: Yes/No. Does not distinguish between 'not signed' and 'no contract'.
+3/31/2020:
+
+WE ARE CURRENTLY WORKING ON: --> Make contract printable: Print button and Contract signed button, and return to search page with contract not signed.
+Data to be printed is present but it is not pretty (ExecuteInsertContract.php)
+
+-- Instead of hardcoding payment amounts in contracts.php, create a settings page through which the user is able to change the values herself. 
+
+-- Get to contracts not signed, with signed button (contracts page - next to update link?)
 
 1/7/2020:
-
 Contracts
--- Safeguard against entering blank contract info -- user needs to enter loc, age, level -- check blank contract -> Check to see if done
-
--- Contracts.php page. Middle of implementing sort on column. Need to make the buttons change the url - see example in contracts.php top of file
--- Contract to be bound to school year and NOT semester
 -- Main contract page should show only active contracts
 -- Individual contract page should show all contracts, active and inactive (grey out?)/Does a student have old unpaid contracts? 
 -- In create contract -> show all active contracts (for the current date or unpaid)
@@ -27,9 +24,6 @@ Payments
 -- Interface to input amounts due and paid
 -- search for students with payment due -- contracts.php via sort buttons
 
-Error Handling
--- Consider error handling e.g. address code character limit 1103AM works 1103 AM does not, sensitive to extra spaces
-
 Other
 -- Group vs Individual lessons 
 -- Implement fuzzy matching
@@ -39,8 +33,8 @@ Other
 	- Possibility of creating a calendar where she can put in the dates and the dates can be stored in the form of an array
 -- Insert same student by 2 different users/ 2 users trying to isert students at te same time: shared network drive/webserver -- /remote desktop
 -- automated email remainders -- contract & payment.
-
-
+-- trim all input - consider other safety to prevent unwanted user entry input
+-. Should we sort on any other columns in Contracts.php
 
 
 ===================================================================================================================================================
@@ -74,3 +68,9 @@ select klass and location together or separately? what does klas 3/2 mean?
 4. Second semester changes every year. Every year the second semester starts in a different week (tury) -- there are 4 tury -- each wojewodstwo starts different tury 
 1-2 nd start in January, 3-4 start in feb. 2020 - is 3rd, 2021 will be 4th 2022 - 1, 2023 -2. 1st semester always september - can we just write first and second semester instead
 5. Added category == flash card english (0-3) and preschool (maluchy/zerowka)
+
+
+=======================================
+$myfile = fopen("newfile.txt", "w") or die("Unable to open file!");
+fwrite($myfile, $sql);
+fclose($myfile);

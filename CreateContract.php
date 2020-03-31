@@ -12,22 +12,22 @@ session_start();
 	// Check connection
 	if ($conn->connect_error) {die("Connection failed: " . $conn->connect_error);}
 
+ $studentID =  $_GET['studentID'];
+
  if(isset($_SESSION['post_insert'])){
- 		echo 'post_insert';
   		$_POST =  $_SESSION['post_insert'];
-  		if(isset($_GET['studentID'])){$studentID =  $_GET['studentID'];}
- 	} else{
- 	 	$studentID =  $_GET['studentID'];
-	  	$sql = "Select * from students where student_id = " . $studentID;
-
-	  	$result = $conn->query($sql) or trigger_error($conn->error);
-	  	$row = $result->fetch_array(MYSQLI_BOTH);
-
-		echo " Name: " . $row["first_name"] . " " . $row["last_name"] . "<br \>";
-		echo "Address: " . $row["street_address"] . " " . $row["address_code"]. " " . $row["town"] . "<br \>";
-		echo "Contact: "  . $row["email"] .  " " . $row["phone_main"]  . " " . $row["phone_alt"] . "<br \>";
-    	echo "Status: " . $row["inactive"];
  	}
+
+$sql = "Select * from students where student_id = " . $studentID;
+
+$result = $conn->query($sql) or trigger_error($conn->error);
+$row = $result->fetch_array(MYSQLI_BOTH);
+
+echo " Name: " . $row["first_name"] . " " . $row["last_name"] . "<br \>";
+echo "Address: " . $row["street_address"] . " " . $row["address_code"]. " " . $row["town"] . "<br \>";
+echo "Contact: "  . $row["email"] .  " " . $row["phone_main"]  . " " . $row["phone_alt"] . "<br \>";
+echo "Status: " . $row["inactive"];
+
 
 
 if(empty($action)){

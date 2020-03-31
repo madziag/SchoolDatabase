@@ -93,24 +93,26 @@ $counter = 0;
 
 
 while ($counter <  $num_rows){
-if ($row["nrpayments"] == 1 and $row["totalamountpaid"] == 0)
+if ($row["nrpayments"] == 2 and $row["totalamountpaid"] == 0)
 	{$nextpayment = 409;}
 if ($row["totalamountpaid"] == $row["totalamount"])
 	{$nextpayment = 0;}
-if ($row["nrpayments"] == 5 and $row["totalamountpaid"] != $row["totalamount"])
+if ($row["nrpayments"] == 10 and $row["totalamountpaid"] != $row["totalamount"])
 	{$nextpayment = 90;}
 
+//Payments should be received by the 10th of each month for installments
 $date=date_create("first day of next month");
 date_add($date, date_interval_create_from_date_string('9 days'));
 $nextdate = date_format($date,"Y-m-d");
 
-$firstpaydate = date_create('2017-09-01');
+// TODO: The calculation uses an example date
+/*$firstpaydate = date_create('2017-09-01');
 $lastpaydate = date_add($firstpaydate, date_interval_create_from_date_string('5 months'));
 $monthslefttopay = ceil(($row["totalamount"] - $row["totalamountpaid"])/90);
 $nextpaymonth = date_sub($lastpaydate, date_interval_create_from_date_string($monthslefttopay . ' months'));
 $nextdate = date_format($nextpaymonth,"Y-m-d");
 
-if ($nextpayment == 0){$nextdate = 'Paid';}
+if ($nextpayment == 0){$nextdate = 'Paid';}*/
 
 $contractSigned = $row["contract_signed"];
 if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
@@ -131,8 +133,8 @@ echo
 <td> " . $row["totalamount"] . "  </td>
 <td> " . $row["received_date"] . "  </td>
 <td> " . $row["amount"] . "  </td>
-<td> " . $nextdate . "  </td>
-<td> " . $nextpayment . "  </td>
+<td> " . "TODO Next Date" . "  </td>
+<td> " . "TODO Next Payment" . "  </td>
 
 </tr>";
 
