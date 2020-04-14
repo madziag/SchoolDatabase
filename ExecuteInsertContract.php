@@ -96,8 +96,11 @@ if($sql != $sql2){
 <style>
 
 @media print {
+ @page { margin: 0; }
+
   body * {
     visibility: hidden;
+    margin: 1.6cm;
   }
 
   #section-to-print, #section-to-print * {
@@ -115,6 +118,18 @@ div.page {
         margin: 0;
         width: 20cm;
         visibility: visible;
+}
+
+a.button {
+ 	display: block;
+    width: 115px;
+    height: 25px;
+    background: #4E9CAF;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
 }
 
 </style>
@@ -169,10 +184,15 @@ div.page {
 <?php echo $_POST['comments']; ?><br/><br/>
 </div>
 </div>
-<a href = "SearchRetrieve.php"> Go back to Search page </a>
+
+<button onclick="window.location.href='UpdateContract.php?studentID=<?php echo $studentID ?>'">Update Contract Page</button>
+<button onclick="window.location.href='SearchRetrieve.php'">Search Page</button>
+<button type="button" onclick="window.print()">Print Contract</button>
+
 
 <script type="text/javascript">
 window.onload = function() { window.print(); }
+
 </script>
 </body>
 </html>

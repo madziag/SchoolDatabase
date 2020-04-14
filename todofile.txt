@@ -1,7 +1,8 @@
-3/31/2020:
+4/14/2020:
 
-WE ARE CURRENTLY WORKING ON: --> Make contract printable: Print button and Contract signed button, and return to search page with contract not signed.
-Data to be printed is present but it is not pretty (ExecuteInsertContract.php)
+WE ARE CURRENTLY WORKING ON: --> We need to add a change(update) contract page. File is named Update Contract but has no content yet. 
+
+
 
 -- Instead of hardcoding payment amounts in contracts.php, create a settings page through which the user is able to change the values herself. 
 

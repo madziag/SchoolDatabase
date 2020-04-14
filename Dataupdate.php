@@ -42,7 +42,7 @@ else if (!isset($row2["contract_signed"])){
 		$action2 = "CreateContract.php?studentID=" . $studentID;
 	}
 else{$contractSigned = '<input type="submit" name = "ContractReceived" value = "Sign Contract">';
-     	$action2 = "ExecuteUpdateContract.php?studentID=" . $studentID;
+     	$action2 = "ExecuteSignedContract.php?studentID=" . $studentID;
      }
 
 
