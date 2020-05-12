@@ -1,8 +1,13 @@
 <?php
 
+ session_start();
+
+ $studentID =  $_GET['studentID'];
+ $contractID =  $_GET['contractID'];
+
  $servername = 'localhost';
- $username = ;
- $password = ;
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
  $dbname = 'englishschooldb';
 
  // Create connection
@@ -12,32 +17,25 @@
   	   die("Connection failed: " . $conn->connect_error);
     }
 
-// SQL Query
+if ($_POST['starter'] == "Yes"){$starterint = 1;} else {$starterint = 0;}
+if ($_POST['book'] == "Yes"){$bookint = 1;} else {$bookint = 0;}
+if ($_POST['group_ind'] == "Group"){$groupint = 1;} else {$groupint = 0;}
+if ($_POST['group_ind'] == "Individual"){$indivint = 1;} else {$indivint = 0;}
 
-$studentID = $_GET["studentID"];
+$sql = "UPDATE contracts SET ";
+	$sql = $sql . "start_date = '" . $_POST['contractStartDate'] . "', location = '" . $_POST['location'] . "',
+	age_group = '" . $_POST['group'] . "', level = '" . $_POST['level'] . "', payment_type = '" . $_POST['rate'] . "',
+	nrpayments = '" . $_POST['nrpayments'] . "',
+	starter = '" . $starterint . "',
+	book = '" . $bookint . "',
+	grouplessons = '" . $groupint . "',
+	individuallessons = '" . $indivint . "',
+	comments = '" . $_POST['comments'] . "'
+	where student_id = " . $studentID . " and contract_id = " . $contractID . " ;";
 
-$sql = "UPDATE contracts SET contract_signed = 1 WHERE student_id =" . $studentID;
+$result = $conn->query($sql)
+		        or trigger_error($conn->error);
+		        if ($result == TRUE){echo 'Record has been updated';}
+		        else{echo $sql;}
 
-if($sql !== 'UPDATE contracts SET contract_signed = 1 WHERE student_id =')
-	{$result = $conn->query($sql)
-	or trigger_error($conn->error);
-	if ($result == TRUE){echo 'Contract has been signed';}
-	else{echo $sql;}
-
-	} else {echo "Bad Query";}
-
-
-	$conn->close();
-
-header('Refresh: 5; URL = SearchRetrieve.php');
 ?>
-
-<html>
-<body>
-
-Update Successful.
-
-<a href = "SearchRetrieve.php"> Go back to Search page </a>
-
-</body>
-</html>

@@ -3,6 +3,7 @@
  session_start();
 
  $studentID =  $_GET['studentID'];
+ $contractID =  $_GET['contractID'];
 
  $servername = 'localhost';
  $username = 'MadziaG';
@@ -17,7 +18,7 @@
   	   die("Connection failed: " . $conn->connect_error);
     }
 
-   $sql = "SELECT * FROM englishschooldb.contracts where student_id = " . $studentID . ";";
+   $sql = "SELECT * from englishschooldb.contracts where student_id = " . $studentID . " and contract_id = " . $contractID . " ;";
    $sql_student = "SELECT first_name, last_name  from englishschooldb.students where student_id = " . $studentID . ";";
    $sql_guardian = "SELECT guardian_first_name, guardian_last_name from englishschooldb.guardians join englishschooldb.student_guardian on guardians.guardian_id = student_guardian.guardian_id where student_id = " . $studentID . ";";
 
@@ -30,7 +31,7 @@
    $result3 = $conn->query($sql_guardian) or trigger_error($conn->error);
    $row3 = $result3->fetch_array(MYSQLI_BOTH);
 
-   $action =  "ExecuteUpdateContract.php?studentID=" . $studentID;
+   $action =  "ExecuteUpdateContract.php?studentID=" . $studentID."&contractID=" . $contractID;
  ?>
 
 <html>
@@ -67,6 +68,9 @@
    <?php echo ($row["grouplessons"] == 1) ? 'checked = "checked"': ''; ?> /> Group Lessons
    <input type="radio" name="group_ind" value = "Individual"
    <?php echo ($row["individuallessons"] == 1) ? 'checked = "checked"': ''; ?> /> Individual Lessons
+    <br />
+    Comments: <input type="text" name="comments" value="<?php echo $row["comments"] ?>"><br />
+
    <br /><br /><br />
    <input type="submit" name = "update" value = "Update Contract">
 
