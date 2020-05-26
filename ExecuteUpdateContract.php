@@ -35,7 +35,11 @@ $sql = "UPDATE contracts SET ";
 
 $result = $conn->query($sql)
 		        or trigger_error($conn->error);
-		        if ($result == TRUE){echo 'Record has been updated';}
+		        if ($result == TRUE){
+		        	echo 'Record has been updated';
+		    		header("Refresh: 2; URL = DisplayPrintContract.php?studentID=".$studentID."&contractID=".$contractID);}
 		        else{echo $sql;}
+
+
 
 ?>

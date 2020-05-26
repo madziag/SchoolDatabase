@@ -2,7 +2,6 @@
 
  session_start();
 
- $_POST =  $_SESSION['insert-contract'];
  $studentID =  $_GET['studentID'];
  $contractID =  $_GET['contractID'];
 
@@ -130,14 +129,14 @@ a.button {
 
 
 <?php echo "Date: " . date('Y/m/d'); ?><br/><br/>
-<?php echo $_POST['comments']; ?><br/><br/>
+<?php echo $row["comments"]; ?><br/><br/>
 </div>
 </div>
 
-<button onclick="window.location.href='UpdateContract.php?studentID=<?php echo $studentID ?>&contractID=<?php echo $contractID ?>'">Update Contract Page</button>
-<button onclick="window.location.href='SearchRetrieve.php'">Search Page</button>
+<button onclick="window.location.href='UpdateContract.php?studentID=<?php echo $studentID ?>&contractID=<?php echo $contractID ?>'">Customize Contract</button>
+<button onclick="window.location.href='SearchRetrieve.php'">Go to Search Page</button>
 <button type="button" onclick="window.print()">Print Contract</button>
-
+<button onclick="window.location.href='DeleteContract.php?studentID=<?php echo $studentID ?>&contractID=<?php echo $contractID ?>'">Delete This Contract</button>
 
 <script type="text/javascript">
 window.onload = function() { window.print(); }
