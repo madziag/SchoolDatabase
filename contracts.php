@@ -91,56 +91,76 @@ echo "<table border =\"1\">
 	<td> Next Due Amount  </td></tr>";
 
 $counter = 0;
-
+$currentYear = date("Y");
+$currentMonth = date("m");
 
 while ($counter <  $num_rows){
-if ($row["nrpayments"] == 2 and $row["totalamountpaid"] == 0)
-	{$nextpayment = 409;}
-if ($row["totalamountpaid"] == $row["totalamount"])
-	{$nextpayment = 0;}
-if ($row["nrpayments"] == 10 and $row["totalamountpaid"] != $row["totalamount"])
-	{$nextpayment = 90;}
 
-//Payments should be received by the 10th of each month for installments
-$date=date_create("first day of next month");
-date_add($date, date_interval_create_from_date_string('9 days'));
-$nextdate = date_format($date,"Y-m-d");
+	if ($currentMonth <= 8){$schoolYear = $currentYear - 1;}
+	else {$schoolYear = $currentYear;}
 
-// TODO: The calculation uses an example date
-/*$firstpaydate = date_create('2017-09-01');
-$lastpaydate = date_add($firstpaydate, date_interval_create_from_date_string('5 months'));
-$monthslefttopay = ceil(($row["totalamount"] - $row["totalamountpaid"])/90);
-$nextpaymonth = date_sub($lastpaydate, date_interval_create_from_date_string($monthslefttopay . ' months'));
-$nextdate = date_format($nextpaymonth,"Y-m-d");
+	$contractYear = substr($row["start_date"], 0, 4);
+	$contractMonth = substr($row["start_date"], 5, 2);
 
-if ($nextpayment == 0){$nextdate = 'Paid';}*/
+		echo $row["start_date"];
+		echo $contractYear;
+		echo $contractMonth;
 
-$contractSigned = $row["contract_signed"];
-if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
-else if(is_null($row["contract_signed"])){$contractSigned = 'None';}
-else if($row["contract_signed"] == 0){$contractSigned = 'No';}
+	$contractStatus = "Inactive";
+	if ($contractYear > $schoolYear){$contractStatus = "Active";}
+	if ($contractYear == $schoolYear && $contractMonth >= 9){$contractStatus = "Active";}
+	//if ($contractStatus === "Active"){
+
+		echo $contractStatus;
+
+		if ($row["nrpayments"] == 2 and $row["totalamountpaid"] == 0)
+			{$nextpayment = 409;}
+		if ($row["totalamountpaid"] == $row["totalamount"])
+			{$nextpayment = 0;}
+		if ($row["nrpayments"] == 10 and $row["totalamountpaid"] != $row["totalamount"])
+			{$nextpayment = 90;}
+
+		//Payments should be received by the 10th of each month for installments
+		$date=date_create("first day of next month");
+		date_add($date, date_interval_create_from_date_string('9 days'));
+		$nextdate = date_format($date,"Y-m-d");
+
+		// TODO: The calculation uses an example date
+		/*$firstpaydate = date_create('2017-09-01');
+		$lastpaydate = date_add($firstpaydate, date_interval_create_from_date_string('5 months'));
+		$monthslefttopay = ceil(($row["totalamount"] - $row["totalamountpaid"])/90);
+		$nextpaymonth = date_sub($lastpaydate, date_interval_create_from_date_string($monthslefttopay . ' months'));
+		$nextdate = date_format($nextpaymonth,"Y-m-d");
+
+		if ($nextpayment == 0){$nextdate = 'Paid';}*/
+
+		$contractSigned = $row["contract_signed"];
+		if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
+		else if(is_null($row["contract_signed"])){$contractSigned = 'None';}
+		else if($row["contract_signed"] == 0){$contractSigned = 'No';}
 
 
-echo
-"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </td>
+		echo
+		"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </td>
 
-<td> " . $row["student_id"] . " </td>
-<td> " . $row["first_name"] . " </td>
-<td> " . $row["last_name"] . "  </td>
-<td> " . $row["start_date"] . " </td>
-<td> " . $contractSigned . " </td>
-<td> " . $row["nrpayments"] . "  </td>
-<td> " . $row["totalamountpaid"] . "  </td>
-<td> " . $row["totalamount"] . "  </td>
-<td> " . $row["received_date"] . "  </td>
-<td> " . $row["amount"] . "  </td>
-<td> " . "TODO Next Date" . "  </td>
-<td> " . "TODO Next Payment" . "  </td>
+		<td> " . $row["student_id"] . " </td>
+		<td> " . $row["first_name"] . " </td>
+		<td> " . $row["last_name"] . "  </td>
+		<td> " . $row["start_date"] . " </td>
+		<td> " . $contractSigned . " </td>
+		<td> " . $row["nrpayments"] . "  </td>
+		<td> " . $row["totalamountpaid"] . "  </td>
+		<td> " . $row["totalamount"] . "  </td>
+		<td> " . $row["received_date"] . "  </td>
+		<td> " . $row["amount"] . "  </td>
+		<td> " . "TODO Next Date" . "  </td>
+		<td> " . "TODO Next Payment" . "  </td>
 
-</tr>";
+		</tr>";
 
-$row = $result->fetch_array(MYSQLI_BOTH);
-$counter++;
+		$row = $result->fetch_array(MYSQLI_BOTH);
+		$counter++;
+		//}else {$counter++;}
 }
 echo "</table>";
 

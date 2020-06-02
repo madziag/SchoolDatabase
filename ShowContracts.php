@@ -22,6 +22,7 @@ or trigger_error($conn->error);
 $row = $result->fetch_array(MYSQLI_BOTH);
 $num_rows = mysqli_num_rows($result);
 
+
 echo $row["first_name"] . " " . $row["last_name"];
 
 echo "<table border =\"1\">
@@ -36,14 +37,28 @@ echo "<table border =\"1\">
 	<td> Location </td>
 	<td> Age Group </td>
 	<td> Level </td>
-	<td> Active </td>
+	<td> Contract Status </td>
 	</tr>";
+
+$currentYear = date("Y");
+$currentMonth = date("m");
 
 for($i = 1; $i <= $num_rows; $i++){
 		$contractSigned = $row["contract_signed"];
 		if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
 		else if(is_null($row["contract_signed"])){$contractSigned = 'None';}
 		else if($row["contract_signed"] == 0){$contractSigned = 'No';}
+
+		if ($currentMonth <= 8){$schoolYear = $currentYear - 1;}
+		else {$schoolYear = $currentYear;}
+
+		$contractYear = substr($row["start_date"], 0, 4);
+		$contractMonth = substr($row["start_date"], 5, 2);
+        $contractStatus = "Inactive";
+		if ($contractYear > $schoolYear){$contractStatus = "Active";}
+		if ($contractYear == $schoolYear && $contractMonth >= 9){$contractStatus = "Active";}
+
+		// Add additional condition when payments are implemented -- contract remains Active if NOT paid off completely
 
 		echo 	"<tr>
 				<td> " . $row["start_date"] . " </td>
@@ -56,7 +71,7 @@ for($i = 1; $i <= $num_rows; $i++){
 				<td> " . $row["location"] . "  </td>
 				<td> " . $row["age_group"] . "  </td>
 				<td> " . $row["level"] . "  </td>
-				<td> " . 'TODO' . "  </td>
+				<td> " . $contractStatus . "  </td>
 				</tr>";
 
 		$row = $result->fetch_array(MYSQLI_BOTH);
@@ -65,10 +80,6 @@ for($i = 1; $i <= $num_rows; $i++){
 
 echo "</table>";
 
+
 ?>
-<html>
 
-<!-- ACTIVE not yet in db -- consider adding (to differentiate not paid contracts or with still active classes vs paid in full contract/all classes complete-->
-
-
-</html>
