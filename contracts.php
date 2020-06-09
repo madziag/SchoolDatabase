@@ -102,16 +102,10 @@ while ($counter <  $num_rows){
 	$contractYear = substr($row["start_date"], 0, 4);
 	$contractMonth = substr($row["start_date"], 5, 2);
 
-		echo $row["start_date"];
-		echo $contractYear;
-		echo $contractMonth;
-
 	$contractStatus = "Inactive";
 	if ($contractYear > $schoolYear){$contractStatus = "Active";}
 	if ($contractYear == $schoolYear && $contractMonth >= 9){$contractStatus = "Active";}
-	//if ($contractStatus === "Active"){
-
-		echo $contractStatus;
+	if ($contractStatus === "Active"){
 
 		if ($row["nrpayments"] == 2 and $row["totalamountpaid"] == 0)
 			{$nextpayment = 409;}
@@ -158,9 +152,9 @@ while ($counter <  $num_rows){
 
 		</tr>";
 
-		$row = $result->fetch_array(MYSQLI_BOTH);
-		$counter++;
-		//}else {$counter++;}
+	}
+	$row = $result->fetch_array(MYSQLI_BOTH);
+	$counter++;
 }
 echo "</table>";
 

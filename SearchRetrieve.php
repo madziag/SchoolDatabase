@@ -1,14 +1,15 @@
 
 <?php
 
- session_start();
- $_SESSION['post-sr'] = $_POST;
+//Starts session
+  session_start();
+  $_SESSION['post-sr'] = $_POST;
 
+//Connects to the database
  $servername = 'localhost';
  $username = 'MadziaG';
  $password = 'P$i@krew2018User';
  $dbname = 'englishschooldb';
-
 
  // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -18,52 +19,39 @@
     }
 
 // To change this to an update page after the sql query
-
 if(isset($_POST["studentID"])){
 	$studentID = trim($_POST["studentID"]);
 }
-
 if(isset($_POST["firstname"])){
 	$firstname = trim($_POST["firstname"]);
 }
-
 if(isset($_POST["lastname"])){
 	$lastname = trim($_POST["lastname"]);
 }
-
 if(isset($_POST["streetaddress"])){
 	$streetaddress = trim($_POST["streetaddress"]);
 }
-
 if(isset($_POST["postcode"])){
 	$postcode = trim($_POST["postcode"]);
 }
-
 if(isset($_POST["town"])){
 	$town = trim($_POST["town"]);
 }
-
 if(isset($_POST["email"])){
 	$email = trim($_POST["email"]);
 }
-
 if(isset($_POST["mainphone"])){
 	$mainphone = trim($_POST["mainphone"]);
 }
-
 if(isset($_POST["altphone"])){
 	$altphone = trim($_POST["altphone"]);
 }
-
 if(isset($_POST["status"])){
 	$status = $_POST["status"];
 }
 
-
 // build sql query
 $sql = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_date) as start_date from students a left join contracts b on a.student_id = b.student_id where ";
-
-
 
 	if (!empty($studentID) ){
 			$sql = $sql . "a.student_id = '" . $studentID . "'";
@@ -98,13 +86,7 @@ $sql = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_da
 		$sql = preg_replace('/where\s+and/','where', $sql);
 		$sql = $sql . " group by a.student_id";
 
-
-
 $sql2 = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_date) as start_date from students a left join contracts b on a.student_id = b.student_id where  group by a.student_id";
-
-/* echo $sql;
-echo "<br>";
-echo $sql2; */
 
 // Running query
 if($sql != $sql2){
@@ -120,39 +102,22 @@ if($sql != $sql2){
 			  echo "<br />";
 			}
 
-
-			//reset vars based on SQL query
-
-			/*if ($num_rows == 1){
-					$studentID = $row["student_id"];
-					$firstname = $row["first_name"];
-			        $lastname = $row["last_name"];
-					$streetaddress = $row["street_address"];
-					$postcode = $row["address_code"];
-					$town = $row["town"];
-					$email = $row["email"];
-					$mainphone = $row["phone_main"];
-					$altphone = $row["phone_alt"];
-					$status = $row["inactive"];
-
-					$action = 'Dataupdate.php';
-
-				}*/
-			// More than one result -- needs to be worked on
+// Creates table with found students
 
 			if ($num_rows > 0){
 			echo "<table border =\"1\"> <tr> <td> </td>
-										<td>  studentID </td>
+										<td> studentID </td>
 			                            <td> First Name  </td>
 			                            <td> Last Name </td>
 			                            <td> Street Address, postcode, town </td>
-			                            <td>  email </td>
-			                            <td>  Main Phone </td>
-			                            <td>  Alt Phone </td>
-			                            <td>  Status  </td>
+			                            <td> email </td>
+			                            <td> Main Phone </td>
+			                            <td> Alt Phone </td>
+			                            <td> Status  </td>
 			                            <td> Contract Signed </td>
 			                            <td> Next Due Date  </td></tr>";
 
+// TODO (4/17/2020): ALSO IN CONTRACTS.PHP
 			$counter = 0;
 			while ($counter <  $num_rows){
 					$firstpaydate = date_create('2017-09-01');
@@ -164,7 +129,8 @@ if($sql != $sql2){
 					echo
 					"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </br>
 							   <a href = \"CreateContract.php?studentID=" . $row["student_id"] . "\" > add contract </a> </br>
-							   <a href = \"ShowContracts.php?studentID=" . $row["student_id"] . "\" > show contracts </a>
+							   <a href = \"ShowContracts.php?studentID=" . $row["student_id"] . "\" > show contracts </a> </br>
+							   <a href = \"EnterPayment.php?studentID=" . $row["student_id"] . "\" > enter payment </a>
 					      </td>
 
 						  <td> " . $row["student_id"] . " </td>
@@ -191,24 +157,6 @@ if($sql != $sql2){
 					}
 			}
 
-
-//Checks if student in database
-
-/*if(empty($insert)){
-	$insert = 'SearchRetrieve.php';
-	} */
-
-
-
-
-
-
-
-
-
-
-
-
 include 'DataInsert.php';
 
 
@@ -216,17 +164,3 @@ $conn->close();
 
 ?>
 
-
-<!-- <html>
-<body>
-
-<form action= "savingdata.php" method="post">
-<input type="submit" name = "Yes" value = "Add New Student"><br /><br />
-</form>
-
-We need to send post data from this page with this form!!!!!!
-
-</body>
-</html> -->
-
-<!-- TO DO USE TABLE TO SHOW MAIN INFO E.G. PAYMENT-->
