@@ -26,7 +26,9 @@ $num_rows = mysqli_num_rows($result);
 
 echo $row["first_name"] . " " . $row["last_name"];
 
-echo "<table border =\"1\">
+
+
+$table = "<table border =\"1\">
 	<tr>
 	<td> Number </td>
     <td> Start date </td>
@@ -72,12 +74,11 @@ for($i = 1; $i <= $num_rows; $i++){
 				}
 
 		$contractNumbers[$number]= $row["contract_id"];
-
-
+		$nrPaymentsByContractNr[$number]= $row["nrpayments"];
 
 		// Add additional condition when payments are implemented -- contract remains Active if NOT paid off completely
 
-		echo 	"<tr>
+		$table .= "<tr>
 		        <td> " . $number . " </td>
 				<td> " . $row["start_date"] . " </td>
 				<td> " . $contractSigned . " </td>
@@ -97,7 +98,7 @@ for($i = 1; $i <= $num_rows; $i++){
 	}
 
 
-echo "</table>";
+$table .= "</table>";
 
 
 
@@ -107,6 +108,28 @@ echo "</table>";
 
 <html>
 <body>
-<button onclick="window.location.href='InsertPayment.php?studentID=<?php echo $studentID ?>&contractID=<?php echo $oldestContract_ID ?>'">Add Payment to Contract <?php echo $oldestContractNumber ?></button>
+
+  <form action= "InsertPayment.php?studentID=<?php echo $studentID ?>&contractID=<?php echo $oldestContract_ID ?>" method="post">
+
+   Contract: <input type="number" min="1" max= "<?php echo $number - 1 ?>" value="<?php echo $oldestContractNumber ?>">
+
+   Payment Amount: <input type="number" value="<?php
+
+   		if ($nrPaymentsByContractNr[$oldestContractNumber] == 2){$nextpayment = 409;}
+   		if ($nrPaymentsByContractNr[$oldestContractNumber] == 10){$nextpayment = 90;}
+
+        echo $nextpayment?>" >
+
+
+
+
+
+   <input type="submit" name = "addPayment" value = "Add payment ">
+
+    <?php echo $table ?>
+
+   <button onclick="window.location.href='InsertPayment.php?studentID=<?php echo $studentID ?>&contractID=<?php echo $oldestContract_ID ?>'">Add Payment to Contract <?php echo $oldestContractNumber ?></button>
+
+   </form>
 </body>
 </html>
