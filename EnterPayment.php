@@ -48,6 +48,8 @@ $currentYear = date("Y");
 $currentMonth = date("m");
 $number = 1;
 $contractNumbers = array();
+$oldestStartDate = date('Y-m-d', strtotime(date("Y-m-d"). ' + 365 days'));
+$optionString = "<select name=\"contract_id\" id=\"contract_id\">";
 
 for($i = 1; $i <= $num_rows; $i++){
 		$contractSigned = $row["contract_signed"];
@@ -64,7 +66,6 @@ for($i = 1; $i <= $num_rows; $i++){
 		if ($contractYear > $schoolYear){$contractStatus = "Active";}
 		if ($contractYear == $schoolYear && $contractMonth >= 9){$contractStatus = "Active";}
 
-		$oldestStartDate = date('Y-m-d', strtotime(date("Y-m-d"). ' + 365 days'));
 		$contractDate = date('Y-m-d', strtotime($row["start_date"]));
 
 		if ($contractStatus == "Active" && $contractDate < $oldestStartDate){
@@ -75,6 +76,8 @@ for($i = 1; $i <= $num_rows; $i++){
 
 		$contractNumbers[$number]= $row["contract_id"];
 		$nrPaymentsByContractNr[$number]= $row["nrpayments"];
+
+		$optionString .= "<option value=\"" . $row["contract_id"] . "\">" . $number . "</option>";
 
 		// Add additional condition when payments are implemented -- contract remains Active if NOT paid off completely
 
@@ -98,9 +101,12 @@ for($i = 1; $i <= $num_rows; $i++){
 	}
 
 
+$optionString .= "</select>";
+$find = ">" . $oldestContractNumber . "<";
+$replace ="selected=\"selected\">".$oldestContractNumber."<";
+$optionString = str_replace($find,$replace,$optionString);
+
 $table .= "</table>";
-
-
 
 
 
@@ -109,11 +115,13 @@ $table .= "</table>";
 <html>
 <body>
 
-  <form action= "InsertPayment.php?studentID=<?php echo $studentID ?>&contractID=<?php echo $oldestContract_ID ?>" method="post">
 
-   Contract: <input type="number" min="1" max= "<?php echo $number - 1 ?>" value="<?php echo $oldestContractNumber ?>">
 
-   Payment Amount: <input type="number" value="<?php
+  <form action= "InsertPayment.php?studentID=<?php echo $studentID ?>" method="post">
+
+   Contract: <?php echo $optionString ?>;
+
+   Payment Amount: <input type="number" name="PaymentAmount" value="<?php
 
    		if ($nrPaymentsByContractNr[$oldestContractNumber] == 2){$nextpayment = 409;}
    		if ($nrPaymentsByContractNr[$oldestContractNumber] == 10){$nextpayment = 90;}
@@ -128,8 +136,8 @@ $table .= "</table>";
 
     <?php echo $table ?>
 
-   <button onclick="window.location.href='InsertPayment.php?studentID=<?php echo $studentID ?>&contractID=<?php echo $oldestContract_ID ?>'">Add Payment to Contract <?php echo $oldestContractNumber ?></button>
-
    </form>
+
 </body>
 </html>
+
