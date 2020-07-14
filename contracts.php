@@ -107,11 +107,21 @@ while ($counter <  $num_rows){
 	if ($contractYear == $schoolYear && $contractMonth >= 9){$contractStatus = "Active";}
 	if ($contractStatus === "Active"){
 
-		if ($row["nrpayments"] == 2 and $row["totalamountpaid"] == 0)
+		$sql2 = "select * from payment where contract_id = " . $row["contract_id"];
+			$result2 = $conn->query($sql2)
+			or trigger_error($conn->error);
+			$row2 = $result2->fetch_array(MYSQLI_BOTH);
+			$num_rows2 = mysqli_num_rows($result2);
+			$total_amount_paid = 0;
+				for($j = 1; $j <= $num_rows2; $j++){
+					$total_amount_paid += $row2["amount"];
+			}
+
+		if ($row["nrpayments"] == 2 and $total_amount_paid == 0)
 			{$nextpayment = 409;}
-		if ($row["totalamountpaid"] == $row["totalamount"])
+		if ($total_amount_paid == $row["totalamount"])
 			{$nextpayment = 0;}
-		if ($row["nrpayments"] == 10 and $row["totalamountpaid"] != $row["totalamount"])
+		if ($row["nrpayments"] == 10 and $total_amount_paid != $row["totalamount"])
 			{$nextpayment = 90;}
 
 		//Payments should be received by the 10th of each month for installments
@@ -121,8 +131,9 @@ while ($counter <  $num_rows){
 
 		// TODO: The calculation uses an example date
 		/*$firstpaydate = date_create('2017-09-01');
+
 		$lastpaydate = date_add($firstpaydate, date_interval_create_from_date_string('5 months'));
-		$monthslefttopay = ceil(($row["totalamount"] - $row["totalamountpaid"])/90);
+		$monthslefttopay = ceil(($row["totalamount"] - $total_amount_paid)/90);
 		$nextpaymonth = date_sub($lastpaydate, date_interval_create_from_date_string($monthslefttopay . ' months'));
 		$nextdate = date_format($nextpaymonth,"Y-m-d");
 
@@ -143,7 +154,7 @@ while ($counter <  $num_rows){
 		<td> " . $row["start_date"] . " </td>
 		<td> " . $contractSigned . " </td>
 		<td> " . $row["nrpayments"] . "  </td>
-		<td> " . $row["totalamountpaid"] . "  </td>
+		<td> " . number_format((float)$total_amount_paid, 2, '.', '') . "  </td>
 		<td> " . $row["totalamount"] . "  </td>
 		<td> " . $row["received_date"] . "  </td>
 		<td> " . $row["amount"] . "  </td>

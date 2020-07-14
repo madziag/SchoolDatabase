@@ -51,7 +51,7 @@ if(isset($_POST["status"])){
 }
 
 // build sql query
-$sql = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_date) as start_date from students a left join contracts b on a.student_id = b.student_id where ";
+$sql = "select  a.*, contract_signed, totalamount, max(start_date) as start_date from students a left join contracts b on a.student_id = b.student_id where ";
 
 	if (!empty($studentID) ){
 			$sql = $sql . "a.student_id = '" . $studentID . "'";
@@ -86,7 +86,7 @@ $sql = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_da
 		$sql = preg_replace('/where\s+and/','where', $sql);
 		$sql = $sql . " group by a.student_id";
 
-$sql2 = "select  a.*, contract_signed, totalamount, totalamountpaid, max(start_date) as start_date from students a left join contracts b on a.student_id = b.student_id where  group by a.student_id";
+$sql2 = "select  a.*, contract_signed, totalamount, max(start_date) as start_date from students a left join contracts b on a.student_id = b.student_id where  group by a.student_id";
 
 // Running query
 if($sql != $sql2){
@@ -114,18 +114,11 @@ if($sql != $sql2){
 			                            <td> Main Phone </td>
 			                            <td> Alt Phone </td>
 			                            <td> Status  </td>
-			                            <td> Contract Signed </td>
-			                            <td> Next Due Date  </td></tr>";
+			                            <td> Contract Signed </td></tr>";
 
 // TODO (4/17/2020): ALSO IN CONTRACTS.PHP
 			$counter = 0;
 			while ($counter <  $num_rows){
-					$firstpaydate = date_create('2017-09-01');
-					$lastpaydate = date_add($firstpaydate, date_interval_create_from_date_string('5 months'));
-					$monthslefttopay = ceil(($row["totalamount"] - $row["totalamountpaid"])/90);
-					$nextpaymonth = date_sub($lastpaydate, date_interval_create_from_date_string($monthslefttopay . ' months'));
-					$nextdate = date_format($nextpaymonth,"Y-m-d");
-
 					echo
 					"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row["student_id"] . "\" > update </a> </br>
 							   <a href = \"CreateContract.php?studentID=" . $row["student_id"] . "\" > add contract </a> </br>
@@ -142,7 +135,6 @@ if($sql != $sql2){
 					      <td> " . $row["phone_alt"] . "  </td>
 					      <td> " . $row["inactive"] . " </td>
 						  <td> " . $row["contract_signed"] . " </td>
-						  <td> " . $nextdate . "  </td>
 					      </tr>";
 
 					$row = $result->fetch_array(MYSQLI_BOTH);

@@ -51,6 +51,7 @@ $contractNumbers = array();
 $oldestStartDate = date('Y-m-d', strtotime(date("Y-m-d"). ' + 365 days'));
 $optionString = "<select name=\"contract_id\" id=\"contract_id\">";
 
+
 for($i = 1; $i <= $num_rows; $i++){
 		$contractSigned = $row["contract_signed"];
 		if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
@@ -81,12 +82,23 @@ for($i = 1; $i <= $num_rows; $i++){
 
 		// Add additional condition when payments are implemented -- contract remains Active if NOT paid off completely
 
+        $sql2 = "select * from payment where contract_id = " . $row["contract_id"];
+		$result2 = $conn->query($sql2)
+		or trigger_error($conn->error);
+		$row2 = $result2->fetch_array(MYSQLI_BOTH);
+		$num_rows2 = mysqli_num_rows($result2);
+        $total_amount_paid = 0;
+
+			for($j = 1; $j <= $num_rows2; $j++){
+			    $total_amount_paid += $row2["amount"];
+				}
+
 		$table .= "<tr>
 		        <td> " . $number . " </td>
 				<td> " . $row["start_date"] . " </td>
 				<td> " . $contractSigned . " </td>
 				<td> " . $row["nrpayments"] . "  </td>
-				<td> " . $row["totalamountpaid"] . "  </td>
+				<td> " . number_format((float)$total_amount_paid, 2, '.', '') . "  </td>
 				<td> " . $row["totalamount"] . "  </td>
 				<td> " . $row["book"] . "  </td>
 				<td> " . $row["starter"] . "  </td>
@@ -99,6 +111,7 @@ for($i = 1; $i <= $num_rows; $i++){
 		$number++;
 		$row = $result->fetch_array(MYSQLI_BOTH);
 	}
+
 
 
 $optionString .= "</select>";

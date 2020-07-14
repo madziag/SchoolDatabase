@@ -42,10 +42,12 @@ if(isset($_POST["rate"]) && $_POST["rate"] == "pay in full"){
 
 $grouplessons = 1;
 $individuallessons = 0;
+if ($nrOfPayments == 10){$totalContractAmount = 900;}
+if ($nrOfPayments == 2){$totalContractAmount = 818;}
 
 // SQL Query
 
- $sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, grouplessons, individuallessons, contract_signed, comments, start_date) VALUES
+ $sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, start_date) VALUES
  ('" . $studentID . "', '"
      . $_POST['locSelect'] . "', '"
      . $_POST['ageGroup'] . "', '"
@@ -54,13 +56,14 @@ $individuallessons = 0;
      . $starter . ", "
      . $book . ", "
      . $nrOfPayments . ", "
+     . $totalContractAmount. ", "
      . $grouplessons . ", "
      . $individuallessons . ", "
      . "0, '"
      . $_POST['comments'] . "', '"
      . $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'] . "');";
 
-$sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, grouplessons, individuallessons, contract_signed, comments, start_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', '--');";
+$sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, start_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', '--');";
 
 
 $message_string = "Error adding contract";
@@ -71,10 +74,9 @@ if($sql != $sql2){
 
 			$contractID = mysqli_insert_id($conn);
 
-			$message_string = "";
+			$message_string = $contractID;
 
 			}
-
 
 
 
