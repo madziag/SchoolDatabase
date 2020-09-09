@@ -35,14 +35,11 @@ left outer join payment on contracts.contract_id = payment.contract_id and a.b =
 //where contracts.active = 1
 . "order by trim(" . $sortByCol . ") " . $order;
 
-
-
 $result = $conn->query($sql)
 or trigger_error($conn->error);
 $row = $result->fetch_array(MYSQLI_BOTH);
 
 $num_rows = mysqli_num_rows($result);
-
 
 if ($num_rows > 0){
 
@@ -103,11 +100,12 @@ while ($counter <  $num_rows){
 	$contractMonth = substr($row["start_date"], 5, 2);
 
 	$contractStatus = "Inactive";
+
 	if ($contractYear > $schoolYear){$contractStatus = "Active";}
 	if ($contractYear == $schoolYear && $contractMonth >= 9){$contractStatus = "Active";}
-	if ($contractStatus === "Active"){
 
-		$sql2 = "select * from payment where contract_id = " . $row["contract_id"];
+
+	$sql2 = "select * from payment where contract_id = " . $row["contract_id"];
 			$result2 = $conn->query($sql2)
 			or trigger_error($conn->error);
 			$row2 = $result2->fetch_array(MYSQLI_BOTH);
@@ -116,6 +114,11 @@ while ($counter <  $num_rows){
 				for($j = 1; $j <= $num_rows2; $j++){
 					$total_amount_paid += $row2["amount"];
 			}
+
+	$amountdue = $row['totalamount'] - $total_amount_paid;
+	if($amountdue > 0) {$contractStatus = "Active";}
+
+	if ($contractStatus === "Active"){
 
 		if ($row["nrpayments"] == 2 and $total_amount_paid == 0)
 			{$nextpayment = 409;}

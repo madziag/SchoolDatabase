@@ -15,7 +15,7 @@
   	   die("Connection failed: " . $conn->connect_error);
     }
 
-$sql = "SELECT * FROM settings;";
+$sql = "SELECT * FROM settings ORDER BY settings_date DESC;";
 
 $result = $conn->query($sql) or trigger_error($conn->error);
 $row = $result->fetch_array(MYSQLI_BOTH);
@@ -34,13 +34,14 @@ $conn->close();
 <body>
 
 <form action= "CheckSettings.php"  method="post" id="form" name="form">
-    Enter the total amount of a one year contract in installments:
+    Enter the total amount of a one year contract (installments):
 	<input type="text" name="contract_amount_installments" value="<?php echo $contract_amount_installments ?>">  <br />
 
-    Enter the total amount of a one year contract paid in full:
+    Enter the total amount of a one year contract (paid in full):
 	<input type="text" name="contract_amount_infull" value="<?php echo $contract_amount_infull ?>"> <br />
 
     <input type="submit">
+
  </form>
  </body>
  </html>
