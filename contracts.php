@@ -41,6 +41,13 @@ $row = $result->fetch_array(MYSQLI_BOTH);
 
 $num_rows = mysqli_num_rows($result);
 
+// Selects most recent value from settings
+$sql2 = "select * from settings order by settings_date desc limit 1;";
+$result2 = $conn->query($sql2)
+or trigger_error($conn->error);
+$row2 = $result2->fetch_array(MYSQLI_BOTH);
+
+
 if ($num_rows > 0){
 
 
@@ -92,7 +99,7 @@ $currentYear = date("Y");
 $currentMonth = date("m");
 
 while ($counter <  $num_rows){
-
+	$nextpayment = 0;
 	if ($currentMonth <= 8){$schoolYear = $currentYear - 1;}
 	else {$schoolYear = $currentYear;}
 
@@ -105,27 +112,38 @@ while ($counter <  $num_rows){
 	if ($contractYear == $schoolYear && $contractMonth >= 9){$contractStatus = "Active";}
 
 
-	$sql2 = "select * from payment where contract_id = " . $row["contract_id"];
-			$result2 = $conn->query($sql2)
+	$sql3 = "select * from payment where contract_id = " . $row["contract_id"];
+			$result3 = $conn->query($sql3)
 			or trigger_error($conn->error);
-			$row2 = $result2->fetch_array(MYSQLI_BOTH);
-			$num_rows2 = mysqli_num_rows($result2);
+			$row3 = $result3->fetch_array(MYSQLI_BOTH);
+			$num_rows3 = mysqli_num_rows($result3);
 			$total_amount_paid = 0;
-				for($j = 1; $j <= $num_rows2; $j++){
-					$total_amount_paid += $row2["amount"];
+				for($j = 1; $j <= $num_rows3; $j++){
+					$total_amount_paid += $row3["amount"];
 			}
 
 	$amountdue = $row['totalamount'] - $total_amount_paid;
 	if($amountdue > 0) {$contractStatus = "Active";}
 
 	if ($contractStatus === "Active"){
+			if ($total_amount_paid == $row["totalamount"]){
+				$nextpayment = 0;
+			} else {
+			//Paid in full
+				if ($row["payment_type"] == "pay in full") {
+					if ($row["totalamount"] - $total_amount_paid <= $row2['contract_amount_infull']/2){
+						$nextpayment = $row["totalamount"] - $total_amount_paid;
+						} else {
+						$nextpayment = $row["totalamount"] - $row2['contract_amount_infull']/2;
+						}
+				}
+			// Paid in installments
+				if ($row["payment_type"] == "installments"){
+					$nextpayment = $row2['contract_amount_installments']/10;
+					}
+		}
 
-		if ($row["nrpayments"] == 2 and $total_amount_paid == 0)
-			{$nextpayment = 409;}
-		if ($total_amount_paid == $row["totalamount"])
-			{$nextpayment = 0;}
-		if ($row["nrpayments"] == 10 and $total_amount_paid != $row["totalamount"])
-			{$nextpayment = 90;}
+
 
 		//Payments should be received by the 10th of each month for installments
 		$date=date_create("first day of next month");
@@ -162,7 +180,7 @@ while ($counter <  $num_rows){
 		<td> " . $row["received_date"] . "  </td>
 		<td> " . $row["amount"] . "  </td>
 		<td> " . "TODO Next Date" . "  </td>
-		<td> " . "TODO Next Payment" . "  </td>
+		<td> " . $nextpayment . "  </td>
 
 		</tr>";
 
