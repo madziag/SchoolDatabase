@@ -23,6 +23,11 @@ or trigger_error($conn->error);
 $row = $result->fetch_array(MYSQLI_BOTH);
 $num_rows = mysqli_num_rows($result);
 
+// Selects most recent value from settings
+$sql_settings = "select * from settings order by settings_date desc limit 1;";
+$result_settings = $conn->query($sql_settings)
+or trigger_error($conn->error);
+$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
 
 echo $row["first_name"] . " " . $row["last_name"];
 
@@ -41,7 +46,6 @@ $table = "<table border =\"1\">
 	<td> Location </td>
 	<td> Age Group </td>
 	<td> Level </td>
-	<td> Contract Status </td>
 	</tr>";
 
 $currentYear = date("Y");
@@ -50,7 +54,7 @@ $number = 1;
 $contractNumbers = array();
 $oldestStartDate = date('Y-m-d', strtotime(date("Y-m-d"). ' + 365 days'));
 $optionString = "<select name=\"contract_id\" id=\"contract_id\">";
-
+$oldestContractNumber = 0;
 
 for($i = 1; $i <= $num_rows; $i++){
 		$contractSigned = $row["contract_signed"];
@@ -63,6 +67,7 @@ for($i = 1; $i <= $num_rows; $i++){
 
 		$contractYear = substr($row["start_date"], 0, 4);
 		$contractMonth = substr($row["start_date"], 5, 2);
+
         $contractStatus = "Inactive";
 		if ($contractYear > $schoolYear){$contractStatus = "Active";}
 		if ($contractYear == $schoolYear && $contractMonth >= 9){$contractStatus = "Active";}
@@ -71,7 +76,6 @@ for($i = 1; $i <= $num_rows; $i++){
 
 		if ($contractStatus == "Active" && $contractDate < $oldestStartDate){
 				$oldestStartDate = $contractDate;
-				$oldestContract_ID = $row["contract_id"];
 				$oldestContractNumber = $number;
 				}
 
@@ -105,7 +109,6 @@ for($i = 1; $i <= $num_rows; $i++){
 				<td> " . $row["location"] . "  </td>
 				<td> " . $row["age_group"] . "  </td>
 				<td> " . $row["level"] . "  </td>
-				<td> " . $contractStatus . "  </td>
 				</tr>";
 
 		$number++;
@@ -136,11 +139,10 @@ $table .= "</table>";
 
    Payment Amount: <input type="number" name="PaymentAmount" value="<?php
 
-   		if ($nrPaymentsByContractNr[$oldestContractNumber] == 2){$nextpayment = 409;}
-   		if ($nrPaymentsByContractNr[$oldestContractNumber] == 10){$nextpayment = 90;}
+   		if ($nrPaymentsByContractNr[$oldestContractNumber] == 2){$nextpayment = $row_settings['contract_amount_infull']/2;}
+   		if ($nrPaymentsByContractNr[$oldestContractNumber] == 10){$nextpayment = $row_settings['contract_amount_installments']/10;}
 
-        echo $nextpayment?>" >
-
+        echo $nextpayment ?>" >
 
 
 

@@ -37,7 +37,6 @@ echo "<table border =\"1\">
 	<td> Location </td>
 	<td> Age Group </td>
 	<td> Level </td>
-	<td> Contract Status </td>
 	</tr>";
 
 $currentYear = date("Y");
@@ -82,7 +81,6 @@ for($i = 1; $i <= $num_rows; $i++){
 				<td> " . $row["location"] . "  </td>
 				<td> " . $row["age_group"] . "  </td>
 				<td> " . $row["level"] . "  </td>
-				<td> " . $contractStatus . "  </td>
 				</tr>";
 
 		$row = $result->fetch_array(MYSQLI_BOTH);

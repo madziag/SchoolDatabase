@@ -1,38 +1,17 @@
 <?php
 
-$left = [1=>true, 5=>true, 7=>true];
-$right = [6=>true, 7=>true, 8=>true, 9=>true];
 
-$union = $left + $right;
-$intersection = array_intersect_assoc($left, $right);
+ $date1 = '2020-09-10';
+ $date2 = '2021-06-09';
+ $d1=new DateTime($date1);
+ $d2=new DateTime($date2);
+ $Months = $d2->diff($d1);
+ $howeverManyMonths = (($Months->y) * 12) + ($Months->m) + 1;
 
-var_dump($left);
-echo "||";
-var_dump($right);
-echo "||";
-var_dump($union);
-echo "||";
-var_dump($intersection);
-echo '||';
+ echo $howeverManyMonths;
+
 ?>
 
-<html>
-<head>
-<style>
-a.button {
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
 
-    text-decoration: none;
-    color: initial;
-}
-</style>
-</head>
-<body>
 
-<button type="button" onclick="alert('Hello world!')">&circ;</button>
-<button type="button" onclick="alert('Hello world!')">&caron;</button>
 
-</body>
-</html>
