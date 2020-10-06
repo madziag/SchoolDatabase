@@ -50,6 +50,37 @@ if(isset($_POST["rate"]) && $_POST["rate"] == "pay in full"){
 			}
 	}
 
+// To calculate the number of lessons left
+//1. Get the start_date from the post_data
+$startDate = new DateTime($_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day']);
+
+//When there is more than one class in the sql table we will select by class -- currently only one class available in db
+$sql_lesCount = "select * from classdates;";
+$result_lesCount = $conn->query($sql_lesCount)
+or trigger_error($conn->error);
+$row_lesCount = $result_lesCount->fetch_array(MYSQLI_BOTH);
+
+//Iterate over each date column value to get date that is => start_date
+$i = 1;
+$found = 0;
+
+while($i <= 60 && !$found) {
+  $date = 'date' . $i;
+  $lesDate = new DateTime($row_lesCount[$date]);
+  if ($lesDate >= $startDate){$found = 1;} else {$i++;}
+  echo $i . ". " . $found . " " . "<br>";
+
+
+}
+
+$nrLessons = 60 - ($i - 1);
+
+echo $nrLessons;
+
+
+
+
+
 //Pay in installments option:
 // Nr of payments = nr of months in contract with last month in June
 // Assumption: Payment is due by the 10th of each contract month. Contracts that start before the 10th are due on the 10th of the same month.
