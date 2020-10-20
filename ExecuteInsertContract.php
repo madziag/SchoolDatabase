@@ -35,6 +35,11 @@ $result_settings = $conn->query($sql_settings)
 or trigger_error($conn->error);
 $row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
 
+$sql_payDate_settings = "select * from settings_payment_due_dates;";
+$result_sql_payDate_settings = $conn->query($sql_payDate_settings)
+or trigger_error($conn->error);
+$row_sql_payDate_settings = $result_sql_payDate_settings->fetch_array(MYSQLI_BOTH);
+
 // Defaulting to group lessons
 $nrOfPayments = 0;
 
@@ -61,6 +66,7 @@ or trigger_error($conn->error);
 $row_lesCount = $result_lesCount->fetch_array(MYSQLI_BOTH);
 
 //Iterate over each date column value to get date that is => start_date
+// To get the first date of the scheduled lessons that is greater that than the start date of the contract
 $i = 1;
 $found = 0;
 
@@ -68,60 +74,79 @@ while($i <= 60 && !$found) {
   $date = 'date' . $i;
   $lesDate = new DateTime($row_lesCount[$date]);
   if ($lesDate >= $startDate){$found = 1;} else {$i++;}
-  echo $i . ". " . $found . " " . "<br>";
-
-
 }
 
 $nrLessons = 60 - ($i - 1);
 
-echo $nrLessons;
-
-
-
-
-
 //Pay in installments option:
-// Nr of payments = nr of months in contract with last month in June
-// Assumption: Payment is due by the 10th of each contract month. Contracts that start before the 10th are due on the 10th of the same month.
-// We add 1 to months in contract because php counts a partial month as 0, but we want the partial month to count as 1
-if(isset($_POST["rate"]) && $_POST["rate"] == "installments"){
-	 $date1 = $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'];
+// Assumption: Nr payments = Nr of payment due dates left in the school year + 1
 
-	 if($_POST['month'] >= 7 ){
-	 	$juneYear = $_POST['year'] + 1;
-	 	} else {
-	 	$juneYear = $_POST['year'];
-	 	}
+$date_array = [];
 
-	 $date2 = $juneYear . '-06-09';
+// If date is a few days in the future we dont count it
+// If date is not in the school year, we dont count it/If start date is in this school year, we count it
 
-	 $d1=new DateTime($date1);
-	 $d2=new DateTime($date2);
-	 $Months = $d2->diff($d1);
-     $monthsInContract = (($Months->y) * 12) + ($Months->m) + 1;
+while(!is_null($row_sql_payDate_settings)){
 
+	if (new DateTime(date('Y') . "-" . $row_sql_payDate_settings['due_month'] . "-" . $row_sql_payDate_settings['due_day']) < new DateTime()){
 
-	 $nrOfPayments = $monthsInContract ;
+			$date1 = new DateTime(date('Y') + 1 . "-" . $row_sql_payDate_settings['due_month'] . "-" . $row_sql_payDate_settings['due_day']);
+
+	} else {
+			$date1 = new DateTime(date('Y') . "-" . $row_sql_payDate_settings['due_month'] . "-" . $row_sql_payDate_settings['due_day']);
+	}
+
+    if (date('z') < 181){
+    		$JuneDate = new DateTime(date('Y') . "-6-30");
+    } else {
+    		$JuneDate = new DateTime(date('Y')+1 . "-6-30");
+    }
+	echo 'Date:' . $date1 ->format('Y-m-d');
+	if($date1 -> format('m') == date('m')){
+		//DO NOTHING
+	} else {
+		if($date1 >= $startDate && $date1 < $JuneDate){
+				$date_array[] = $date1;
+			}
+		}
+
+	$row_sql_payDate_settings = $result_sql_payDate_settings->fetch_array(MYSQLI_BOTH);
+
 }
+
+
+if(isset($_POST["rate"]) && $_POST["rate"] == "installments"){
+	 $nrOfPayments = count($date_array) + 1;
+}
+
+echo 'Count:' . count($date_array);
 
 $grouplessons = 1;
 $individuallessons = 0;
-// Pay in full
-// This needs to be changed to calculate amount by the number of lessons!!!!
+$price_per_les = $row_settings['contract_amount_installments']/60;
+$basePrice = $price_per_les * $nrLessons;
 
-if (isset($_POST["rate"]) && $_POST["rate"] == "pay in full" && $nrOfPayments == 2){$totalContractAmount = $row_settings['contract_amount_infull'];}
-if (isset($_POST["rate"]) && $_POST["rate"] == "pay in full" && $nrOfPayments == 1){$totalContractAmount = $row_settings['contract_amount_infull']/2;}
+// Pay in full
+
+  if (isset($_POST["rate"]) && $_POST["rate"] == "pay in full"){
+
+		$discount = $row_settings['contract_amount_infull']/$row_settings['contract_amount_installments'];
+		$totalContractAmount = $basePrice * $discount;
+
+	}
 
 //Pay in installments
-// This needs to be changed to calculate amount by the number of lessons!!!!
 
-if (isset($_POST["rate"]) && $_POST["rate"] == "installments"){$totalContractAmount = ($nrOfPayments/10) * $row_settings['contract_amount_installments'];}
+  if (isset($_POST["rate"]) && $_POST["rate"] == "installments"){
+
+     	$totalContractAmount = $basePrice;
+
+    }
 
 
 // SQL Query
 
- $sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, start_date) VALUES
+ $sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, lesson_count, start_date) VALUES
  ('" . $studentID . "', '"
      . $_POST['locSelect'] . "', '"
      . $_POST['ageGroup'] . "', '"
@@ -134,10 +159,11 @@ if (isset($_POST["rate"]) && $_POST["rate"] == "installments"){$totalContractAmo
      . $grouplessons . ", "
      . $individuallessons . ", "
      . "0, '"
-     . $_POST['comments'] . "', '"
+     . $_POST['comments'] . "', "
+     . $nrLessons . ", '"
      . $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'] . "');";
 
-$sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, start_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', '--');";
+$sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, start_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', 60,'--');";
 
 $contractID = 0;
 
@@ -155,10 +181,10 @@ $conn->close();
 
 $_POST = array(); // Clears post data
 
-if ($contractID != 0){
-		header("Location: DisplayPrintContract.php?studentID=".$studentID."&contractID=".$contractID);
-	} else {
-		echo "Error adding contract";}
+//if ($contractID != 0){
+//		header("Location: DisplayPrintContract.php?studentID=".$studentID."&contractID=".$contractID);
+//	} else {
+//		echo "Error adding contract";}
 
 ?>
 
