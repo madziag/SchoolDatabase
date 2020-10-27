@@ -87,6 +87,8 @@ $date_array = [];
 // If date is not in the school year, we dont count it/If start date is in this school year, we count it
 
 while(!is_null($row_sql_payDate_settings)){
+	//If date (day/month) is already passed then year = next year
+	//If date (day/momth) has not yet come then year = current year
 
 	if (new DateTime(date('Y') . "-" . $row_sql_payDate_settings['due_month'] . "-" . $row_sql_payDate_settings['due_day']) < new DateTime()){
 
@@ -96,30 +98,38 @@ while(!is_null($row_sql_payDate_settings)){
 			$date1 = new DateTime(date('Y') . "-" . $row_sql_payDate_settings['due_month'] . "-" . $row_sql_payDate_settings['due_day']);
 	}
 
+	//If todays date is before June then the school year ends this year
+	//If todays date is after June then the school year ends next year
+
     if (date('z') < 181){
     		$JuneDate = new DateTime(date('Y') . "-6-30");
     } else {
     		$JuneDate = new DateTime(date('Y')+1 . "-6-30");
     }
-	echo 'Date:' . $date1 ->format('Y-m-d');
+
+	//If due date (created above) is part of current month then we do not add it to the array
+	//Otherwise if part of the school year then add it to the array
+
 	if($date1 -> format('m') == date('m')){
 		//DO NOTHING
 	} else {
 		if($date1 >= $startDate && $date1 < $JuneDate){
-				$date_array[] = $date1;
+			if($date1 -> format('m') == 2 && $startDate -> format('m') == 2){
+				//DO NOTHING
+			}else{
+				$date_array[] = $date1;}
 			}
 		}
 
+   //Get the next date from the results array
 	$row_sql_payDate_settings = $result_sql_payDate_settings->fetch_array(MYSQLI_BOTH);
 
 }
 
-
+//if rate type = installments, then the nr of payments = the number of dates in the array + 1
 if(isset($_POST["rate"]) && $_POST["rate"] == "installments"){
 	 $nrOfPayments = count($date_array) + 1;
 }
-
-echo 'Count:' . count($date_array);
 
 $grouplessons = 1;
 $individuallessons = 0;
@@ -181,10 +191,10 @@ $conn->close();
 
 $_POST = array(); // Clears post data
 
-//if ($contractID != 0){
-//		header("Location: DisplayPrintContract.php?studentID=".$studentID."&contractID=".$contractID);
-//	} else {
-//		echo "Error adding contract";}
+if ($contractID != 0){
+		header("Location: DisplayPrintContract.php?studentID=".$studentID."&contractID=".$contractID);
+	} else {
+		echo "Error adding contract";}
 
 ?>
 

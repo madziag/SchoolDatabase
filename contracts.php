@@ -14,6 +14,7 @@ $servername = 'localhost';
   	   die("Connection failed: " . $conn->connect_error);
     }
 
+
 $sortByCol = "last_name";
 $order = "ASC";
 
@@ -47,6 +48,10 @@ $result2 = $conn->query($sql2)
 or trigger_error($conn->error);
 $row2 = $result2->fetch_array(MYSQLI_BOTH);
 
+$sql_payDate_settings = "select * from settings_payment_due_dates;";
+$result_sql_payDate_settings = $conn->query($sql_payDate_settings)
+or trigger_error($conn->error);
+$payDate_count = mysqli_num_rows($result_sql_payDate_settings);
 
 if ($num_rows > 0){
 
@@ -106,6 +111,7 @@ while ($counter <  $num_rows){
 	$contractYear = substr($row["start_date"], 0, 4);
 	$contractMonth = substr($row["start_date"], 5, 2);
 
+    $startDate = new DateTime($row["start_date"]);
 	$contractStatus = "Inactive";
 
 	if ($contractYear > $schoolYear){$contractStatus = "Active";}
@@ -129,23 +135,45 @@ while ($counter <  $num_rows){
 			if ($total_amount_paid == $row["totalamount"]){
 				$nextpayment = 0;
 			} else {
-			//Paid in full
+			//Pay in full contract type
+			// TODO: $row[totalamount] is not the correct amount to use after we implement discounting!!!!!
+            // If the total amount is more than the price of 1 semester but less that the prices of the whole school yr, then amout due = totaldue - half of the school year (second semester)
+            // If total amount is less than the price of 1 semester then amount due = total amount OTHERWISE it is the price of 1 semester
+
 				if ($row["payment_type"] == "pay in full") {
-					if ($row["totalamount"] - $total_amount_paid <= $row2['contract_amount_infull']/2){
-						$nextpayment = $row["totalamount"] - $total_amount_paid;
-						} else {
-						$nextpayment = $row["totalamount"] - $row2['contract_amount_infull']/2;
-						}
-				}
-			// Paid in installments
-				if ($row["payment_type"] == "installments"){
-					$nextpayment = $row2['contract_amount_installments']/10;
+					if ($row["totalamount"] - $total_amount_paid > $row2['contract_amount_infull']/2 && $row["totalamount"] - $total_amount_paid < $row2['contract_amount_infull']){
+							$nextpayment = ($row["totalamount"] - $total_amount_paid) - $row2['contract_amount_infull']/2;
+							}
+					if ($row["totalamount"] - $total_amount_paid < $row2['contract_amount_infull']/2){
+							$nextpayment = $row["totalamount"] - $total_amount_paid;
 					}
+					if (($row["totalamount"] - $total_amount_paid == $row2['contract_amount_infull']) || ($row["totalamount"] - $total_amount_paid == $row2['contract_amount_infull']/2)){
+							$nextpayment = $row2['contract_amount_infull']/2;
+					}
+				}
+
+			// Pay in installments contract_type
+			// TODO: $row[totalamount] is not the correct amount to use after we implement discounting!!!!!
+			//
+
+				if ($row["payment_type"] == "installments"){
+				    if (($row["totalamount"] - $total_amount_paid)% ($row2['contract_amount_installments']/($payDate_count + 1)) == 0){
+				    		$nextpayment = $row2['contract_amount_installments']/($payDate_count + 1);
+				    	} else {
+				    		$nextpayment = ($row["totalamount"] - $total_amount_paid)% ($row2['contract_amount_installments']/($payDate_count + 1));
+
+				    	}
+				    }
+
 		}
 
+		include 'CalculatePayDates.php';
 
+		var_dump($date_array);
 
-		//Payments should be received by the 10th of each month for installments
+		//Payments should be received installments (Upon signup and each remaining due date in the school year (as per the db)
+		//Payments should be received pay in full(Upon signup and feb due date (if still in school year)
+
 		$date=date_create("first day of next month");
 		date_add($date, date_interval_create_from_date_string('9 days'));
 		$nextdate = date_format($date,"Y-m-d");
