@@ -167,16 +167,43 @@ while ($counter <  $num_rows){
 
 		}
 
+
 		include 'CalculatePayDates.php';
 
-		var_dump($date_array);
+		$amountLeftToPay = $row["totalamount"] - $total_amount_paid;
+		//Paid in full
+		if($row["payment_type"] == "pay in full" ){
+			if($amountLeftToPay > $row2['contract_amount_infull']/2){
+					$nextPaymentDueDate = $row["contract_creation_date"];
+					}
+			if($amountLeftToPay < $row2['contract_amount_infull']/2 && date_format(new DateTime($row["start_date"]), "m") >= 2 && date_format(new DateTime($row["start_date"]), "m") <= 6){
+					$nextPaymentDueDate = $row["contract_creation_date"];
+					}
+			if($amountLeftToPay == $row2['contract_amount_infull']/2){
+					$february = NULL;
+					$datenumber = 0;
+					while(is_null($february) && $datenumber < count($date_array)){
+							if($date_array[$datenumber] -> format('m') == 2){
+								$february = date_format($date_array[$datenumber], "Y-m-d");
+								}
+							$datenumber++;
+							}
+					if (!is_null($february)){
+						$nextPaymentDueDate = $february;
+					} else {
+						$nextPaymentDueDate = $row["contract_creation_date"];
+						}
+					}
+		}
+
+		if($row["payment_type"] == "installments" ){$nextPaymentDueDate  = 'TODO INSTALLMENTS';}
 
 		//Payments should be received installments (Upon signup and each remaining due date in the school year (as per the db)
 		//Payments should be received pay in full(Upon signup and feb due date (if still in school year)
 
-		$date=date_create("first day of next month");
+		/*$date=date_create("first day of next month");
 		date_add($date, date_interval_create_from_date_string('9 days'));
-		$nextdate = date_format($date,"Y-m-d");
+		$nextPaymentDueDate = date_format($date,"Y-m-d");
 
 		// TODO: The calculation uses an example date
 		/*$firstpaydate = date_create('2017-09-01');
@@ -184,9 +211,9 @@ while ($counter <  $num_rows){
 		$lastpaydate = date_add($firstpaydate, date_interval_create_from_date_string('5 months'));
 		$monthslefttopay = ceil(($row["totalamount"] - $total_amount_paid)/90);
 		$nextpaymonth = date_sub($lastpaydate, date_interval_create_from_date_string($monthslefttopay . ' months'));
-		$nextdate = date_format($nextpaymonth,"Y-m-d");
+		$nextPaymentDueDate = date_format($nextpaymonth,"Y-m-d");*/
 
-		if ($nextpayment == 0){$nextdate = 'Paid';}*/
+		if ($nextpayment == 0){$nextPaymentDueDate = 'Paid';}
 
 		$contractSigned = $row["contract_signed"];
 		if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
@@ -207,7 +234,7 @@ while ($counter <  $num_rows){
 		<td> " . $row["totalamount"] . "  </td>
 		<td> " . $row["received_date"] . "  </td>
 		<td> " . $row["amount"] . "  </td>
-		<td> " . "TODO Next Date" . "  </td>
+		<td> " . $nextPaymentDueDate . "  </td>
 		<td> " . $nextpayment . "  </td>
 
 		</tr>";

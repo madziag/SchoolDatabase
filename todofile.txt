@@ -1,8 +1,90 @@
-4/14/2020:
+10/27/2020:
+In contracts.php
+To calcuate next due date for installments: 
+1. Normal case: Student pays on time so next due date is based on the number of payments left
+2. Case where they pay earlier than due date -> if amount left = 225 then last date in the array
+if 2 x costperinstallment -> 2nd last date; if 3 x costperinstallment -> 3rd last date in the array. If amount > costperinstallment x nr of dates in the array then = contract creation date
+3. Payment is overdue: How many payments overdue are there -> check in db for the previous due date 
+Can also track payment due date per student**** 
 
-WE ARE CURRENTLY WORKING ON: --> We need to add a change(update) contract page. File is named Update Contract but has no content yet. 
+Amount due/nr payments = nr of normal installment payment
+
+10/20/2020:
+ExecuteInsertContract: Testing of dates for payment counts
+
+### Scenarios ###
+
+1. Installments
+- Normal start - Feb 1
+- Late Start - Feb 28
+- Start today
+2. Pay in full
+- Normal start - Feb 1
+- Late Start - Feb 28
+- Start today
+
+10/6/2020:
+When there is more than one class in the sql table we will select by class -- currently only one class available in db (classdates table in db, file = executeinsertcontract.php)
+
+9/30/2020:
+Calculate the amount due by using the number of lessons (we are currently using months). Needs to be changed in executeinsertcontract.php. 
+Once done, we need to make sure that amount due for next payment is calculated correctly in contracts.php
+'Not set' payment option -> needs to be handled correctly or removed?
+
+9/23/2020
+
+No place to edit amount due for students, different than the normal amount due. 
+-- if contract start is later, are the contract amounts, lesson count, nrpayments generated correctly?
+-- implement discounting - user can manually reduce the amount the student has to pay, also group be able to implement group discount. 
+
+Calculate correct payment due date. 
 
 
+9/15/2020:
+Do more testing on scenario on next due amount:
+
+Pay In Full Cases
+case 1: 2 semesters, paid-in-full price
+case 2: 1 semester; paid-in-full price
+case 3: 2 semesters, 1st semester cheaper
+case 4: 1 semester, cheaper
+case 5: 2 semesters; paid in full price, sem 1 is paid
+case 6: 2 semesters, pay in full price, 1st semester cheaper & paid
+
+Installment Cases
+case 1: 2 semesters, pay in installments price
+case 2: 1 semester, pay in installment price
+case 3: 2 semesters, 1st semester: 1st installment cheaper - 45, next 90
+case 4: 2 semesters, late start - 9 installments (instead of usual 10)
+case 5: 2 semesters, x nr of installments paid
+case 6: 1st payment is less, but has been paid 
+case 7: 1st payment is less, 2nd payment is normal, both have been paid
+
+
+
+9/2/2020:
+-- consider extending settings to include locations and levels of classes. 
+-- used new settings to calculate correct payments  --> CONTINUE FOR NEXT TIME (CONTRACTS.PHP)
+
+
+7/14/2020: 
+
+-- NEXT STEP: Create a page for user to be able to enter the current cost (setting page), 
+   create a table where settings are stored, and be able to use this information in executeinsertcontract(total amount)
+
+6/9/2020: Make InsertPayment page work. Currently it only echos the student and contract ID
+-- Currently the payment amount does not change regardless of the contract number, 
+we need to make the payment amount value dependent on the contract number
+
+
+*** 5/12/2020: Dealing with nulls e.g. can book or starter kit be null
+
+5/26/2020: To prevent duplicate contracts: 
+-- display current contracts/In create contract -> show all active contracts (for the current date or unpaid)
+-- if she decides to add contract regardless of duplicate then have a warning pop up -> 3 options: 
+i. continue (will create duplicate contracts)
+ii. edit current newly created contract 
+iii. cancel the creation of the new contract, and edit existing contract 
 
 -- Instead of hardcoding payment amounts in contracts.php, create a settings page through which the user is able to change the values herself. 
 
@@ -10,11 +92,12 @@ WE ARE CURRENTLY WORKING ON: --> We need to add a change(update) contract page. 
 
 1/7/2020:
 Contracts
--- Main contract page should show only active contracts
+-- Main contract page should show only active contracts 
+-- For inactive students (as per students table), if a new contract is added, the status should automatically update from inactive to active. 
 -- Individual contract page should show all contracts, active and inactive (grey out?)/Does a student have old unpaid contracts? 
--- In create contract -> show all active contracts (for the current date or unpaid)
+   These contracts should be sorted by date, with the newest on the top
 -- Get location, level and age group info => autofill with previous info (level up) for existing students
--- Check box for new signed contract received
+-- Check box for new signed contract received: in individual contract page, if signed contract = no, then we should have a button to sign the contract
 
 Payments 
 -- Enter Payments Area: Implement option that pinpoints which contract is being paid for (if previous contract has not be paid in full) -- 

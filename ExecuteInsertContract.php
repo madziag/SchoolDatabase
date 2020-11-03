@@ -156,7 +156,7 @@ $basePrice = $price_per_les * $nrLessons;
 
 // SQL Query
 
- $sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, lesson_count, start_date) VALUES
+ $sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, lesson_count, start_date, contract_creation_date) VALUES
  ('" . $studentID . "', '"
      . $_POST['locSelect'] . "', '"
      . $_POST['ageGroup'] . "', '"
@@ -171,9 +171,10 @@ $basePrice = $price_per_les * $nrLessons;
      . "0, '"
      . $_POST['comments'] . "', "
      . $nrLessons . ", '"
-     . $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'] . "');";
+     . $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'] . "', '"
+     . date("Y-m-d")."');";
 
-$sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, start_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', 60,'--');";
+$sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, start_date, contract_creation_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', 60,'--', '". date("Y-m-d")."');";
 
 $contractID = 0;
 
