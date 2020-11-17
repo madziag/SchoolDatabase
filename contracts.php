@@ -53,6 +53,7 @@ $result_sql_payDate_settings = $conn->query($sql_payDate_settings)
 or trigger_error($conn->error);
 $payDate_count = mysqli_num_rows($result_sql_payDate_settings);
 
+
 if ($num_rows > 0){
 
 
@@ -170,55 +171,83 @@ while ($counter <  $num_rows){
 
 		include 'CalculatePayDates.php';
 
+
 		$amountLeftToPay = $row["totalamount"] - $total_amount_paid;
-		//Paid in full
-		if($row["payment_type"] == "pay in full" ){
-			if($amountLeftToPay > $row2['contract_amount_infull']/2){
-					$nextPaymentDueDate = $row["contract_creation_date"];
+
+		//Gets the February date from the payment due dates array if there is one
+
+		$february = NULL;
+		$datenumber = 0;
+
+		while(is_null($february) && $datenumber < count($date_array)){
+				if($date_array[$datenumber] -> format('m') == 2){
+					$february = date_format($date_array[$datenumber], "Y-m-d");
 					}
-			if($amountLeftToPay < $row2['contract_amount_infull']/2 && date_format(new DateTime($row["start_date"]), "m") >= 2 && date_format(new DateTime($row["start_date"]), "m") <= 6){
+				$datenumber++;
+		}
+
+
+        //If total amount paid = 0, then next payment date is the contract creation date
+
+		if($total_amount_paid == 0){
+
 					$nextPaymentDueDate = $row["contract_creation_date"];
-					}
-			if($amountLeftToPay == $row2['contract_amount_infull']/2){
-					$february = NULL;
-					$datenumber = 0;
-					while(is_null($february) && $datenumber < count($date_array)){
-							if($date_array[$datenumber] -> format('m') == 2){
-								$february = date_format($date_array[$datenumber], "Y-m-d");
-								}
-							$datenumber++;
+
+		} else {
+			//Paid in full
+
+			if($row["payment_type"] == "pay in full" ){
+
+				if($amountLeftToPay > $row2['contract_amount_infull']/2){
+						$nextPaymentDueDate = $row["contract_creation_date"];
+						}
+
+				if($amountLeftToPay < $row2['contract_amount_infull']/2){
+					if(date_format(new DateTime($row["start_date"]), "m") >= 2 && date_format(new DateTime($row["start_date"]), "m") <= 6){
+						$nextPaymentDueDate = $row["contract_creation_date"];
+					} else {
+						if (!is_null($february)){
+							$nextPaymentDueDate = $february;
+						} else {
+							$nextPaymentDueDate = $row["contract_creation_date"];
 							}
+						}
+					}
+
+				if($amountLeftToPay == $row2['contract_amount_infull']/2){
 					if (!is_null($february)){
 						$nextPaymentDueDate = $february;
 					} else {
 						$nextPaymentDueDate = $row["contract_creation_date"];
 						}
+				}
+			}
+			//Sorts the dates in the payment due date array
+
+
+
+			if($row["payment_type"] == "installments" ){
+				$nrOfPaymentsLeft = $amountLeftToPay/($row2['contract_amount_installments']/$payDate_count);
+				sort($date_array);
+
+				if($nrOfPaymentsLeft > count($date_array) ){
+					$nextPaymentDueDate = $row["contract_creation_date"];
+					} else {
+						$nextPaymentDueDate = date_format($date_array[count($date_array) - $nrOfPaymentsLeft], "Y-m-d");
+						}
+				}
+
+
+			if ($nextpayment == 0){
+					$nextPaymentDueDate = 'Paid';
 					}
 		}
 
-		if($row["payment_type"] == "installments" ){$nextPaymentDueDate  = 'TODO INSTALLMENTS';}
 
-		//Payments should be received installments (Upon signup and each remaining due date in the school year (as per the db)
-		//Payments should be received pay in full(Upon signup and feb due date (if still in school year)
-
-		/*$date=date_create("first day of next month");
-		date_add($date, date_interval_create_from_date_string('9 days'));
-		$nextPaymentDueDate = date_format($date,"Y-m-d");
-
-		// TODO: The calculation uses an example date
-		/*$firstpaydate = date_create('2017-09-01');
-
-		$lastpaydate = date_add($firstpaydate, date_interval_create_from_date_string('5 months'));
-		$monthslefttopay = ceil(($row["totalamount"] - $total_amount_paid)/90);
-		$nextpaymonth = date_sub($lastpaydate, date_interval_create_from_date_string($monthslefttopay . ' months'));
-		$nextPaymentDueDate = date_format($nextpaymonth,"Y-m-d");*/
-
-		if ($nextpayment == 0){$nextPaymentDueDate = 'Paid';}
-
-		$contractSigned = $row["contract_signed"];
-		if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
-		else if(is_null($row["contract_signed"])){$contractSigned = 'None';}
-		else if($row["contract_signed"] == 0){$contractSigned = 'No';}
+			$contractSigned = $row["contract_signed"];
+			if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
+			else if(is_null($row["contract_signed"])){$contractSigned = 'None';}
+			else if($row["contract_signed"] == 0){$contractSigned = 'No';}
 
 
 		echo
