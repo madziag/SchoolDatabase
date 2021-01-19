@@ -1,3 +1,26 @@
+1/12/2021: 
+-> if nrpayments = 0 then paymentDueDate = contractCreationDate
+-> if nrpayments > 0, then paymentDueDate depends on: 
+		i. contract type (installments or pay in full)
+		ii. paymentSettings
+-> if nrpayments = 0 then paymountAmount can be:
+		i. The payment setting amount
+		ii. Or less (if students starts later than the default date)
+-> if nrpayment > 0 the payment Amount should always be calculated as it depends on what the student has paid in the past
+
+1/19/2021
+*** FOR NEXT TIME -- use new nextpay values to sort values in contracts.php - reduce amount of code in contracts.php as we are now using data directly out of the db as opposed to calculating it on the fly in the php doc
+*** We need to find other places where we use this same value and substitute it with using values dircetly from the db. 
+
+
+
+1/5/2021: In ExecuteInsertContract.php: When it counts the number of classes, it does not take into consideration the location. In the DB we only have Zator entered. Need to add other locations with their respective schedules
+
+
+Possible build test cases for next due date installments (contract.php)
+
+
+
 10/27/2020:
 In contracts.php
 To calcuate next due date for installments: 
@@ -142,7 +165,7 @@ Students pay one month in advance
 -- which classes have a book fee -- option to join with kalss
 -- why some students have starter pack and others not?
 -- do students change locations when they go up a level - relationship between groups and locations. how many locations do they have?
-select klass and location together or separately? what does klas 3/2 mean?
+select class and location together or separately? what does klas 3/2 mean?
 -- contract.php table?
 -- add notes column mysql -- archive old notes instead of delete??
 -- individual students -- 2 students, 1 row (sylwia Majkut? who pays. Do students prepay or pay after the lessons. is there a contract?
