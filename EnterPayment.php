@@ -16,12 +16,12 @@
 	}
 	
 	$studentID = $_GET["studentID"];
-	$sql = "select a.*, first_name, last_name from contracts a left join students b on a.student_id = b.student_id where a.student_id = " . $_GET["studentID"] ;
+	$sql_contracts = "select a.*, first_name, last_name from contracts a left join students b on a.student_id = b.student_id where a.student_id = " . $_GET["studentID"] ;
 	
-	$result = $conn->query($sql)
+	$result_contracts = $conn->query($sql_contracts)
 	or trigger_error($conn->error);
-	$row = $result->fetch_array(MYSQLI_BOTH);
-	$num_rows = mysqli_num_rows($result);
+	$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
+	$num_rows = mysqli_num_rows($result_contracts);
 	
 	// Selects most recent value from settings
 	$sql_settings = "select * from settings order by settings_date desc limit 1;";
@@ -29,7 +29,7 @@
 	or trigger_error($conn->error);
 	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
 	
-	echo $row["first_name"] . " " . $row["last_name"];
+	echo $row_contracts["first_name"] . " " . $row_contracts["last_name"];
 	
 	
 	
@@ -57,62 +57,55 @@
 	$oldestContractNumber = 0;
 	
 	for($i = 1; $i <= $num_rows; $i++){
-		$contractSigned = $row["contract_signed"];
-		if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
-		else if(is_null($row["contract_signed"])){$contractSigned = 'None';}
-		else if($row["contract_signed"] == 0){$contractSigned = 'No';}
+		$contractSigned = $row_contracts["contract_signed"];
+		if ($row_contracts["contract_signed"] == 1){$contractSigned = 'Yes';}
+		else if(is_null($row_contracts["contract_signed"])){$contractSigned = 'None';}
+		else if($row_contracts["contract_signed"] == 0){$contractSigned = 'No';}
 		
-		if ($currentMonth <= 8){$schoolYear = $currentYear - 1;}
-		else {$schoolYear = $currentYear;}
+		include 'ContractStatus.php';	
 		
-		$contractYear = substr($row["start_date"], 0, 4);
-		$contractMonth = substr($row["start_date"], 5, 2);
-		
-        $contractStatus = "Inactive";
-		if ($contractYear > $schoolYear){$contractStatus = "Active";}
-		if ($contractYear == $schoolYear && $contractMonth >= 9){$contractStatus = "Active";}
-		
-		$contractDate = date('Y-m-d', strtotime($row["start_date"]));
+		// START HERE!!!!!!!!!!1
+		$contractDate = date('Y-m-d', strtotime($row_contracts["start_date"]));
 		
 		if ($contractStatus == "Active" && $contractDate < $oldestStartDate){
 			$oldestStartDate = $contractDate;
 			$oldestContractNumber = $number;
 		}
 		
-		$contractNumbers[$number]= $row["contract_id"];
-		$nrPaymentsByContractNr[$number]= $row["nrpayments"];
+		$contractNumbers[$number]= $row_contracts["contract_id"];
+		$nrPaymentsByContractNr[$number]= $row_contracts["nrpayments"];
 		
-		$optionString .= "<option value=\"" . $row["contract_id"] . "\">" . $number . "</option>";
+		$optionString .= "<option value=\"" . $row_contracts["contract_id"] . "\">" . $number . "</option>";
 		
 		// Add additional condition when payments are implemented -- contract remains Active if NOT paid off completely
 		
-        $sql2 = "select * from payment where contract_id = " . $row["contract_id"];
-		$result2 = $conn->query($sql2)
+        $sql_settings = "select * from payment where contract_id = " . $row_contracts["contract_id"];
+		$result_settings = $conn->query($sql_settings)
 		or trigger_error($conn->error);
-		$row2 = $result2->fetch_array(MYSQLI_BOTH);
-		$num_rows2 = mysqli_num_rows($result2);
+		$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
+		$num_rows2 = mysqli_num_rows($result_settings);
         $total_amount_paid = 0;
 		
 		for($j = 1; $j <= $num_rows2; $j++){
-			$total_amount_paid += $row2["amount"];
+			$total_amount_paid += $row_settings["amount"];
 		}
 		
 		$table .= "<tr>
 		<td> " . $number . " </td>
-		<td> " . $row["start_date"] . " </td>
+		<td> " . $row_contracts["start_date"] . " </td>
 		<td> " . $contractSigned . " </td>
-		<td> " . $row["nrpayments"] . "  </td>
+		<td> " . $row_contracts["nrpayments"] . "  </td>
 		<td> " . number_format((float)$total_amount_paid, 2, '.', '') . "  </td>
-		<td> " . $row["totalamount"] . "  </td>
-		<td> " . $row["book"] . "  </td>
-		<td> " . $row["starter"] . "  </td>
-		<td> " . $row["location"] . "  </td>
-		<td> " . $row["age_group"] . "  </td>
-		<td> " . $row["level"] . "  </td>
+		<td> " . $row_contracts["totalamount"] . "  </td>
+		<td> " . $row_contracts["book"] . "  </td>
+		<td> " . $row_contracts["starter"] . "  </td>
+		<td> " . $row_contracts["location"] . "  </td>
+		<td> " . $row_contracts["age_group"] . "  </td>
+		<td> " . $row_contracts["level"] . "  </td>
 		</tr>";
 		
 		$number++;
-		$row = $result->fetch_array(MYSQLI_BOTH);
+		$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
 	}
 	
 	
@@ -123,135 +116,39 @@
 	$optionString = str_replace($find,$replace,$optionString);
 	
 	$table .= "</table>";
-	
-	$sql_settings = "select * from settings order by settings_date desc limit 1;";
-	$result_settings = $conn->query($sql_settings)
-	or trigger_error($conn->error);
-	$setting_row = $result_settings->fetch_array(MYSQLI_BOTH);
-	
-	$sql_payDate_settings = "select * from settings_payment_due_dates;";
-	$result_sql_payDate_settings = $conn->query($sql_payDate_settings)
-	or trigger_error($conn->error);
-	$payDate_count = mysqli_num_rows($result_sql_payDate_settings);
-	
-	
-	$nrPaymentsInstallments = $payDate_count + 1;
-	
-	/****************************************************************************************************************************/
-	$sql_contracts = "select * from contracts where contracts.contract_id = " . $contractNumbers[$oldestContractNumber];
-	
-	$result_contracts = $conn->query($sql_contracts)
-	or trigger_error($conn->error);
-	$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
-	
-	
-	$nextpayment = 0;
-	if ($currentMonth <= 8){
-		$schoolYear = $currentYear - 1;
-	}
-	else {
-		$schoolYear = $currentYear;
-	}
-	
-	$contractYear = substr($row_contracts["start_date"], 0, 4);
-	$contractMonth = substr($row_contracts["start_date"], 5, 2);
-	
-	$startDate = new DateTime($row_contracts["start_date"]);
-	$contractStatus = "Inactive";
-	
-	if ($contractYear > $schoolYear){
-		$contractStatus = "Active";
-	}
-	if ($contractYear == $schoolYear && $contractMonth >= 9){
-		$contractStatus = "Active";
-	}
-	
-	
-	$sql_payments = "select * from payment where contract_id = " . $row_contracts["contract_id"];
-	$result_payments = $conn->query($sql_payments)
-	or trigger_error($conn->error);
-	$row_payments = $result_payments->fetch_array(MYSQLI_BOTH);
-	$num_rows_payments = mysqli_num_rows($result_payments);
-	
-	$total_amount_paid = 0;
-	for($j = 1; $j <= $num_rows_payments; $j++){
-		$total_amount_paid += $row_payments["amount"];
-	}
-	
-	$amountdue = $row_contracts['totalamount'] - $total_amount_paid;
-	if($amountdue > 0) {
-		$contractStatus = "Active";
-	}
-	
-	if ($contractStatus === "Active"){
-		if ($total_amount_paid == $row_contracts["totalamount"]){
-			$nextpayment = 0;
-			} else {
-			//Pay in full contract type
-			// TODO: $row[totalamount] is not the correct amount to use after we implement discounting!!!!!
-			// If the total amount is more than the price of 1 semester but less that the prices of the whole school yr, then amout due = totaldue - half of the school year (second semester)
-			// If total amount is less than the price of 1 semester then amount due = total amount OTHERWISE it is the price of 1 semester
-			
-			if ($row_contracts["payment_type"] == "pay in full") {
-				if ($row_contracts["totalamount"] - $total_amount_paid > $setting_row['contract_amount_infull']/2 && $row_contracts["totalamount"] - $total_amount_paid < $row2['contract_amount_infull']){
-					$nextpayment = ($row_contracts["totalamount"] - $total_amount_paid) - $setting_row['contract_amount_infull']/2;
-				}
-				if ($row_contracts["totalamount"] - $total_amount_paid < $setting_row['contract_amount_infull']/2){
-					$nextpayment = $row_contracts["totalamount"] - $total_amount_paid;
-				}
-				if (($row_contracts["totalamount"] - $total_amount_paid == $setting_row['contract_amount_infull']) || ($row_contracts["totalamount"] - $total_amount_paid == $setting_row['contract_amount_infull']/2)){
-					$nextpayment = $setting_row['contract_amount_infull']/2;
-				}
-			}
-			
-			// Pay in installments contract_type
-			// TODO: $row[totalamount] is not the correct amount to use after we implement discounting!!!!!
-			//
-			
-			if ($row_contracts["payment_type"] == "installments"){
-				if (($row_contracts["totalamount"] - $total_amount_paid)% ($setting_row['contract_amount_installments']/($payDate_count + 1)) == 0){
-					$nextpayment = $setting_row['contract_amount_installments']/($payDate_count + 1);
-					} else {
-					$nextpayment = ($row_contracts["totalamount"] - $total_amount_paid)% ($setting_row['contract_amount_installments']/($payDate_count + 1));
-					
-				}
-			}
-			
-		}
 		
-		if ($nrPaymentsByContractNr[$oldestContractNumber] == 2){
-			$nextpayment = $row_settings['contract_amount_infull']/2;
-			} else {
-			$nextpayment = $row_settings['contract_amount_installments']/$nrPaymentsInstallments;
-		}
+	if($oldestContractNumber != 0){
+	
+		$sql_nextPayment = "select * from nextpayment where contractID = " . $contractNumbers[$oldestContractNumber];
 		
-   		# if ($nrPaymentsByContractNr[$oldestContractNumber] == $nrPaymentsInstallments){$nextpayment = $row_settings['contract_amount_installments']/$nrPaymentsInstallments;}
-			
-			
-			/****************************************************************************************************************************/
-			
-		?>
+		$result_nextPayment = $conn->query($sql_nextPayment)
+		or trigger_error($conn->error);
+		$row_nextPayment = $result_nextPayment->fetch_array(MYSQLI_BOTH);
+	}
+
+?>
 		
 		<html>
 			<body>
 				
 				
-			
-			<form action= "InsertPayment.php?studentID=<?php echo $studentID ?>" method="post">
 				
-				Contract: <?php echo $optionString ?>;
-				
-				Payment Amount: <input type="number" name="PaymentAmount" value="<?php echo $nextpayment ?>" >
-				
-				
-				
-				
-				<input type="submit" name = "addPayment" value = "Add payment ">
+				<form action= "InsertPayment.php?studentID=<?php echo $studentID ?>" method="post">
+					
+					Contract: <?php echo $optionString ?>;
+					
+					Payment Amount: <input type="number" name="PaymentAmount" value="<?php echo $row_nextPayment["nextPaymentAmount"] ?>" >
+					
+					
+					
+					
+					<input type="submit" name = "addPayment" value = "Add payment ">
 				
 				<?php echo $table ?>
 				
-			</form>
-			
-		</body>
-	</html>
-	
+				</form>
+				
+			</body>
+		</html>
+		
+		

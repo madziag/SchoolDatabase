@@ -2,40 +2,9 @@
 	
 	$nextpayment = 0;
 	
-	if ($currentMonth <= 8){
-		$schoolYear = $currentYear - 1;
-		} else {
-		$schoolYear = $currentYear;
-	}
+	include 'ContractStatus.php';
 	
-	$contractYear = substr($row_contracts["start_date"], 0, 4);
-	$contractMonth = substr($row_contracts["start_date"], 5, 2);
-	
-	$startDate = new DateTime($row_contracts["start_date"]);
-	
-	
-	$contractStatus = "Inactive";
-	
-	if ($contractYear > $schoolYear){
-		$contractStatus = "Active";
-	}
-	
-	if ($contractYear == $schoolYear && $contractMonth >= 9){
-		$contractStatus = "Active";
-	}
-	
-	
-	$sql_payments = "select * from payment where contract_id = " . $row_contracts["contract_id"];
-	
-	$result_payments = $conn->query($sql_payments)
-	or trigger_error($conn->error);
-	$row_payments = $result_payments->fetch_array(MYSQLI_BOTH);
-	$num_rows_payments = mysqli_num_rows($result_payments);
-	
-	$total_amount_paid = 0;
-	for($j = 1; $j <= $num_rows_payments; $j++){
-		$total_amount_paid += $row_payments["amount"];
-	}
+	include 'calculateTotalAmountPaid.php';
 	
 	$amountdue = $row_contracts['totalamount'] - $total_amount_paid;
 	if($amountdue > 0) {

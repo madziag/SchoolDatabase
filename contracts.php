@@ -25,13 +25,13 @@
 	}
 	
 	
-	$sql_contracts = "select contracts.*, last_name, first_name, received_date, amount
+	$sql_contracts = "select contracts.*, last_name, first_name, received_date, amount, nextpayment.nextPaymentDate, nextpayment.nextPaymentAmount
 	from contracts join students on contracts.student_id = students.student_id
 	left outer join(select contract_id, max(received_date) as b from payment
 	group by contract_id) as a
 	on contracts.contract_id = a.contract_id
-	left outer join payment on contracts.contract_id = payment.contract_id and a.b = payment.received_date "
-	//where contracts.active = 1
+	left outer join payment on contracts.contract_id = payment.contract_id and a.b = payment.received_date 
+	left outer join nextpayment on contracts.contract_id = nextpayment.contractID "
 	. "order by trim(" . $sortByCol . ") " . $order;
 	
 	$result_contracts = $conn->query($sql_contracts)
@@ -72,16 +72,19 @@
 		<td> </td>
 		<td> </td>
 		<td> </td>
-		<td> <!--<center><a href=\"http://localhost:8000/contracts.php?sortByCol=contract_signed&order=ASC\" class=\"button\">&#x25B2;</a>
-		<a href=\"http://localhost:8000/contracts.php?sortByCol=contract_signed&order=DESC\" class=\"button\">&#x25BC;</a>
+		<td> <!-- <center><a href=\"http://localhost:8000/contracts.php?sortByCol=nextPaymentDate&order=ASC\" class=\"button\">&#x25B2;</a>
+		<a href=\"http://localhost:8000/contracts.php?sortByCol=nextPaymentDate&order=DESC\" class=\"button\">&#x25BC;</a>
 		</center> -->
 		</td>
 		<td> </td>
-		<td> <!--<center><a href=\"http://localhost:8000/contracts.php?sortByCol=contract_signed&order=ASC\" class=\"button\">&#x25B2;</a>
-		<a href=\"http://localhost:8000/contracts.php?sortByCol=contract_signed&order=DESC\" class=\"button\">&#x25BC;</a>
-		</center> -->
+		<td> <center><a href=\"http://localhost:8000/contracts.php?sortByCol=nextPaymentDate&order=ASC\" class=\"button\">&#x25B2;</a>
+		<a href=\"http://localhost:8000/contracts.php?sortByCol=nextPaymentDate&order=DESC\" class=\"button\">&#x25BC;</a>
+		</center>
+		</td> 
+		<td> <center><a href=\"http://localhost:8000/contracts.php?sortByCol=nextPaymentAmount&order=ASC\" class=\"button\">&#x25B2;</a>
+		<a href=\"http://localhost:8000/contracts.php?sortByCol=nextPaymentAmount&order=DESC\" class=\"button\">&#x25BC;</a>
+		</center> 
 		</td>
-		<td> </td>
 		</tr>
 		
 		<tr>
@@ -104,93 +107,29 @@
 		$currentMonth = date("m");
 		
 		while ($counter <  $num_rows_contracts){
-		
-			include 'CalculateNextPayment.php';
-		
+				
+			include 'ContractStatus.php';
+
 			if ($contractStatus === "Active"){
-							
-				include 'CalculatePayDates.php';
-							
-				$amountLeftToPay = $row_contracts["totalamount"] - $total_amount_paid;
-				
-				//Gets the February date from the payment due dates array if there is one			
-				$february = NULL;
-				$datenumber = 0;
-				
-				while(is_null($february) && $datenumber < count($date_array)){
-					if($date_array[$datenumber] -> format('m') == 2){
-						$february = date_format($date_array[$datenumber], "Y-m-d");
-					}
-					$datenumber++;
-				}
-				
-				
-				//If total amount paid = 0, then next payment date is the contract creation date
-				
-				if($total_amount_paid == 0){
-					
-					$nextPaymentDueDate = $row_contracts["contract_creation_date"];
-					
-					} else {
-					if($nextpayment > 0){
-					//Paid in full
-					
-						if($row_contracts["payment_type"] == "pay in full" ){
-						
-							if($amountLeftToPay > $row_settings['contract_amount_infull']/2){
-							$nextPaymentDueDate = $row_contracts["contract_creation_date"];
-							}
-						
-							if($amountLeftToPay < $row_settings['contract_amount_infull']/2){
-								if(date_format(new DateTime($row_contracts["start_date"]), "m") >= 2 && date_format(new DateTime($row_contracts["start_date"]), "m") <= 6){
-									$nextPaymentDueDate = $row_contracts["contract_creation_date"];
-									} else {
-									if (!is_null($february)){
-										$nextPaymentDueDate = $february;
-										} else {
-										$nextPaymentDueDate = $row_contracts["contract_creation_date"];
-									}
-								}
-							}
-					
-						
-							if($amountLeftToPay == $row_settings['contract_amount_infull']/2){
-								if (!is_null($february)){
-									$nextPaymentDueDate = $february;
-									} else {
-									$nextPaymentDueDate = $row_contracts["contract_creation_date"];
-								}
-							}
-						}
-					//Sorts the dates in the payment due date array
-					
-					
-					
-						if($row_contracts["payment_type"] == "installments" ){
-							$nrOfPaymentsLeft = ceil($amountLeftToPay/($row_settings['contract_amount_installments']/$payDate_count));
-							sort($date_array);
-							
-							if($nrOfPaymentsLeft > count($date_array) ){
-								$nextPaymentDueDate = $row_contracts["contract_creation_date"];
-								} else {
 								
-								$nextPaymentDueDate = date_format($date_array[count($date_array) - $nrOfPaymentsLeft], "Y-m-d");
-								
-							}
-						}
+				include 'CalculateTotalAmountPaid.php';
+		
+				$nextPaymentDueDate = "";
+			
+				if($row_contracts["nextPaymentAmount"] > 0){
+					$nextPaymentDueDate = $row_contracts["nextPaymentDate"];
+					}	
+				if ($row_contracts["nextPaymentAmount"] == 0){
+					$nextPaymentDueDate = 'Paid';
 					}
-					
-					
-					if ($nextpayment == 0){
-						$nextPaymentDueDate = 'Paid';
+				if (is_null($row_contracts["nextPaymentAmount"])){
+					$nextPaymentDueDate = '';
 					}
-					if ($nextpayment < 0){
-						$nextPaymentDueDate = 'Overpaid';
-					}
-				}
-				
-				
+				if ($row_contracts["nextPaymentAmount"] < 0){
+					$nextPaymentDueDate = 'Overpaid';
+					}		
 				$contractSigned = $row_contracts["contract_signed"];
+				
 				if ($row_contracts["contract_signed"] == 1){
 					$contractSigned = 'Yes';
 					}
@@ -215,11 +154,12 @@
 				<td> " . $row_contracts["received_date"] . "  </td>
 				<td> " . $row_contracts["amount"] . "  </td>
 				<td> " . $nextPaymentDueDate . "  </td>
-				<td> " . $nextpayment . "  </td>
+				<td> " . $row_contracts["nextPaymentAmount"] . "  </td>
 				
 				</tr>";
 				
 			}
+			
 			$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
 			$counter++;
 		}
