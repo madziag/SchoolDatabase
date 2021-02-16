@@ -1,6 +1,5 @@
 <?php
 	
-	
 	session_start();
 	
 	$_POST =  $_SESSION['insert-contract'];
@@ -61,7 +60,7 @@
 	$startDate = new DateTime($_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day']);
 	
 	//When there is more than one class in the sql table we will select by class -- currently only one class available in db
-	$sql_lesCount = "select * from classdates;";
+	$sql_lesCount = "select * from classdates order by date_id;";
 	$result_lesCount = $conn->query($sql_lesCount)
 	or trigger_error($conn->error);
 	$row_lesCount = $result_lesCount->fetch_array(MYSQLI_BOTH);
@@ -88,48 +87,41 @@
 	
 	$date_array = [];
 	
+	// if start date is between July and December then school year end current year + 1
+	// if start date is between January and June then school year end = current year
+	
+	$endschoolyear = 0;
+	
+	if($startDate -> format('m') >= 7){
+			$endschoolyear = $startDate-> format('Y') + 1; 
+		} else {
+			$endschoolyear = $startDate-> format('Y'); 
+		}
+	
+	$endschooldate = new DateTime($endschoolyear  . "-6-30");
+	
 	// If date is a few days in the future we dont count it
 	// If date is not in the school year, we dont count it/If start date is in this school year, we count it
 	
+	// Find all valid paydates and add to the $date_array
+	
 	while(!is_null($row_sql_payDate_settings)){
-		//If date (day/month) is already passed then year = next year
-		//If date (day/month) has not yet come then year = current year
 		
-		if (new DateTime(date('Y') . "-" . $row_sql_payDate_settings['due_month'] . "-" . $row_sql_payDate_settings['due_day']) < new DateTime()){
-			
-			$date1 = new DateTime(date('Y') + 1 . "-" . $row_sql_payDate_settings['due_month'] . "-" . $row_sql_payDate_settings['due_day']);
-			
-			} else {
-			$date1 = new DateTime(date('Y') . "-" . $row_sql_payDate_settings['due_month'] . "-" . $row_sql_payDate_settings['due_day']);
-		}
+		$staticStartDate = new DateTime($startDate -> format('Y-m-d'));
+		$startDatePlus10 = $staticStartDate ->add(new DateInterval('P10D'));
 		
-		//If todays date is before June then the school year ends this year
-		//If todays date is after June then the school year ends next year
+		//if pay date is between start date of contract and end of school year, then we keep it. 
+		$payDate =  new DateTime($row_sql_payDate_settings['due_year'] . "-" . $row_sql_payDate_settings['due_month'] . "-" . $row_sql_payDate_settings['due_day']);
 		
-		if (date('z') < 181){
-			$JuneDate = new DateTime(date('Y') . "-6-30");
-			} else {
-			$JuneDate = new DateTime(date('Y')+1 . "-6-30");
-		}
-		
-		//If due date (created above) is part of current month then we do not add it to the array
-		//Otherwise if part of the school year then add it to the array
-		
-		if($date1 -> format('m') == date('m')){
-			//DO NOTHING
-			} else {
-			if($date1 >= $startDate && $date1 < $JuneDate){
-				if($date1 -> format('m') == 2 && $startDate -> format('m') == 2){
-					//DO NOTHING
-					}else{
-					$date_array[] = $date1;
-				}
+		// We add 10 days to the start date so that a payment date within 10 days of the contract start date will not count
+		if($payDate > $startDatePlus10 && $payDate < $endschooldate){
+			$date_array[] = $payDate;
 			}
-		}
-		
+			
 		//Get the next date from the results array
-		$row_sql_payDate_settings = $result_sql_payDate_settings->fetch_array(MYSQLI_BOTH);
+		$row_sql_payDate_settings = $result_sql_payDate_settings->fetch_array(MYSQLI_BOTH); 
 	}
+	
 	
 	//if rate type = installments, then the nr of payments = the number of dates in the array + 1
 	if(isset($_POST["rate"]) && $_POST["rate"] == "installments"){

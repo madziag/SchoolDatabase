@@ -56,6 +56,18 @@
 	
 	$nrPaymentsInstallments = $payDate_count + 1;
 	
+	//Variables needed for CalculatePayDates.php
+	$startDate = new DateTime($row_contracts["start_date"]);
+	
+	if($startDate -> format('m') >= 7){
+			$endschoolyear = $startDate-> format('Y') + 1; 
+		} else {
+			$endschoolyear = $startDate-> format('Y'); 
+		}
+	
+	$endschooldate = new DateTime($endschoolyear  . "-6-30");
+	
+	
 	include 'CalculateNextPayment.php';
 	include 'CalculatePayDates.php';
 	
