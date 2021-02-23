@@ -12,6 +12,9 @@
 	}
 	
 	if ($contractStatus === "Active"){
+		echo 'Total Amount Paid: ';
+		echo $total_amount_paid;
+		echo '<br>';
 		
 		if ($total_amount_paid == $row_contracts["totalamount"]){
 			$nextpayment = 0;
@@ -42,10 +45,18 @@
 			//
 			
 			if ($row_contracts["payment_type"] == "installments"){
-				if ($amountdue % ($row_settings['contract_amount_installments']/$nrPaymentsInstallments) == 0){
-					$nextpayment = $row_settings['contract_amount_installments']/$nrPaymentsInstallments;
+						echo 'nrPaymentsInstallments: ';
+						echo $nrPaymentsInstallments;
+						echo '<br>';
+						
+						echo 'amountdue: ';
+						echo $amountdue;
+						echo '<br>';
+			
+				if ($amountdue % $installmentAmount == 0){
+					$nextpayment = $installmentAmount;
 					} else {
-					$nextpayment = $amountdue % ($row_settings['contract_amount_installments']/$nrPaymentsInstallments);
+					$nextpayment = $amountdue % $installmentAmount;
 					
 				}
 			}

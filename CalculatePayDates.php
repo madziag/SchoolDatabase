@@ -24,11 +24,21 @@
 	or trigger_error($conn2->error);
 	$row_sql_payDate_settings2 = $result_sql_payDate_settings2->fetch_array(MYSQLI_BOTH);
 	
+	$sql_settings2 = "select * from settings;";
+	$result_sql_settings2 = $conn2->query($sql_settings2)
+	or trigger_error($conn2->error);
+	$row_sql_settings2 = $result_sql_settings2->fetch_array(MYSQLI_BOTH);
+	
 	//Pay in installments option:
 	// Assumption: Nr payments = Nr of payment due dates left in the school year + 1
 	
 	$date_array = [];
+	$school_year_date_array = [];
 	
+	//Calculate installment amount based on number of payments in school year
+	$startSchoolDate = new DateTime($endschooldate -> format('Y-m-d'));
+	$startSchoolDate ->sub(new DateInterval('P10M'));
+		
 	// If date is a few days in the future we dont count it
 	// If date is not in the school year, we dont count it/If start date is in this school year, we count it
 	
@@ -38,12 +48,18 @@
 		$startDatePlus10 = $staticStartDate ->add(new DateInterval('P10D'));
 		
 		//if pay date is between start date of contract and end of school year, then we keep it. 
-		$payDate =  new DateTime($row_sql_payDate_settings['due_year'] . "-" . $row_sql_payDate_settings['due_month'] . "-" . $row_sql_payDate_settings['due_day']);
+		$payDate =  new DateTime($row_sql_payDate_settings2['due_year'] . "-" . $row_sql_payDate_settings2['due_month'] . "-" . $row_sql_payDate_settings2['due_day']);
 		
 		// We add 10 days to the start date so that a payment date within 10 days of the contract start date will not count
 		if($payDate > $startDatePlus10 && $payDate < $endschooldate){
 			$date_array[] = $payDate;
 			}
+			
+		if($payDate > $startSchoolDate && $payDate < $endschooldate){
+			$school_year_date_array[] = $payDate;
+			}
+	
+		
 			
 		/*//If date (day/month) is already passed then year = next year
 		//If date (day/momth) has not yet come then year = current year
@@ -83,6 +99,8 @@
 		$row_sql_payDate_settings2 = $result_sql_payDate_settings2->fetch_array(MYSQLI_BOTH);
 		
 	}
+	
+	$installmentAmount = $row_sql_settings2['contract_amount_installments']/(count($school_year_date_array) + 1);
 	
 	$conn2->close();
 	

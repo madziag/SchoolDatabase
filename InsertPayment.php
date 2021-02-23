@@ -27,6 +27,8 @@
 		$paymentID = mysqli_insert_id($conn);
 		if(is_numeric($paymentID)){
 			echo 'Payment has been successfully added';
+		} else {
+			echo 'Error inserting payment!';
 		}
 	}
 	
@@ -48,13 +50,13 @@
 	or trigger_error($conn->error);
 	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
 	
-	$sql_payDate_settings = "select * from settings_payment_due_dates;";
+	//$sql_payDate_settings = "select * from settings_payment_due_dates;";
 	
-	$result_sql_payDate_settings = $conn->query($sql_payDate_settings)
-	or trigger_error($conn->error);
-	$payDate_count = mysqli_num_rows($result_sql_payDate_settings);
+	///$result_sql_payDate_settings = $conn->query($sql_payDate_settings)
+	//or trigger_error($conn->error);
+	//$payDate_count = mysqli_num_rows($result_sql_payDate_settings);
 	
-	$nrPaymentsInstallments = $payDate_count + 1;
+	//$nrPaymentsInstallments = $payDate_count + 1;
 	
 	//Variables needed for CalculatePayDates.php
 	$startDate = new DateTime($row_contracts["start_date"]);
@@ -67,9 +69,13 @@
 	
 	$endschooldate = new DateTime($endschoolyear  . "-6-30");
 	
+
+	
+	include 'CalculatePayDates.php';
+	
+	$nrPaymentsInstallments = count($date_array) + 1;
 	
 	include 'CalculateNextPayment.php';
-	include 'CalculatePayDates.php';
 	
 	if($nextpayment > 0){
 		//Paid in full
@@ -104,10 +110,12 @@
 		//Sorts the dates in the payment due date array
 		
 		
-		
+		/////// WE NEED TO REPLACE THIS WITH THE WHILE LOOP IN TODO FILE
 		if($row_contracts["payment_type"] == "installments" ){
-			$nrOfPaymentsLeft = ceil($amountdue/($row_settings['contract_amount_installments']/$payDate_count));
+			$nrOfPaymentsLeft = ceil($amountdue/$nrPaymentsInstallments);
 			sort($date_array);
+			
+			var_dump($date_array);
 			
 			if($nrOfPaymentsLeft > count($date_array) ){
 				$nextPaymentDueDate = $row_contracts["contract_creation_date"];
@@ -124,8 +132,14 @@
 	
 	$sql_updateNextPayment = "UPDATE englishschooldb.nextpayment SET nextPaymentDate = '" . $nextPaymentDueDate . "', nextPaymentAmount = " . $nextpayment . " where contractID = " . $_POST["contract_id"] . ";";
 
-	$result_updateNextPayment = $conn->query($sql_updateNextPayment)
-	or trigger_error($conn->error);
+	$isNextPaymentUpdated = $conn->query($sql_updateNextPayment) or trigger_error($conn->error);
+	
+	if ($isNextPaymentUpdated){echo 'Update Successful';} else {echo 'Update Failed';}
+	
+
+
+	
+	
 	
 ?>
 
