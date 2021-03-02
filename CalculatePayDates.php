@@ -24,7 +24,7 @@
 	or trigger_error($conn2->error);
 	$row_sql_payDate_settings2 = $result_sql_payDate_settings2->fetch_array(MYSQLI_BOTH);
 	
-	$sql_settings2 = "select * from settings;";
+	$sql_settings2 = "select * from settings order by settings_date desc limit 1;";
 	$result_sql_settings2 = $conn2->query($sql_settings2)
 	or trigger_error($conn2->error);
 	$row_sql_settings2 = $result_sql_settings2->fetch_array(MYSQLI_BOTH);
@@ -32,13 +32,23 @@
 	//Pay in installments option:
 	// Assumption: Nr payments = Nr of payment due dates left in the school year + 1
 	
+	//$date_array -> stores payment due dates for a specific contract 
+	//$school_year_date_array -> stores payment due dates for a particular school year
+	
 	$date_array = [];
 	$school_year_date_array = [];
 	
 	//Calculate installment amount based on number of payments in school year
 	$startSchoolDate = new DateTime($endschooldate -> format('Y-m-d'));
+	//To get the start date of school year, we first subtract 10 months from the endof school year - June 30, which gives us Aug 30. We then add 2 days to give us the start date of Sept 1
 	$startSchoolDate ->sub(new DateInterval('P10M'));
+	$startSchoolDate ->add(new DateInterval('P2D'));
 		
+	/*echo '<br>';
+	echo 'Start School Date';
+	echo $startSchoolDate -> format('Y-m-d');
+	echo '<br>';*/
+	
 	// If date is a few days in the future we dont count it
 	// If date is not in the school year, we dont count it/If start date is in this school year, we count it
 	
@@ -58,49 +68,34 @@
 		if($payDate > $startSchoolDate && $payDate < $endschooldate){
 			$school_year_date_array[] = $payDate;
 			}
-	
-		
-			
-		/*//If date (day/month) is already passed then year = next year
-		//If date (day/momth) has not yet come then year = current year
-		
-		if (new DateTime(date('Y') . "-" . $row_sql_payDate_settings2['due_month'] . "-" . $row_sql_payDate_settings2['due_day']) < new DateTime()){
-			
-			$date1 = new DateTime(date('Y') + 1 . "-" . $row_sql_payDate_settings2['due_month'] . "-" . $row_sql_payDate_settings2['due_day']);
-			
-			} else {
-			$date1 = new DateTime(date('Y') . "-" . $row_sql_payDate_settings2['due_month'] . "-" . $row_sql_payDate_settings2['due_day']);
-		}
-		
-		//If todays date is before June then the school year ends this year
-		//If todays date is after June then the school year ends next year
-		
-		if (date('z') < 181){
-    		$JuneDate = new DateTime(date('Y') . "-6-30");
-			} else {
-    		$JuneDate = new DateTime(date('Y')+1 . "-6-30");
-		}
-		
-		//If due date (created above) is part of current month then we do not add it to the array
-		//Otherwise if part of the school year then add it to the array
-		
-		if($date1 -> format('m') == date('m')){
-			//DO NOTHING
-			} else {
-			if($date1 >= $startDate && $date1 < $JuneDate){
-				if($date1 -> format('m') == 2 && $startDate -> format('m') == 2){
-					//DO NOTHING
-					}else{
-				$date_array[] = $date1;}
-			}
-		}*/
 		
 		//Get the next date from the results array
 		$row_sql_payDate_settings2 = $result_sql_payDate_settings2->fetch_array(MYSQLI_BOTH);
-		
 	}
-	
+		/*echo 'school year array';
+		echo '<br>';
+		var_dump($school_year_date_array);
+		echo 'date array';
+		echo '<br>';
+		var_dump($date_array);
+		echo '<br>';*/
+		
 	$installmentAmount = $row_sql_settings2['contract_amount_installments']/(count($school_year_date_array) + 1);
+	
+	/*echo '<br>';
+	echo 'contract amount installments';
+	echo '<br>';
+	echo $row_sql_settings2['contract_amount_installments'];
+	echo '<br>';
+	echo '(count($school_year_date_array) + 1)';
+	echo '<br>';
+	echo (count($school_year_date_array) + 1);
+	echo '<br>';
+	echo '$installmentAmount';
+	echo '<br>';
+	echo $installmentAmount;
+	echo '<br>'; */
+	
 	
 	$conn2->close();
 	

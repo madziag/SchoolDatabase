@@ -35,6 +35,10 @@
 	or trigger_error($conn->error);
 	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
 	
+	echo 'echo $row_settings';
+	echo $row_settings['contract_amount_installments'];
+	echo '<br>';
+	
 	$sql_payDate_settings = "select * from settings_payment_due_dates;";
 	$result_sql_payDate_settings = $conn->query($sql_payDate_settings)
 	or trigger_error($conn->error);
@@ -187,21 +191,7 @@
 	
 	$contractStatus = "Active";
 	
-	$sql_settings = "select * from settings order by settings_date desc limit 1;";
-	
-	$result_settings = $conn->query($sql_settings)
-	or trigger_error($conn->error);
-	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
-	
-	$sql_payDate_settings = "select * from settings_payment_due_dates;";
-	
-	$result_sql_payDate_settings = $conn->query($sql_payDate_settings)
-	or trigger_error($conn->error);
-	$payDate_count = mysqli_num_rows($result_sql_payDate_settings);
-	
-	
-	$nrPaymentsInstallments = $payDate_count + 1;
-	
+	include 'CalculatePayDates.php';
 	include 'CalculateNextPayment.php';
 	
 	//Insert into nextPayment table nextPayment dates and nextPayment amounts

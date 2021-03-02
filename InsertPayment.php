@@ -73,7 +73,7 @@
 	
 	include 'CalculatePayDates.php';
 	
-	$nrPaymentsInstallments = count($date_array) + 1;
+	//$nrPaymentsInstallments = count($date_array) + 1;
 	
 	include 'CalculateNextPayment.php';
 	
@@ -112,8 +112,24 @@
 		
 		/////// WE NEED TO REPLACE THIS WITH THE WHILE LOOP IN TODO FILE
 		if($row_contracts["payment_type"] == "installments" ){
-			$nrOfPaymentsLeft = ceil($amountdue/$nrPaymentsInstallments);
 			sort($date_array);
+			$i = count($date_array);
+			$amountLeft = $amountdue;
+
+			while($i > 0){
+				$amountLeft = $amountLeft - $installmentAmount;
+				
+				if($amountLeft > 0){
+					$i--;	
+				} else {
+					$nextPaymentDueDate = $date_array[$i-1];
+					break;
+					}
+			}
+		
+		/*
+			$nrOfPaymentsLeft = ceil($amountdue/$nrPaymentsInstallments);
+			
 			
 			var_dump($date_array);
 			
@@ -123,14 +139,14 @@
 				
 				$nextPaymentDueDate = date_format($date_array[count($date_array) - $nrOfPaymentsLeft], "Y-m-d");
 				
-			}
+			}*/
 		}
 	} else {
 		$nextPaymentDueDate = NULL;
 	}
 	
 	
-	$sql_updateNextPayment = "UPDATE englishschooldb.nextpayment SET nextPaymentDate = '" . $nextPaymentDueDate . "', nextPaymentAmount = " . $nextpayment . " where contractID = " . $_POST["contract_id"] . ";";
+	$sql_updateNextPayment = "UPDATE englishschooldb.nextpayment SET nextPaymentDate = '" . date_format($nextPaymentDueDate, "Y-m-d") . "', nextPaymentAmount = " . $nextpayment . " where contractID = " . $_POST["contract_id"] . ";";
 
 	$isNextPaymentUpdated = $conn->query($sql_updateNextPayment) or trigger_error($conn->error);
 	
