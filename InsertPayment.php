@@ -16,7 +16,14 @@
 		die("Connection failed: " . $conn->connect_error);
 	}
 	
-	$sql = "INSERT INTO englishschooldb.payment (contract_id, amount, received_date) VALUES (" . $_POST["contract_id"] . "," . $_POST["PaymentAmount"] . ",'" . date('Y-m-d') . "');";
+	$todays_date = date_create(date("Y-m-d"));
+
+	if(isset($_POST["todays_date"])){
+		$todays_date = new DateTime($_POST["todays_date"]);
+		}
+
+	
+	$sql = "INSERT INTO englishschooldb.payment (contract_id, amount, received_date) VALUES (" . $_POST["contract_id"] . "," . $_POST["PaymentAmount"] . ",'" . $todays_date -> format('Y-m-d') . "');";
 	
 	$sql2 = "INSERT INTO englishschooldb.payment (contract_id, amount, received_date) VALUES (,,'');";
 	
@@ -33,8 +40,8 @@
 	}
 	
 	
-	$currentYear = date("Y");
-	$currentMonth = date("m");
+	$currentYear = $todays_date -> format('Y');
+	$currentMonth = $todays_date -> format('m');
 	
 	$sql_contracts = "select * from contracts where contracts.contract_id = " . $_POST["contract_id"];
 	
@@ -109,8 +116,6 @@
 		}
 		//Sorts the dates in the payment due date array
 		
-		
-		/////// WE NEED TO REPLACE THIS WITH THE WHILE LOOP IN TODO FILE
 		if($row_contracts["payment_type"] == "installments" ){
 			sort($date_array);
 			$i = count($date_array);
@@ -142,7 +147,7 @@
 			}*/
 		}
 	} else {
-		$nextPaymentDueDate = NULL;
+		$nextPaymentDueDate = $todays_date;
 	}
 	
 	
