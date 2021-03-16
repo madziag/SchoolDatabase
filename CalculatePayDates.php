@@ -66,6 +66,9 @@
 			}
 			
 		if($payDate > $startSchoolDate && $payDate < $endschooldate){
+			if($payDate -> format('m') == 2) {
+				$february = $payDate;
+				}
 			$school_year_date_array[] = $payDate;
 			}
 		

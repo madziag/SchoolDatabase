@@ -90,17 +90,17 @@
 		if($row_contracts["payment_type"] == "pay in full" ){
 			
 			if($amountdue > $row_settings['contract_amount_infull']/2){
-				$nextPaymentDueDate = $row_contracts["contract_creation_date"];
+				$nextPaymentDueDate = new DateTime($row_contracts["contract_creation_date"]);
 			}
 			
 			if($amountdue < $row_settings['contract_amount_infull']/2){
 				if(date_format(new DateTime($row_contracts["start_date"]), "m") >= 2 && date_format(new DateTime($row_contracts["start_date"]), "m") <= 6){
-					$nextPaymentDueDate = $row_contracts["contract_creation_date"];
+					$nextPaymentDueDate = new DateTime($row_contracts["contract_creation_date"]);
 					} else {
 					if (!is_null($february)){
 						$nextPaymentDueDate = $february;
 						} else {
-						$nextPaymentDueDate = $row_contracts["contract_creation_date"];
+						$nextPaymentDueDate = new DateTime($row_contracts["contract_creation_date"]);
 					}
 				}
 			}
@@ -110,7 +110,7 @@
 				if (!is_null($february)){
 					$nextPaymentDueDate = $february;
 					} else {
-					$nextPaymentDueDate = $row_contracts["contract_creation_date"];
+					$nextPaymentDueDate = new DateTime($row_contracts["contract_creation_date"]);
 				}
 			}
 		}
