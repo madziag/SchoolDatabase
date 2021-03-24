@@ -157,7 +157,7 @@
 	
 	if ($isNextPaymentUpdated){echo 'Update Successful';} else {echo 'Update Failed';}
 	
-
+	$conn->close();
 
 	
 	
