@@ -45,12 +45,11 @@
 			//
 			
 			if ($row_contracts["payment_type"] == "installments"){
-			
+				
 				if ($amountdue % $installmentAmount == 0){
 					$nextpayment = $installmentAmount;
 					} else {
-					$nextpayment = $amountdue % $installmentAmount;
-					
+					$nextpayment = $amountdue % $installmentAmount;	
 				}
 			}
 			

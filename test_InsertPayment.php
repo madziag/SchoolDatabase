@@ -404,7 +404,7 @@
 
 
 	// 4a. Contract 545: Insert Payment just before the next payment due date - Infull 
-	$test_sql_payment_ct545 = "select * from payment where contract_id = 545;";
+	$test_sql_payment_ct545 = "select * from payment where contract_id = 545 and received_date = '2022-01-25';";
 	$test_result_ct545 = $test_conn->query($test_sql_payment_ct545) or trigger_error($test_conn->error);	
 	$test_row_ct545 = $test_result_ct545 ->fetch_array(MYSQLI_BOTH);
 	
@@ -416,7 +416,7 @@
 	
 	
 	// 4b. Contract 546: Insert Payment just before the next payment due date - Installments
-	$test_sql_payment_ct546 = "select * from payment where contract_id = 546;";
+	$test_sql_payment_ct546 = "select * from payment where contract_id = 546 and received_date = '2021-10-28';";
 	$test_result_ct546 = $test_conn->query($test_sql_payment_ct546) or trigger_error($test_conn->error);	
 	$test_row_ct546 = $test_result_ct546 ->fetch_array(MYSQLI_BOTH);
 	
@@ -427,7 +427,7 @@
 		}
 	
 	// 5a. Contract 547: Insert Payment on the due date - Infull
-	$test_sql_payment_ct547 = "select * from payment where contract_id = 547;";
+	$test_sql_payment_ct547 = "select * from payment where contract_id = 547 and received_date = '2022-02-10';";
 	$test_result_ct547 = $test_conn->query($test_sql_payment_ct547) or trigger_error($test_conn->error);	
 	$test_row_ct547 = $test_result_ct547 ->fetch_array(MYSQLI_BOTH);
 	
@@ -438,7 +438,7 @@
 		}
 	
 	// 5b. Contract 548: Insert Payment on the due date - Installments
-	$test_sql_payment_ct548 = "select * from payment where contract_id = 548;";
+	$test_sql_payment_ct548 = "select * from payment where contract_id = 548 and received_date = '2021-11-10';";
 	$test_result_ct548 = $test_conn->query($test_sql_payment_ct548) or trigger_error($test_conn->error);	
 	$test_row_ct548 = $test_result_ct548 ->fetch_array(MYSQLI_BOTH);
 	
@@ -449,7 +449,7 @@
 		}
 	
 	// 6a. Contract 549: Insert Payment after the due date - Infull
-	$test_sql_payment_ct549 = "select * from payment where contract_id = 549;";
+	$test_sql_payment_ct549 = "select * from payment where contract_id = 549 and received_date = '2022-02-18';";
 	$test_result_ct549 = $test_conn->query($test_sql_payment_ct549) or trigger_error($test_conn->error);	
 	$test_row_ct549 = $test_result_ct549 ->fetch_array(MYSQLI_BOTH);
 	
@@ -460,7 +460,7 @@
 		}
 	
 	// 6b. Contract 550: Insert Payment after the due date - Installments
-	$test_sql_payment_ct550 = "select * from payment where contract_id = 550;";
+	$test_sql_payment_ct550 = "select * from payment where contract_id = 550 and received_date = '2021-11-15';";
 	$test_result_ct550 = $test_conn->query($test_sql_payment_ct550) or trigger_error($test_conn->error);	
 	$test_row_ct550 = $test_result_ct550 ->fetch_array(MYSQLI_BOTH);
 	
@@ -471,7 +471,7 @@
 		}
 
 	// 7a. Contract 551: Insert Payment after the due date (after the last possible due date - March) - Infull
-	$test_sql_payment_ct551 = "select * from payment where contract_id = 551;";
+	$test_sql_payment_ct551 = "select * from payment where contract_id = 551 and received_date = '2022-03-10';";
 	$test_result_ct551 = $test_conn->query($test_sql_payment_ct551) or trigger_error($test_conn->error);	
 	$test_row_ct551 = $test_result_ct551 ->fetch_array(MYSQLI_BOTH);
 	
@@ -482,7 +482,7 @@
 		}
 	
 	// 7b. Contract 552: Insert Payment after the due date (after the last possible due date - May)  - Installments
-	$test_sql_payment_ct552 = "select * from payment where contract_id = 552;";
+	$test_sql_payment_ct552 = "select * from payment where contract_id = 552 and received_date = '2022-05-05';";
 	$test_result_ct552 = $test_conn->query($test_sql_payment_ct552) or trigger_error($test_conn->error);	
 	$test_row_ct552 = $test_result_ct552 ->fetch_array(MYSQLI_BOTH);
 	
@@ -494,7 +494,7 @@
 		
 		
 	// 7c. Contract 553: Insert Payment after the due date (after due date but before last possible due date - March)  - Installments
-	$test_sql_payment_ct553 = "select * from payment where contract_id = 553;";
+	$test_sql_payment_ct553 = "select * from payment where contract_id = 553 and received_date = '2022-03-15';";
 	$test_result_ct553 = $test_conn->query($test_sql_payment_ct553) or trigger_error($test_conn->error);	
 	$test_row_ct553 = $test_result_ct553 ->fetch_array(MYSQLI_BOTH);
 	
@@ -516,7 +516,7 @@
 		}
 		
 	// 8b. Contract 555: Payment made is less than amount on installments amount - second payment on contract made in November on time;
-	$test_sql_payment_ct555 = "select * from payment where contract_id = 555;";
+	$test_sql_payment_ct555 = "select * from payment where contract_id = 555 and received_date = '2021-11-10';";
 	$test_result_ct555 = $test_conn->query($test_sql_payment_ct555) or trigger_error($test_conn->error);	
 	$test_row_ct555 = $test_result_ct555 ->fetch_array(MYSQLI_BOTH);
 	
@@ -549,7 +549,7 @@
 		}
 		
 	
-// - 7. Check if the update in the nextpayment table worked as expected
+	// - 7. Check if the update in the nextpayment table worked as expected
 	//1. Contract 539: Insert First Payment on a contract (infull)
 	$test_sql_nextpayment_ct539 = "select * from nextpayment where contractID = 539;";
 	$test_result_nextpayment_ct539 = $test_conn->query($test_sql_nextpayment_ct539) or trigger_error($test_conn->error);
@@ -807,52 +807,6 @@
 	$test_conn ->multi_query($cleanupsql_1)
 	or trigger_error($test_conn->error);
 	
-	
-
-
-
-
-
-// WE NEED TO CLEAN UP FROM PREVIOUS TESTS - RETURN DB TO STATE BEFORE WE RAN THE TESTS
-
-
-// WE NEED TO CLEAN UP FROM PREVIOUS TESTS - RETURN DB TO STATE BEFORE WE RAN THE TESTS
-
-// - We need to change insert payment to allow us to fake a different payment date -- done
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-$test_conn->close();
-
-
+	$test_conn->close();
 
 ?>

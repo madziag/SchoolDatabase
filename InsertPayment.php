@@ -120,10 +120,10 @@
 			sort($date_array);
 			$i = count($date_array);
 			$amountLeft = $amountdue;
-
+			
 			while($i > 0){
 				$amountLeft = $amountLeft - $installmentAmount;
-				
+							
 				if($amountLeft > 0){
 					$i--;	
 				} else {
@@ -131,7 +131,7 @@
 					break;
 					}
 			}
-		
+	
 		/*
 			$nrOfPaymentsLeft = ceil($amountdue/$nrPaymentsInstallments);
 			
