@@ -808,5 +808,6 @@
 	or trigger_error($test_conn->error);
 	
 	$test_conn->close();
+	session_destroy();
 
 ?>
