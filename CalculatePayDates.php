@@ -29,6 +29,13 @@
 	or trigger_error($conn2->error);
 	$row_sql_settings2 = $result_sql_settings2->fetch_array(MYSQLI_BOTH);
 	
+	
+	$sql_contracts = "select contract_creation_date from contracts where contract_id = " . $contract_id . " ;";
+	$result_sql_contracts = $conn2->query($sql_contracts)
+	or trigger_error($conn2->error);
+	$row_sql_contracts = $result_sql_contracts->fetch_array(MYSQLI_BOTH);
+	$contract_creation_date = new DateTime($row_sql_contracts["contract_creation_date"]);
+	
 	//Pay in installments option:
 	// Assumption: Nr payments = Nr of payment due dates left in the school year + 1
 	
@@ -75,6 +82,10 @@
 		//Get the next date from the results array
 		$row_sql_payDate_settings2 = $result_sql_payDate_settings2->fetch_array(MYSQLI_BOTH);
 	}
+
+		
+	array_unshift($date_array, $contract_creation_date);
+
 		/*echo 'school year array';
 		echo '<br>';
 		var_dump($school_year_date_array);

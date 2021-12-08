@@ -99,7 +99,7 @@
 		}
 
 // - 4. Check contract to see if it has the values we need 
-	$test_sql_contracts = "select * from contracts where contract_id >= 539 and contract_id <= 544;";
+	$test_sql_contracts = "select * from contracts where contract_id = 566 or (contract_id >= 539 and contract_id <= 544);";
 	
 	$test_result_contracts = $test_conn->query($test_sql_contracts)
 	or trigger_error($test_conn->error);
@@ -160,11 +160,19 @@
 				echo 'Contract 543 Information  NOT AS EXPECTED. <br>';
 			}
 		}
+		
+		if($test_row_contracts['contract_id'] == 566){
+			if($test_row_contracts['start_date'] == '2022-02-01' && $test_row_contracts['payment_type'] == 'installments' && $test_row_contracts['contract_creation_date'] == '2021-11-10 00:00:00' && $test_row_contracts['totalamount'] == 450.00) {
+				echo 'Contract 566 Information  OKAY. <br>';
+				} else {
+				echo 'Contract 566 Information  NOT AS EXPECTED. <br>';
+			}
+		}
 			$test_row_contracts = $test_result_contracts->fetch_array(MYSQLI_BOTH);
 			$counter++;
 	}
 	
-	if($num_rows_contracts == 6){
+	if($num_rows_contracts == 7){
 		echo 'Contracts OKAY. <br>';
 		} else {
 		echo 'Contracts NOT AS EXPECTED. Number of contracts is' .  $num_rows_contracts . '<br>';
@@ -326,10 +334,19 @@
 	echo ' <br>';
 	
 	// 8d. Contract 557: Payment made is more than amount on installments amount - pay for the semester;
-	$_POST["todays_date"] = '2022-09-15';
+	$_POST["todays_date"] = '2021-09-15';
 	
 	$_POST["contract_id"] = 557;
 	$_POST["PaymentAmount"] = 450;
+	
+    include 'InsertPayment.php';
+	echo ' <br>';
+	
+	// 8e. Contract 566: Payment made is less than amount on installments amount;
+	$_POST["todays_date"] = '2021-11-10';
+	
+	$_POST["contract_id"] = 566;
+	$_POST["PaymentAmount"] = 50;
 	
 	include 'InsertPayment.php';
 	echo ' <br>';
@@ -548,6 +565,16 @@
 		echo 'Payment for 557 entered NOT AS EXPECTED. ' .  $test_row_ct557['amount'] . ' <br>';
 		}
 		
+	// 8e. Contract 566: Payment made is less than amount on installments amount;
+	$test_sql_payment_ct566 = "select * from payment where contract_id = 566;";
+	$test_result_ct566 = $test_conn->query($test_sql_payment_ct566) or trigger_error($test_conn->error);	
+	$test_row_ct566 = $test_result_ct566 ->fetch_array(MYSQLI_BOTH);
+	
+	if($test_row_ct566['amount'] == 50 ){
+		echo 'Payment for 566 entered OKAY. <br>';
+		} else {
+		echo 'Payment for 566 entered NOT AS EXPECTED. ' .  $test_row_ct566['amount'] . ' <br>';
+		}
 	
 	// - 7. Check if the update in the nextpayment table worked as expected
 	//1. Contract 539: Insert First Payment on a contract (infull)
@@ -761,8 +788,17 @@
 		echo 'Next Payment Date and Amount for 557  entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct557['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct557['nextPaymentAmount'] . ' <br>';
 		}
 	
+	// 8e. Contract 566: Payment made is less than amount on installments amount;
+	$test_sql_nextpayment_ct566 = "select * from nextpayment where contractID = 566;";
+	$test_result_nextpayment_ct566 = $test_conn->query($test_sql_nextpayment_ct566) or trigger_error($test_conn->error);
+	$test_row_nextpayment_ct566 = $test_result_nextpayment_ct566  ->fetch_array(MYSQLI_BOTH);
 	
-	
+	if($test_row_nextpayment_ct566['nextPaymentDate'] == '2021-11-10' && $test_row_nextpayment_ct566['nextPaymentAmount'] == 175 ){
+		echo 'Next Payment Date and Amount for 566 entered OKAY. <br>';
+		} else {
+		echo 'Next Payment Date and Amount for 566  entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct566['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct566['nextPaymentAmount'] . ' <br>';
+		}
+	 
 // - 8. Clean Up
 	//1. Contract 539: Insert First Payment on a contract (infull)
 	//2. Contract 540: Insert First Payment on a contract (installments)
@@ -783,8 +819,9 @@
 	// 8b. Contract 555: Payment made is less than amount on installments amount - second payment on contract made in November on time;
 	// 8c. Contract 556: Payment made is more than amount on infull amount - pay whole year in one go ;
 	// 8d. Contract 557: Payment made is more than amount on installments amount - pay for the semester;
+	// 8e. Contract 566: Payment made is less than amount on installments amount;
 
-	$cleanupsql_1 = "delete from payment where contract_id in (539, 540, 541, 542, 543, 544, 554, 556, 557); 
+	$cleanupsql_1 = "delete from payment where contract_id in (539, 540, 541, 542, 543, 544, 554, 556, 557, 566); 
 					 delete from payment where contract_id = 545 and received_date = '2022-01-25'; 
 					 delete from payment where contract_id = 546 and received_date = '2021-10-28'; 
 					 delete from payment where contract_id = 547 and received_date = '2022-02-10'; 
@@ -802,7 +839,7 @@
 					 update nextpayment set nextPaymentAmount = 105 where contractID = 541;
 					 update nextpayment set nextPaymentAmount = 180 where contractID = 543; 
 					 update nextpayment set nextPaymentDate = '2022-02-10', nextPaymentAmount = 409 where contractID  in (545, 547, 549, 551);
-					 update nextpayment set nextPaymentDate = '2021-11-10', nextPaymentAmount = 225 where contractID in (546, 548, 550, 552, 553, 555);";
+					 update nextpayment set nextPaymentDate = '2021-11-10', nextPaymentAmount = 225 where contractID in (546, 548, 550, 552, 553, 555, 566);";
 	
 	$test_conn ->multi_query($cleanupsql_1)
 	or trigger_error($test_conn->error);

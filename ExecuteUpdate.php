@@ -1,8 +1,8 @@
 <?php
 
  $servername = 'localhost';
- $username = ;
- $password = ;
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
  $dbname = 'englishschooldb';
 
 
@@ -15,13 +15,15 @@
 
 // SQL Query
 
+$studentID = $_GET["studentID"];
+
  if ($_POST['status'] == "InActive"){$statusint = 1;} else {$statusint = 0;}
 
  $sql = "UPDATE students SET ";
 	if(isset($_POST['update']))     {$sql = $sql . "first_name = '" . $_POST['firstname'] . "', last_name = '" . $_POST['lastname'] . "',
 	street_address = '" . $_POST['streetaddress'] . "', address_code = '" . $_POST['postcode'] . "', town = '" . $_POST['town'] . "',
 	email = '" . $_POST['email'] . "', phone_main = '" . $_POST['mainphone'] . "', phone_alt = '" . $_POST['altphone']. "',
-	inactive = '" . $statusint . "' ";}
+	inactive = '" . $statusint . "' where student_id = " . $studentID;}
 
 
 

@@ -22,6 +22,10 @@
 		$contractStatus = "Active";
 		}
 
+	include 'CalculateTotalAmountPaid.php';	
 	
-
+	if ($total_amount_paid < $row_contracts["totalamount"]){
+		$contractStatus = "Active";
+		}
+	
 ?>

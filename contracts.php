@@ -25,7 +25,7 @@
 	}
 	
 	
-	$sql_contracts = "select contracts.*, last_name, first_name, received_date, amount, nextpayment.nextPaymentDate, nextpayment.nextPaymentAmount
+	$sql_contractsplus = "select contracts.*, last_name, first_name, received_date, amount, nextpayment.nextPaymentDate, nextpayment.nextPaymentAmount
 	from contracts join students on contracts.student_id = students.student_id
 	left outer join(select contract_id, max(received_date) as b from payment
 	group by contract_id) as a
@@ -34,11 +34,11 @@
 	left outer join nextpayment on contracts.contract_id = nextpayment.contractID "
 	. "order by trim(" . $sortByCol . ") " . $order;
 	
-	$result_contracts = $conn->query($sql_contracts)
+	$result_contractsplus = $conn->query($sql_contractsplus)
 	or trigger_error($conn->error);
-	$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
+	$row_contractsplus = $result_contractsplus->fetch_array(MYSQLI_BOTH);
 	
-	$num_rows_contracts = mysqli_num_rows($result_contracts);
+	$num_rows_contractsplus = mysqli_num_rows($result_contractsplus);
 	
 	// Selects most recent value from settings
 	$sql_settings = "select * from settings order by settings_date desc limit 1;";
@@ -46,7 +46,7 @@
 	or trigger_error($conn->error);
 	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
 	
-	if ($num_rows_contracts > 0){
+	if ($num_rows_contractsplus > 0){
 		
 		
 		echo "<table border =\"1\">
@@ -99,61 +99,62 @@
 		$currentYear = date("Y");
 		$currentMonth = date("m");
 		
-		while ($counter <  $num_rows_contracts){
-				
+		while ($counter <  $num_rows_contractsplus){
+			$row_contracts = $row_contractsplus;
+			
 			include 'ContractStatus.php';
-
+			
 			if ($contractStatus === "Active"){
 								
 				include 'CalculateTotalAmountPaid.php';
 		
 				$nextPaymentDueDate = "";
 			
-				if($row_contracts["nextPaymentAmount"] > 0){
-					$nextPaymentDueDate = $row_contracts["nextPaymentDate"];
+				if($row_contractsplus["nextPaymentAmount"] > 0){
+					$nextPaymentDueDate = $row_contractsplus["nextPaymentDate"];
 					}	
-				if ($row_contracts["nextPaymentAmount"] == 0){
+				if ($row_contractsplus["nextPaymentAmount"] == 0){
 					$nextPaymentDueDate = 'Paid';
 					}
-				if (is_null($row_contracts["nextPaymentAmount"])){
+				if (is_null($row_contractsplus["nextPaymentAmount"])){
 					$nextPaymentDueDate = '';
 					}
-				if ($row_contracts["nextPaymentAmount"] < 0){
+				if ($row_contractsplus["nextPaymentAmount"] < 0){
 					$nextPaymentDueDate = 'Overpaid';
 					}		
-				$contractSigned = $row_contracts["contract_signed"];
+				$contractSigned = $row_contractsplus["contract_signed"];
 				
-				if ($row_contracts["contract_signed"] == 1){
+				if ($row_contractsplus["contract_signed"] == 1){
 					$contractSigned = 'Yes';
 					}
-				else if(is_null($row_contracts["contract_signed"])){
+				else if(is_null($row_contractsplus["contract_signed"])){
 					$contractSigned = 'None';
 					}
-				else if($row_contracts["contract_signed"] == 0){
+				else if($row_contractsplus["contract_signed"] == 0){
 					$contractSigned = 'No';
 					}
 						
 				echo
-				"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row_contracts["student_id"] . "\" > update </a> </td>
+				"<tr> <td> <a href = \"Dataupdate.php?studentID=" . $row_contractsplus["student_id"] . "\" > update </a> </td>
 				
-				<td> " . $row_contracts["student_id"] . " </td>
-				<td> " . $row_contracts["first_name"] . " </td>
-				<td> " . $row_contracts["last_name"] . "  </td>
-				<td> " . $row_contracts["start_date"] . " </td>
+				<td> " . $row_contractsplus["student_id"] . " </td>
+				<td> " . $row_contractsplus["first_name"] . " </td>
+				<td> " . $row_contractsplus["last_name"] . "  </td>
+				<td> " . $row_contractsplus["start_date"] . " </td>
 				<td> " . $contractSigned . " </td>
-				<td> " . $row_contracts["nrpayments"] . "  </td>
+				<td> " . $row_contractsplus["nrpayments"] . "  </td>
 				<td> " . number_format((float)$total_amount_paid, 2, '.', '') . "  </td>
-				<td> " . $row_contracts["totalamount"] . "  </td>
-				<td> " . $row_contracts["received_date"] . "  </td>
-				<td> " . $row_contracts["amount"] . "  </td>
+				<td> " . $row_contractsplus["totalamount"] . "  </td>
+				<td> " . $row_contractsplus["received_date"] . "  </td>
+				<td> " . $row_contractsplus["amount"] . "  </td>
 				<td> " . $nextPaymentDueDate . "  </td>
-				<td> " . $row_contracts["nextPaymentAmount"] . "  </td>
+				<td> " . $row_contractsplus["nextPaymentAmount"] . "  </td>
 				
 				</tr>";
 				
 			}
 			
-			$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
+			$row_contractsplus = $result_contractsplus->fetch_array(MYSQLI_BOTH);
 			$counter++;
 		}
 		echo "</table>";

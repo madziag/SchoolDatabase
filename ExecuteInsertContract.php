@@ -176,14 +176,14 @@
 	if($sql != $sql2){
 		$result = $conn->query($sql)
 		or trigger_error($conn->error);
-		$contractID = mysqli_insert_id($conn);
+		$contract_id = mysqli_insert_id($conn);
 		}
 	
 	
 	$currentYear = date("Y");
 	$currentMonth = date("m");
 	
-	$sql_contracts = "select * from contracts where contracts.contract_id = " . $contractID;
+	$sql_contracts = "select * from contracts where contracts.contract_id = " . $contract_id;
 		
 	$result_contracts = $conn->query($sql_contracts)
 	or trigger_error($conn->error);
@@ -195,7 +195,7 @@
 	include 'CalculateNextPayment.php';
 	
 	//Insert into nextPayment table nextPayment dates and nextPayment amounts
-	$sql_nextPayment = "INSERT INTO englishschooldb.nextPayment (contractID, nextPaymentDate, nextPaymentAmount) VALUES (" . $contractID . ",'" . date("Y-m-d") . "'," . $nextpayment . ");";
+	$sql_nextPayment = "INSERT INTO englishschooldb.nextPayment (contractID, nextPaymentDate, nextPaymentAmount) VALUES (" . $contract_id . ",'" . date("Y-m-d") . "'," . $nextpayment . ");";
 	$result_nextPayment = $conn->query($sql_nextPayment)
 	or trigger_error($conn->error);
 	mysqli_insert_id($conn);
@@ -205,8 +205,8 @@
 	
 	$_POST = array(); // Clears post data
 	
-	if ($contractID != 0){
-		header("Location: DisplayPrintContract.php?studentID=".$studentID."&contractID=".$contractID);
+	if ($contract_id != 0){
+		header("Location: DisplayPrintContract.php?studentID=".$studentID."&contractID=".$contract_id);
 		} else {
 		echo "Error adding contract";}
 	

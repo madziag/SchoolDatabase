@@ -4,8 +4,8 @@
 $_POST =  $_SESSION['post_insert'];
 
  $servername = 'localhost';
- $username = ;
- $password = ;
+ $username = 'MadziaG';
+ $password = 'P$i@krew2018User';
  $dbname = 'englishschooldb';
 
 

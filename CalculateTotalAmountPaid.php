@@ -26,6 +26,7 @@
 		$total_amount_paid += $row_payments["amount"];
 		$row_payments = $result_payments->fetch_array(MYSQLI_BOTH);
 	}
-		
+	
+	
 	$conn_pay->close();
 ?>

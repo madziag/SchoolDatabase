@@ -43,33 +43,16 @@ $currentYear = date("Y");
 $currentMonth = date("m");
 
 for($i = 1; $i <= $num_rows; $i++){
+		$row_contracts = $row;
 		$contractSigned = $row["contract_signed"];
 		if ($row["contract_signed"] == 1){$contractSigned = 'Yes';}
 		else if(is_null($row["contract_signed"])){$contractSigned = 'None';}
 		else if($row["contract_signed"] == 0){$contractSigned = 'No';}
-
-		if ($currentMonth <= 8){$schoolYear = $currentYear - 1;}
-		else {$schoolYear = $currentYear;}
-
-		$contractYear = substr($row["start_date"], 0, 4);
-		$contractMonth = substr($row["start_date"], 5, 2);
-        $contractStatus = "Inactive";
-		if ($contractYear > $schoolYear){$contractStatus = "Active";}
-		if ($contractYear == $schoolYear && $contractMonth >= 9){$contractStatus = "Active";}
-
-		// Add additional condition when payments are implemented -- contract remains Active if NOT paid off completely
-        $sql2 = "select * from payment where contract_id = " . $row["contract_id"];
-	   	$result2 = $conn->query($sql2)
-	   	or trigger_error($conn->error);
-	   	$row2 = $result2->fetch_array(MYSQLI_BOTH);
-	   	$num_rows2 = mysqli_num_rows($result2);
-	    $total_amount_paid = 0;
-
-	   		for($j = 1; $j <= $num_rows2; $j++){
-	   	    	$total_amount_paid += $row2["amount"];
-				}
-
-
+		
+		include 'ContractStatus.php';
+		
+		include 'CalculateTotalAmountPaid.php';
+		
 		echo 	"<tr>
 				<td> " . $row["start_date"] . " </td>
 				<td> " . $contractSigned . " </td>
@@ -92,3 +75,4 @@ echo "</table>";
 
 ?>
 
+<a href = "SearchRetrieve.php"> Go back to Search page </a>

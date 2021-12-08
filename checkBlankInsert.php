@@ -10,6 +10,7 @@
       die();
 	} else {
 		   header("Location: ExecuteInsertStudent.php");
+
       die();
 	}
 

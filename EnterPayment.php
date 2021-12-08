@@ -22,16 +22,8 @@
 	or trigger_error($conn->error);
 	$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
 	$num_rows = mysqli_num_rows($result_contracts);
-	
-	// Selects most recent value from settings
-	$sql_settings = "select * from settings order by settings_date desc limit 1;";
-	$result_settings = $conn->query($sql_settings)
-	or trigger_error($conn->error);
-	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
-	
+		
 	echo $row_contracts["first_name"] . " " . $row_contracts["last_name"];
-	
-	
 	
 	$table = "<table border =\"1\">
 	<tr>
@@ -64,7 +56,6 @@
 		
 		include 'ContractStatus.php';	
 		
-		// START HERE!!!!!!!!!!1
 		$contractDate = date('Y-m-d', strtotime($row_contracts["start_date"]));
 		
 		if ($contractStatus == "Active" && $contractDate < $oldestStartDate){
@@ -76,19 +67,8 @@
 		$nrPaymentsByContractNr[$number]= $row_contracts["nrpayments"];
 		
 		$optionString .= "<option value=\"" . $row_contracts["contract_id"] . "\">" . $number . "</option>";
-		
-		// Add additional condition when payments are implemented -- contract remains Active if NOT paid off completely
-		
-        $sql_settings = "select * from payment where contract_id = " . $row_contracts["contract_id"];
-		$result_settings = $conn->query($sql_settings)
-		or trigger_error($conn->error);
-		$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
-		$num_rows2 = mysqli_num_rows($result_settings);
-        $total_amount_paid = 0;
-		
-		for($j = 1; $j <= $num_rows2; $j++){
-			$total_amount_paid += $row_settings["amount"];
-		}
+			
+		include 'CalculateTotalAmountPaid.php';
 		
 		$table .= "<tr>
 		<td> " . $number . " </td>
@@ -142,11 +122,28 @@
 					
 					
 					
-					<input type="submit" name = "addPayment" value = "Add payment ">
+					<input type="submit" name = "addPayment" value = "Add payment">
 				
-				<?php echo $table ?>
+				
 				
 				</form>
+				
+			    <form action= "UpdateAmountDue.php?studentID=<?php echo $studentID ?>" method="post">
+					
+					Contract: <?php echo $optionString ?>;
+					
+					Discount Amount: <input type="number" name="DiscountAmount" value=0 >
+					
+					
+					
+					
+					<input type="submit" name = "EnterDiscount" value = "Enter Discount">
+				
+				
+				
+				</form>
+				
+				<?php echo $table ?>
 				
 			</body>
 		</html>

@@ -57,16 +57,9 @@
 	or trigger_error($conn->error);
 	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
 	
-	//$sql_payDate_settings = "select * from settings_payment_due_dates;";
-	
-	///$result_sql_payDate_settings = $conn->query($sql_payDate_settings)
-	//or trigger_error($conn->error);
-	//$payDate_count = mysqli_num_rows($result_sql_payDate_settings);
-	
-	//$nrPaymentsInstallments = $payDate_count + 1;
-	
 	//Variables needed for CalculatePayDates.php
 	$startDate = new DateTime($row_contracts["start_date"]);
+	$contract_id = $_POST["contract_id"];
 	
 	if($startDate -> format('m') >= 7){
 			$endschoolyear = $startDate-> format('Y') + 1; 
