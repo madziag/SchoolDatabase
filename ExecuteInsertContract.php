@@ -28,6 +28,8 @@
 		$book = 1;
 	}
 	
+	$school_year = $_POST["SchoolYear"];
+	
 	// TODO: Sql query needs to take into consideration the location when pulling out dates from DB
 	// Selects most recent value from settings
 	$sql_settings = "select * from settings order by settings_date desc limit 1;";
@@ -44,7 +46,6 @@
 	or trigger_error($conn->error);
 	$row_sql_payDate_settings = $result_sql_payDate_settings->fetch_array(MYSQLI_BOTH);
 	
-	// Defaulting to group lessons
 	$nrOfPayments = 0;
 	
 	//Pay in full option:
@@ -132,8 +133,6 @@
 		$nrOfPayments = count($date_array) + 1;
 	}
 	
-	$grouplessons = 1;
-	$individuallessons = 0;
 	$price_per_les = $row_settings['contract_amount_installments']/60;
 	$basePrice = $price_per_les * $nrLessons;
 	
@@ -153,25 +152,21 @@
 	
 	// SQL Query
 	
-	$sql =  "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, lesson_count, start_date, contract_creation_date) VALUES
+	$sql =  "INSERT INTO englishschooldb.contracts (student_id, class_description, payment_type, starter, book, nrpayments, totalamount, contract_signed, comments, lesson_count, start_date, contract_creation_date) VALUES
 	('" . $studentID . "', '"
-	. $_POST['locSelect'] . "', '"
-	. $_POST['ageGroup'] . "', '"
-	. $_POST['levelSelect'] . "', '"
+	. $_POST['descriptionSelect'] . "', '"
 	. $_POST['rate'] . "', "
 	. $starter . ", "
 	. $book . ", "
 	. $nrOfPayments . ", "
 	. $totalContractAmount. ", "
-	. $grouplessons . ", "
-	. $individuallessons . ", "
 	. "0, '"
 	. $_POST['comments'] . "', "
 	. $nrLessons . ", '"
 	. $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'] . "', '"
 	. date("Y-m-d")."');";
 	
-	$sql2 = "INSERT INTO englishschooldb.contracts (student_id, location, age_group, level, payment_type, starter, book, nrpayments, totalamount, grouplessons, individuallessons, contract_signed, comments, start_date, contract_creation_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', 60,'--', '". date("Y-m-d")."');";
+	$sql2 = "INSERT INTO englishschooldb.contracts (student_id, class_description, payment_type, starter, book, nrpayments, totalamount, contract_signed, comments, start_date, contract_creation_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', 60,'--', '". date("Y-m-d")."');";
 	
 	if($sql != $sql2){
 		$result = $conn->query($sql)

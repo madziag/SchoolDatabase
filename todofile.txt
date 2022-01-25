@@ -1,183 +1,87 @@
-1/12/2021: 
--> if nrpayments = 0 then paymentDueDate = contractCreationDate
--> if nrpayments > 0, then paymentDueDate depends on: 
-		i. contract type (installments or pay in full)
-		ii. paymentSettings
--> if nrpayments = 0 then paymountAmount can be:
-		i. The payment setting amount
-		ii. Or less (if students starts later than the default date)
--> if nrpayment > 0 the payment Amount should always be calculated as it depends on what the student has paid in the past
+12/8/2021# We completed inserting classes into db + update + testing functionality!!!
+Next: Change contracts to be able to use our new class format!!
 
-1/19/2021
-*** FOR NEXT TIME -- use new nextpay values to sort values in contracts.php - reduce amount of code in contracts.php as we are now using data directly out of the db as opposed to calculating it on the fly in the php doc
-*** We need to find other places where we use this same value and substitute it with using values dircetly from the db. 
+1/18/2022: Continue changing contacts (see above) - currently working on changing rates. Create contract sends school year and description to executeinsertcontract. Use this to get rate from the database. Change code to use this rate instead. 
 
 
 
-1/5/2021: In ExecuteInsertContract.php: When it counts the number of classes, it does not take into consideration the location. In the DB we only have Zator entered. Need to add other locations with their respective schedules
 
+Note:Can we pass in variables explicitly to an included php file? -> reason for failure will be known more obviously. 
 
-Possible build test cases for next due date installments (contract.php)
+### Updated concept -> At the beginning of the school year, user creates classes and assigns to each class a price, description and school year. 
+When a student is entered, created classes are assigned to the student per school year, contract price is determined by the price assigned above.
+If a discount is to be applied, the user manually does this at student level -> discount is entered -> subtracted from total owed. 
 
+Updated TODO's:
 
+1. To be looked into: when entering a typo e.g. in the studentid section on SearchRetrieve: ERROR IS NOT USER FRIENDLY:
+Notice: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''580\' group by a.student_id' at line 1 in C:\Users\31653\Desktop\PhP\SearchRetrieve.php on line 94
+Fatal error: Uncaught Error: Call to a member function fetch_array() on boolean in C:\Users\31653\Desktop\PhP\SearchRetrieve.php:95 Stack trace: #0 {main} thrown in C:\Users\31653\Desktop\PhP\SearchRetrieve.php on line 95
 
-10/27/2020:
-In contracts.php
-To calcuate next due date for installments: 
-1. Normal case: Student pays on time so next due date is based on the number of payments left
-2. Case where they pay earlier than due date -> if amount left = 225 then last date in the array
-if 2 x costperinstallment -> 2nd last date; if 3 x costperinstallment -> 3rd last date in the array. If amount > costperinstallment x nr of dates in the array then = contract creation date
-3. Payment is overdue: How many payments overdue are there -> check in db for the previous due date 
-Can also track payment due date per student**** 
+2. Create form for user to input new due dates; 
 
-Amount due/nr payments = nr of normal installment payment
+3. In ExecuteInsertContract.php: When it counts the number of classes, it does not take into consideration the location. In the DB we only have Zator entered. Need to add other locations with their respective schedules
 
-10/20/2020:
-ExecuteInsertContract: Testing of dates for payment counts
+4. When there is more than one class in the sql table we will select by class -- currently only one class available in db (classdates table in db, file = executeinsertcontract.php)
 
-### Scenarios ###
+5. 'Not set' payment option -> needs to be handled correctly or removed?
 
-1. Installments
-- Normal start - Feb 1
-- Late Start - Feb 28
-- Start today
-2. Pay in full
-- Normal start - Feb 1
-- Late Start - Feb 28
-- Start today
+6. No place to edit amount due for students, different than the normal amount due. 
+-- user can manually reduce the amount the student has to pay. 
+- if they have 4 consecutive absences then money is given back --- 
 
-10/6/2020:
-When there is more than one class in the sql table we will select by class -- currently only one class available in db (classdates table in db, file = executeinsertcontract.php)
+7. Create a page for user to be able to enter the current cost (setting page)
+   
+8. Create a page for user to be able to add/remove classes/classdates/location/ (for classdates table in db)
+- include costs: starter costs + per semester costs (rates or onetime) per class/level/location (online or in person)
+- Added category == flash card english (0-3) and preschool (maluchy/zerowka) - double check
 
-9/30/2020:
-Calculate the amount due by using the number of lessons (we are currently using months). Needs to be changed in executeinsertcontract.php. 
-Once done, we need to make sure that amount due for next payment is calculated correctly in contracts.php
-'Not set' payment option -> needs to be handled correctly or removed?
-
-9/23/2020
-
-No place to edit amount due for students, different than the normal amount due. 
--- if contract start is later, are the contract amounts, lesson count, nrpayments generated correctly?
--- implement discounting - user can manually reduce the amount the student has to pay, also group be able to implement group discount. 
-
-Calculate correct payment due date. 
-
-
-9/15/2020:
-Do more testing on scenario on next due amount:
-
-Pay In Full Cases
-case 1: 2 semesters, paid-in-full price
-case 2: 1 semester; paid-in-full price
-case 3: 2 semesters, 1st semester cheaper
-case 4: 1 semester, cheaper
-case 5: 2 semesters; paid in full price, sem 1 is paid
-case 6: 2 semesters, pay in full price, 1st semester cheaper & paid
-
-Installment Cases
-case 1: 2 semesters, pay in installments price
-case 2: 1 semester, pay in installment price
-case 3: 2 semesters, 1st semester: 1st installment cheaper - 45, next 90
-case 4: 2 semesters, late start - 9 installments (instead of usual 10)
-case 5: 2 semesters, x nr of installments paid
-case 6: 1st payment is less, but has been paid 
-case 7: 1st payment is less, 2nd payment is normal, both have been paid
-
-
-
-9/2/2020:
--- consider extending settings to include locations and levels of classes. 
--- used new settings to calculate correct payments  --> CONTINUE FOR NEXT TIME (CONTRACTS.PHP)
-
-
-7/14/2020: 
-
--- NEXT STEP: Create a page for user to be able to enter the current cost (setting page), 
-   create a table where settings are stored, and be able to use this information in executeinsertcontract(total amount)
-
-6/9/2020: Make InsertPayment page work. Currently it only echos the student and contract ID
--- Currently the payment amount does not change regardless of the contract number, 
-we need to make the payment amount value dependent on the contract number
-
-
-*** 5/12/2020: Dealing with nulls e.g. can book or starter kit be null
-
-5/26/2020: To prevent duplicate contracts: 
--- display current contracts/In create contract -> show all active contracts (for the current date or unpaid)
+Consider: 
+	- How are the dates for the classes stored? Google calendar? Can it be exported and linked to the php?
+	- Possibility of creating a calendar where she can put in the dates and the dates can be stored in the form of an array
+	
+9. Duplicate Contracts: 
 -- if she decides to add contract regardless of duplicate then have a warning pop up -> 3 options: 
 i. continue (will create duplicate contracts)
 ii. edit current newly created contract 
 iii. cancel the creation of the new contract, and edit existing contract 
 
--- Instead of hardcoding payment amounts in contracts.php, create a settings page through which the user is able to change the values herself. 
+10. Check box for new signed contract received: in individual contract page, if signed contract = no, then we should have a button to sign the contract
+ 
+11. Undo signed option on the update contract page. 
 
--- Get to contracts not signed, with signed button (contracts page - next to update link?)
+12. What makes a student inactive? Need to be a way to change the students status to inactive/
+ExecuteInsertContract.php should update student to 'active' when a contract is inserted (table Students in db)
+- contract paid in full?
+- end of school year?
+- student drops out?
+* Can be changed manually - update student
+-- For inactive students (as per students table), if a new contract is added, the status should automatically update from inactive to active.
 
-1/7/2020:
-Contracts
--- Main contract page should show only active contracts 
--- For inactive students (as per students table), if a new contract is added, the status should automatically update from inactive to active. 
--- Individual contract page should show all contracts, active and inactive (grey out?)/Does a student have old unpaid contracts? 
-   These contracts should be sorted by date, with the newest on the top
--- Get location, level and age group info => autofill with previous info (level up) for existing students
--- Check box for new signed contract received: in individual contract page, if signed contract = no, then we should have a button to sign the contract
+12. End contract option (if someone does not want to continue) - should be a contract end date (students give 1 months notice, should be able to be put in) 
+- button for end contract + field to specify the date of the end of contract
 
-Payments 
--- Enter Payments Area: Implement option that pinpoints which contract is being paid for (if previous contract has not be paid in full) -- 
-   if payment given, it should go to the oldest due bill)
--- Nr of payments determined by number of months remaining in school year: paid in full = per semester
--- Amount due determined by number of months remaining in school year
--- If there is record in table payments, contract.php next due date shows as Paid which is incorrect 
--- Interface to input amounts due and paid
--- search for students with payment due -- contracts.php via sort buttons
+13. Contracts on individual contract page (ShowContracts) should be sorted by date, newest first??
 
-Other
--- Group vs Individual lessons 
--- Implement fuzzy matching
--- Interface for entering new classes (locations, age groups, levels, class dates)
-   Consider: 
-	- How are the dates for the classes stored? Google calendar? Can it be exported and linked to the php?
-	- Possibility of creating a calendar where she can put in the dates and the dates can be stored in the form of an array
--- Insert same student by 2 different users/ 2 users trying to isert students at te same time: shared network drive/webserver -- /remote desktop
--- automated email remainders -- contract & payment.
--- trim all input - consider other safety to prevent unwanted user entry input
--. Should we sort on any other columns in Contracts.php
+14. When entering new contract autofill (for existing students) location, level up and age group info
 
+15. Group vs Individual lessons 
+-- can a student be enrolled in more than 1 class silmultaneously -- more than 1 active contract => yes -- individual and group -- rarely
+-- individual students have a contract for a unspecified amount of time. They can pay in advance for 4 or 8 lessons - this needs to be checked on before we start working on it. 
 
-===================================================================================================================================================
-12/10/2019: THESE QUESTIONS NEED TO BE ANSWERED BEFORE WE PROCEED WITH CONTRACTS.PHP
-***  is it possible for a contract to start in Sept and shorter than 1 school year -- ask IZA ===> yes, students can resign, have to give 1 month advance
-Students pay one month in advance
-*** if lessons cannot be done -> refund (possibly manually -- how often does this happen? Is it possible to do this by hand? --IZA => can be done manually
--- interface where she can manually adjust payment due 
-*** can a student be enrolled in more than 1 class silmultaneously -- more than 1 active contract => yes -- individual and group -- rarely
---- what is the actual total amount -- are books and starter pack included? yes
-	total = book= 50 + sp = 50
-	1st rata incldes the sp /book/ 1st month = 196 (100 + 96) 96 => 6 lessons per month
-	paidin full = 450 + 50 + 50
-	maluchy = 50 zl per month, 1 x  week = 15 lessons per sem 16.66 zl per lesson/250 total/calosc 15.30 * 15 = 230
-	adults = 17zl * 30 = 510 /calosc 16 * 30 (480)
+16. Implement fuzzy matching - partial searches of names 
 
--- Link class level to new contract. When contract is updated, the class level should be updated as well -- option to manually adjust to different level.
--- is there a group level hierachy. Every level, different locations?
--- billing lower amounts e.g. 60 -- discount or partial payment?
--- set of possible payment schedules she stay to.
--- which classes have a book fee -- option to join with kalss
--- why some students have starter pack and others not?
--- do students change locations when they go up a level - relationship between groups and locations. how many locations do they have?
-select class and location together or separately? what does klas 3/2 mean?
--- contract.php table?
--- add notes column mysql -- archive old notes instead of delete??
--- individual students -- 2 students, 1 row (sylwia Majkut? who pays. Do students prepay or pay after the lessons. is there a contract?
-1. Guardians Name needs to be included
-2. For groups, contract is from September 1 to June 30 -> sometimes groups will start in Feb --> umowa Feb 1 -> JUne 30
-3. Individuals -> Umowa nieukreslona, payment z gory 4 or 8 lessons. 
-4. Second semester changes every year. Every year the second semester starts in a different week (tury) -- there are 4 tury -- each wojewodstwo starts different tury 
-1-2 nd start in January, 3-4 start in feb. 2020 - is 3rd, 2021 will be 4th 2022 - 1, 2023 -2. 1st semester always september - can we just write first and second semester instead
-5. Added category == flash card english (0-3) and preschool (maluchy/zerowka)
+17. automated email/text remainders -- contract & payment.
 
+18. trim all input - consider other safety to prevent unwanted user entry input
+19. Should we sort on any other columns in Contracts.php: First name? Start date? User to be informed: Sorting is done on only one column! 
 
-=======================================
-$myfile = fopen("newfile.txt", "w") or die("Unable to open file!");
-fwrite($myfile, $sql);
-fclose($myfile);
+20. Payments New Prices: http://www.englishdolinakarpia.pl/cennik/
+-- implement online/local vs distant location classes
+
+21. Ability to edit an existing contract (add a link to the update contract page (most likely from the individual contract page) (right now we can only access it when we create a new contract)
+
+22. Guardians Name needs to be included****
+
+23. Second semester changes every year. Every year the second semester starts in a different week (tury) -- there are 4 tury -- each wojewodstwo starts different tury - check on this
+- Possibility to enter semester start dates when entering classdates/classes (or a more global settings page)

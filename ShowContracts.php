@@ -34,9 +34,7 @@ echo "<table border =\"1\">
 	<td> Total Amount </td>
 	<td> Book </td>
 	<td> Starter </td>
-	<td> Location </td>
-	<td> Age Group </td>
-	<td> Level </td>
+	<td> Description </td>
 	</tr>";
 
 $currentYear = date("Y");
@@ -61,9 +59,7 @@ for($i = 1; $i <= $num_rows; $i++){
 				<td> " . $row["totalamount"] . "  </td>
 				<td> " . $row["book"] . "  </td>
 				<td> " . $row["starter"] . "  </td>
-				<td> " . $row["location"] . "  </td>
-				<td> " . $row["age_group"] . "  </td>
-				<td> " . $row["level"] . "  </td>
+				<td> " . $row["class_description"] . "  </td>
 				</tr>";
 
 		$row = $result->fetch_array(MYSQLI_BOTH);

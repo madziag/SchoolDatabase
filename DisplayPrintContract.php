@@ -19,7 +19,7 @@
     }
 
 $sql = "SELECT * from englishschooldb.contracts where student_id = " . $studentID . " and contract_id = " . $contractID . " ;";
-// student_id, location, age_group, level, payment_type, starter, book, nrpayments, grouplessons, individuallessons, contract_signed, comments, start_date
+// student_id, class_description, payment_type, starter, book, nrpayments, contract_signed, comments, start_date
 $sql_student = "SELECT first_name, last_name  from englishschooldb.students where student_id = " . $studentID . ";";
 $sql_guardian = "SELECT guardian_first_name, guardian_last_name from englishschooldb.guardians join englishschooldb.student_guardian on guardians.guardian_id = student_guardian.guardian_id where student_id = " . $studentID . ";";
 
@@ -90,9 +90,7 @@ a.button {
 <br><br><br><br><br><br>
 <?php echo "Name: " . $row2["first_name"] . " " . $row2["last_name"]; ?><br/><br/>
 <?php echo "Contract Start Date: " . $row["start_date"]; ?><br/><br/>
-<?php echo "Location: " . $row["location"] ; ?><br/><br/>
-<?php echo "Group: " . $row["age_group"]; ?><br/><br/>
-<?php echo "Level: " . $row["level"]; ?><br/><br/>
+<?php echo "Description: " . $row["class_description"] ; ?><br/><br/>
 <?php echo "Rate: " . $row["payment_type"]; ?><br/><br/>
 <?php if($row["starter"] == 1){
 			echo "Starter kit: Yes";
@@ -105,12 +103,7 @@ a.button {
 			echo "Book: No";
 			} ?><br/><br/>
 <?php echo "Number of Payments: " . $row["nrpayments"] ?><br/><br/>
-<?php if($row["grouplessons"] == 1){
-			echo "Group Lessons \n";
-			}
-	  if($row["individuallessons"] == 1){
-			echo "Individual Lessons";
-			} ?><br/><br/><br/><br/>
+<br/><br/>
 <?php echo "____________________"; ?><br/><br/>
 
 

@@ -56,6 +56,7 @@ if($month < 9 or ($month == 9 and $day == 1)){
 	$selectedSemester = $selectedSemester . ($year + 1);
 }
 
+// REDO to format we use in UpdateClass.php
 $selected19 = '';
 $selected20 = '';
 $selected21 = '';
@@ -82,7 +83,7 @@ $sql = 'Select * from englishschooldb.locationgroupslevels';
 $result = $conn->query($sql)or trigger_error($conn->error);
 
 $resultArr = [];
-$loc = [];
+$description = [];
 
 while($row = $result->fetch_assoc()) {
 	$resultArr[] = $row;
@@ -101,7 +102,7 @@ session_destroy();
 
 var result = <?php echo json_encode($resultArr, JSON_PRETTY_PRINT) ?>;
 
-var loc = "";
+var description = "";
 var selSchoolYear = "";
 
 function school_year() {
@@ -116,87 +117,47 @@ function school_year() {
 
 	document.getElementById("schoolYearDiv").innerHTML = selSchoolYear;
 
-	var locSet = locsOnSchoolYear();
-	locBoxPopulate(locSet);
+	var descriptionSet = descriptionsOnSchoolYear();
+	descriptionBoxPopulate(descriptionSet);
 }
 
-function locsOnSchoolYear() {
+function descriptionsOnSchoolYear() {
 	var i;
-	var locSet = new Set();
+	var descriptionSet = new Set();
 
 	for (i = 0; i < result.length; i++) {
 		if (selSchoolYear == result[i]["school_year"]) {
-			locSet.add(result[i]["location"] );
+			descriptionSet.add(result[i]["class_description"] );
 		}
 	}
-	return locSet;
+	return descriptionSet;
 }
 
- function locBoxPopulate(locSet) {
-	//Clear Current options in locSelect
-	document.form1.locSelect.options.length = 0;
+ function descriptionBoxPopulate(descriptionSet) {
+	//Clear Current options in descriptionSelect
+	document.form1.descriptionSelect.options.length = 0;
 
-	document.form1.locSelect.options[0] = new Option("Select Location", "");
+	document.form1.descriptionSelect.options[0] = new Option("Select description", "");
 
 	var i = 1;
 
-	for (let loc of locSet) {
-	  	document.form1.locSelect.options[i] = new Option(loc, loc);
+	for (let description of descriptionSet) {
+	  	document.form1.descriptionSelect.options[i] = new Option(description, description);
 	  	i++;
 	}
 	 return true;
 }
+ function submitWithSchoolYear() {
+    var form = document.getElementById('form1');//retrieve the form as a DOM element
+    var school_year = document.createElement('input');//prepare a new input DOM element
+	
+    school_year.setAttribute('name', "SchoolYear");//set the param name
+    school_year.setAttribute('value', selSchoolYear);//set the value
+    school_year.setAttribute('type', "hidden")//set the type, like "hidden" or other
 
- function locBoxChange(p_index) {
-	 //Clear Current options in locSelect
-	 document.form1.ageGroup.options.length = 0;
-	 document.form1.levelSelect.options.length = 0;
+    form.appendChild(school_year);//append the input to the form
 
-	 document.form1.levelSelect.options[0] = new Option("Select Level", "");
-
-	 selLoc = document.getElementById("locSelect").options[document.getElementById("locSelect").selectedIndex].value;
-
-	 var i;
-	 var ageSet = new Set();
-
-	 for (i = 0; i < result.length; i++) {
-	 	if (selSchoolYear == result[i]["school_year"] && selLoc == result[i]["location"]) {
-	 		ageSet.add(result[i]["age_group"] );
-	 	}
-	 }
-
-	 document.form1.ageGroup.options[0] = new Option("Select Age Group", "");
-	 i = 1;
-
-	 for (let age of ageSet) {
-	 	document.form1.ageGroup.options[i] = new Option(age, age);
-	 	i++;
-	 }
-	 return true;
-}
-
- function ageGroupChange(p_index) {
-	 //Clear Current options in levelSelect
-	 document.form1.levelSelect.options.length = 0;
-
-	 selAge = document.getElementById("ageGroup").options[document.getElementById("ageGroup").selectedIndex].value;
-
-	 var i;
-	 var levelSet = new Set();
-
-	 for (i = 0; i < result.length; i++) {
-	 	if (selSchoolYear == result[i]["school_year"] && selLoc == result[i]["location"] && selAge == result[i]["age_group"] ) {
-	 		levelSet.add(result[i]["levels"] );
-	 	}
-	 }
-	 document.form1.levelSelect.options[0] = new Option("Select Level", "");
-	 i = 1;
-
-	 for (let lev of levelSet) {
-	 	document.form1.levelSelect.options[i] = new Option(lev, lev);
-	 	i++;
-	 }
-	 return true;
+    form.submit();//send with added input
  }
  -->
  </script>
@@ -275,20 +236,7 @@ function locsOnSchoolYear() {
     Selected School Year: <div id="schoolYearDiv"> </div>
  <br /> <br />
 
- <select id = "locSelect" name="locSelect" onChange="javascript: locBoxChange(this.options[this.selectedIndex].value);"><option value="">Select Location</option></select>
-
- <script type="text/javascript" language="javascript">
-
- <!--
- document.write('<select id = "ageGroup" name="ageGroup" onChange="javascript: ageGroupChange(this.options[this.selectedIndex].value);"><option value="">Select Type</option></select>')
- -->
- </script>
-
- <script type="text/javascript" language="javascript">
- <!--
- document.write('<select id = "levelSelect" name="levelSelect"><option value="">Select Level</option></select>')
- -->
- </script>
+ <select id = "descriptionSelect" name="descriptionSelect" onChange="javascript: descriptionBoxChange(this.options[this.selectedIndex].value);"><option value="">Select Description</option></select>
 
 <br />
 
@@ -316,7 +264,9 @@ function locsOnSchoolYear() {
 
 <br /><br />
 
- <input type="submit">
+<button onclick="submitWithSchoolYear()">Submit</button>
+
+
 
  </form>
  </body>
