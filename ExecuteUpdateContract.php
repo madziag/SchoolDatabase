@@ -21,7 +21,7 @@ if ($_POST['starter'] == "Yes"){$starterint = 1;} else {$starterint = 0;}
 if ($_POST['book'] == "Yes"){$bookint = 1;} else {$bookint = 0;}
 
 $sql = "UPDATE contracts SET ";
-	$sql = $sql . "start_date = '" . $_POST['contractStartDate'] . "', class_description = '" . $_POST['description'] . "',
+	$sql = $sql . "start_date = '" . $_POST['contractStartDate'] . "', class_description = '" . $_POST['descriptionSelect'] . "',
 	payment_type = '" . $_POST['rate'] . "',
 	nrpayments = '" . $_POST['nrpayments'] . "',
 	starter = '" . $starterint . "',

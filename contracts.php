@@ -40,11 +40,6 @@
 	
 	$num_rows_contractsplus = mysqli_num_rows($result_contractsplus);
 	
-	// Selects most recent value from settings
-	$sql_settings = "select * from settings order by settings_date desc limit 1;";
-	$result_settings = $conn->query($sql_settings)
-	or trigger_error($conn->error);
-	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
 	
 	if ($num_rows_contractsplus > 0){
 		

@@ -50,12 +50,25 @@
 	$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
 	
 	$contractStatus = "Active";
+	$class_description = $row_contracts["class_description"];
 	
-	$sql_settings = "select * from settings order by settings_date desc limit 1;";
+	$start_date = new DateTime($row_contracts["start_date"]);
+	$year = $start_date->format('Y');
+	$month = $start_date->format('m');
+	$nextyear = $year + 1;
+	$lastyear = $year - 1;
+	$school_year = $row_contracts["school_year"];
+	if ($month >= 7 && $month <= 12){
+		$school_year = $year . '-' . $nextyear;
+		} elseif ($month < 7) {
+		$school_year = $lastyear . '-' . $year;
+		} 
 	
-	$result_settings = $conn->query($sql_settings)
+	// Get rates from locationgroupslevels
+    $sql_rates = "select * from locationgroupslevels where school_year = '" . $school_year . "' and class_description = '" . $class_description . "';";
+	$result_rates = $conn->query($sql_rates)
 	or trigger_error($conn->error);
-	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
+	$row_rates = $result_rates->fetch_array(MYSQLI_BOTH);
 	
 	//Variables needed for CalculatePayDates.php
 	$startDate = new DateTime($row_contracts["start_date"]);

@@ -48,14 +48,22 @@
 	$result_contracts = $conn->query($sql_contracts)
 	or trigger_error($conn->error);
 	$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
-	
 	$contractStatus = "Active";
 	
-	$sql_settings = "select * from settings order by settings_date desc limit 1;";
+    $class_description = $row_contracts["class_description"];
 	
-	$result_settings = $conn->query($sql_settings)
+	$start_date = new DateTime($row_contracts["start_date"]);
+	$year = $start_date->format('Y');
+	$month = $start_date->format('m');
+	$nextyear = $year + 1;
+	$lastyear = $year - 1;
+	$school_year = $row_contracts["school_year"];
+	
+	// Get rates from locationgroupslevels
+    $sql_rates = "select * from locationgroupslevels where school_year = '" . $school_year . "' and class_description = '" . $class_description . "';";
+	$result_rates = $conn->query($sql_rates)
 	or trigger_error($conn->error);
-	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
+	$row_rates = $result_rates->fetch_array(MYSQLI_BOTH);
 	
 	//Variables needed for CalculatePayDates.php
 	$startDate = new DateTime($row_contracts["start_date"]);
@@ -82,11 +90,11 @@
 		
 		if($row_contracts["payment_type"] == "pay in full" ){
 			
-			if($amountdue > $row_settings['contract_amount_infull']/2){
+			if($amountdue > $row_rates['price_in_full']/2){
 				$nextPaymentDueDate = new DateTime($row_contracts["contract_creation_date"]);
 			}
 			
-			if($amountdue < $row_settings['contract_amount_infull']/2){
+			if($amountdue < $row_rates['price_in_full']/2){
 				if(date_format(new DateTime($row_contracts["start_date"]), "m") >= 2 && date_format(new DateTime($row_contracts["start_date"]), "m") <= 6){
 					$nextPaymentDueDate = new DateTime($row_contracts["contract_creation_date"]);
 					} else {
@@ -99,7 +107,7 @@
 			}
 			
 			
-			if($amountdue == $row_settings['contract_amount_infull']/2){
+			if($amountdue == $row_rates['price_in_full']/2){
 				if (!is_null($february)){
 					$nextPaymentDueDate = $february;
 					} else {

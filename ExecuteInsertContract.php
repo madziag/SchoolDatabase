@@ -30,17 +30,15 @@
 	
 	$school_year = $_POST["SchoolYear"];
 	
-	// TODO: Sql query needs to take into consideration the location when pulling out dates from DB
-	// Selects most recent value from settings
-	$sql_settings = "select * from settings order by settings_date desc limit 1;";
-	$result_settings = $conn->query($sql_settings)
+	$class_description = $_POST['descriptionSelect'];
+	
+	// Get rates from locationgroupslevels
+    $sql_rates = "select * from locationgroupslevels where school_year = '" . $school_year . "' and class_description = '" . $class_description . "';";
+	$result_rates = $conn->query($sql_rates)
 	or trigger_error($conn->error);
-	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
+	$row_rates = $result_rates->fetch_array(MYSQLI_BOTH);
 	
-	echo 'echo $row_settings';
-	echo $row_settings['contract_amount_installments'];
-	echo '<br>';
-	
+	// Get payment due dates
 	$sql_payDate_settings = "select * from settings_payment_due_dates;";
 	$result_sql_payDate_settings = $conn->query($sql_payDate_settings)
 	or trigger_error($conn->error);
@@ -63,9 +61,8 @@
 	// To calculate the number of lessons left
 	//1. Get the start_date from the post_data
 	$startDate = new DateTime($_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day']);
-	
-	//When there is more than one class in the sql table we will select by class -- currently only one class available in db
-	$sql_lesCount = "select * from classdates order by date_id;";
+			
+	$sql_lesCount = "select * from classdates where school_year = '" . $school_year . "' and class_description = '" . $class_description . "' order by date_id;";
 	$result_lesCount = $conn->query($sql_lesCount)
 	or trigger_error($conn->error);
 	$row_lesCount = $result_lesCount->fetch_array(MYSQLI_BOTH);
@@ -133,15 +130,18 @@
 		$nrOfPayments = count($date_array) + 1;
 	}
 	
-	$price_per_les = $row_settings['contract_amount_installments']/60;
+	$price_per_les = $row_rates['price_in_installments']/60;
 	$basePrice = $price_per_les * $nrLessons;
-	
+
 	// Pay in full
 	
 	if (isset($_POST["rate"]) && $_POST["rate"] == "pay in full"){
-		$discount = $row_settings['contract_amount_infull']/$row_settings['contract_amount_installments'];
-		$totalContractAmount = $basePrice * $discount;	
+		$discount = $row_rates['price_in_full']/$row_rates['price_in_installments'];
+		$totalContractAmount = $basePrice * $discount;		
 	}
+
+	
+	
 	
 	//Pay in installments
 	
@@ -149,12 +149,11 @@
 		$totalContractAmount = $basePrice;
 	}
 	
-	
 	// SQL Query
 	
-	$sql =  "INSERT INTO englishschooldb.contracts (student_id, class_description, payment_type, starter, book, nrpayments, totalamount, contract_signed, comments, lesson_count, start_date, contract_creation_date) VALUES
+	$sql =  "INSERT INTO englishschooldb.contracts (student_id, class_description, payment_type, starter, book, nrpayments, totalamount, contract_signed, comments, lesson_count, start_date, contract_creation_date, school_year) VALUES
 	('" . $studentID . "', '"
-	. $_POST['descriptionSelect'] . "', '"
+	. $class_description . "', '"
 	. $_POST['rate'] . "', "
 	. $starter . ", "
 	. $book . ", "
@@ -164,9 +163,12 @@
 	. $_POST['comments'] . "', "
 	. $nrLessons . ", '"
 	. $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'] . "', '"
-	. date("Y-m-d")."');";
+	. date("Y-m-d")."','"
+	. $school_year . "');";
+
+ 
 	
-	$sql2 = "INSERT INTO englishschooldb.contracts (student_id, class_description, payment_type, starter, book, nrpayments, totalamount, contract_signed, comments, start_date, contract_creation_date) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', 60,'--', '". date("Y-m-d")."');";
+	$sql2 = "INSERT INTO englishschooldb.contracts (student_id, class_description, payment_type, starter, book, nrpayments, totalamount, contract_signed, comments, start_date, contract_creation_date, school_year) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', 60,'--', '". date("Y-m-d")."', '');";
 	
 	if($sql != $sql2){
 		$result = $conn->query($sql)

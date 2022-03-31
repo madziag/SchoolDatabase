@@ -1,4 +1,5 @@
 <?php
+//Creates/updates form - to be called by CreateContract.php & UpdateContract.php
 
 session_start();
 
@@ -11,101 +12,94 @@ session_start();
 	$conn = new mysqli($servername, $username, $password, $dbname);
 	// Check connection
 	if ($conn->connect_error) {die("Connection failed: " . $conn->connect_error);}
-
- $studentID =  $_GET['studentID'];
-
- if(isset($_SESSION['post_insert'])){
+	
+	
+	$studentID =  $_GET['studentID'];
+	
+	if(isset($_SESSION['post_insert'])){
   		$_POST =  $_SESSION['post_insert'];
  	}
+	
+	$sql = "Select * from students where student_id = " . $studentID;
+	$result = $conn->query($sql) or trigger_error($conn->error);
+	$row = $result->fetch_array(MYSQLI_BOTH);
 
-$sql = "Select * from students where student_id = " . $studentID;
+	echo " Name: " . $row["first_name"] . " " . $row["last_name"] . "<br \>";
+	echo "Address: " . $row["street_address"] . " " . $row["address_code"]. " " . $row["town"] . "<br \>";
+	echo "Contact: "  . $row["email"] .  " " . $row["phone_main"]  . " " . $row["phone_alt"] . "<br \>";
 
-$result = $conn->query($sql) or trigger_error($conn->error);
-$row = $result->fetch_array(MYSQLI_BOTH);
+	if(empty($action)){$action = "CheckBlankContract.php?studentID=" . $studentID;}
 
-echo " Name: " . $row["first_name"] . " " . $row["last_name"] . "<br \>";
-echo "Address: " . $row["street_address"] . " " . $row["address_code"]. " " . $row["town"] . "<br \>";
-echo "Contact: "  . $row["email"] .  " " . $row["phone_main"]  . " " . $row["phone_alt"] . "<br \>";
-//echo "Status: " . $row["inactive"];
+	$checked1 = 'checked = \"checked\"';
+	$day = date("d");
+	$month = date('m');
+	$year = intval(date('Y'));
+	$selectedSemester = "";
 
-
-
-if(empty($action)){
-	$action = "CheckBlankContract.php?studentID=" . $studentID;
+	if($month < 2 or $month > 9 or ($month == 9 and $day > 1)){
+		$selectedFeb = 'selected = \"selected\"';
+		$selectedSept = '';
+		$selectedSemester = '2-';
+	} else {
+		$selectedFeb = '';
+		$selectedSept = 'selected = \"selected\"';
+		$selectedSemester = '9-';
 	}
 
-$checked1 = 'checked = \"checked\"';
-$day = date("d");
-$month = date('m');
-$year = intval(date('Y'));
-$selectedSemester = "";
+	if($month < 9 or ($month == 9 and $day == 1)){
+		$selectedSemester = $selectedSemester . $year;
+	} else {
+		$selectedSemester = $selectedSemester . ($year + 1);
+	}
 
-if($month < 2 or $month > 9 or ($month == 9 and $day > 1)){
-	$selectedFeb = 'selected = \"selected\"';
- 	$selectedSept = '';
-  	$selectedSemester = '2-';
-} else {
-   	$selectedFeb = '';
-   	$selectedSept = 'selected = \"selected\"';
-   	$selectedSemester = '9-';
-}
+	// REDO to format we use in UpdateClass.php
+	$selected19 = '';
+	$selected20 = '';
+	$selected21 = '';
+	$selected22 = '';
+	$selected23 = '';
+	$selected24 = '';
+	$selected25 = '';
+	$selected26 = '';
+	$selected27 = '';
+	$selected28 = '';
 
-if($month < 9 or ($month == 9 and $day == 1)){
-	$selectedSemester = $selectedSemester . $year;
-} else {
-	$selectedSemester = $selectedSemester . ($year + 1);
-}
+	if($year == 2019 and $month < 9){$selected19 = 'selected = \"selected\"';}
+	if(($year == 2019 and $month >= 9) or ($year == 2020 and $month < 9)){$selected20 = 'selected = \"selected\"';}
+	if(($year == 2020 and $month >= 9) or ($year == 2021 and $month < 9)){$selected21 = 'selected = \"selected\"';}
+	if(($year == 2021 and $month >= 9) or ($year == 2022 and $month < 9)){$selected22 = 'selected = \"selected\"';}
+	if(($year == 2022 and $month >= 9) or ($year == 2023 and $month < 9)){$selected23 = 'selected = \"selected\"';}
+	if(($year == 2023 and $month >= 9) or ($year == 2024 and $month < 9)){$selected24 = 'selected = \"selected\"';}
+	if(($year == 2024 and $month >= 9) or ($year == 2025 and $month < 9)){$selected25 = 'selected = \"selected\"';}
+	if(($year == 2025 and $month >= 9) or ($year == 2026 and $month < 9)){$selected26 = 'selected = \"selected\"';}
+	if(($year == 2026 and $month >= 9) or ($year == 2027 and $month < 9)){$selected27 = 'selected = \"selected\"';}
+	if(($year == 2027 and $month >= 9) or ($year == 2028 and $month < 9)){$selected28 = 'selected = \"selected\"';}
 
-// REDO to format we use in UpdateClass.php
-$selected19 = '';
-$selected20 = '';
-$selected21 = '';
-$selected22 = '';
-$selected23 = '';
-$selected24 = '';
-$selected25 = '';
-$selected26 = '';
-$selected27 = '';
-$selected28 = '';
 
-if($year == 2019 and $month < 9){$selected19 = 'selected = \"selected\"';}
-if(($year == 2019 and $month >= 9) or ($year == 2020 and $month < 9)){$selected20 = 'selected = \"selected\"';}
-if(($year == 2020 and $month >= 9) or ($year == 2021 and $month < 9)){$selected21 = 'selected = \"selected\"';}
-if(($year == 2021 and $month >= 9) or ($year == 2022 and $month < 9)){$selected22 = 'selected = \"selected\"';}
-if(($year == 2022 and $month >= 9) or ($year == 2023 and $month < 9)){$selected23 = 'selected = \"selected\"';}
-if(($year == 2023 and $month >= 9) or ($year == 2024 and $month < 9)){$selected24 = 'selected = \"selected\"';}
-if(($year == 2024 and $month >= 9) or ($year == 2025 and $month < 9)){$selected25 = 'selected = \"selected\"';}
-if(($year == 2025 and $month >= 9) or ($year == 2026 and $month < 9)){$selected26 = 'selected = \"selected\"';}
-if(($year == 2026 and $month >= 9) or ($year == 2027 and $month < 9)){$selected27 = 'selected = \"selected\"';}
-if(($year == 2027 and $month >= 9) or ($year == 2028 and $month < 9)){$selected28 = 'selected = \"selected\"';}
 
-$sql = 'Select * from englishschooldb.locationgroupslevels';
-$result = $conn->query($sql)or trigger_error($conn->error);
+	$sql = 'Select * from englishschooldb.locationgroupslevels';
+	$result = $conn->query($sql)or trigger_error($conn->error);
+	
+	$resultArr = [];
+	while($row = $result->fetch_assoc()) {
+		$resultArr[] = $row;
+	}
 
-$resultArr = [];
-
-while($row = $result->fetch_assoc()) {
-	$resultArr[] = $row;
-}
-
-session_destroy();
+	session_destroy();
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-
 <title>Create Contract</title>
-
 <script language="javascript" type="text/javascript">
+
 <!--
 
 var result = <?php echo json_encode($resultArr, JSON_PRETTY_PRINT) ?>;
-
 var description = "";
 var selSchoolYear = "";
 
 function school_year() {
-
 	var m = document.getElementById("month").options[document.getElementById("month").selectedIndex].value;
   	var y = document.getElementById("year").options[document.getElementById("year").selectedIndex].value;
     var nexty = parseInt(y, 10) + 1;
@@ -160,15 +154,15 @@ function descriptionsOnSchoolYear() {
     form.submit();//send with added input
  }
  -->
+ 
  </script>
-
  </head>
  <body onload="school_year();">
  <form action= "<?php echo $action ?>"  method="post" id="form1" name="form1">
 
  <br /> <br />
    Start Date &nbsp;&nbsp;&nbsp;Day:
-   		    <select name="day">
+   		    <select name="day" id="day">
  			<option value="1">1</option>
  			<option value="2">2</option>
  			<option value="3">3</option>
@@ -200,7 +194,7 @@ function descriptionsOnSchoolYear() {
  			<option value="29">29</option>
  			<option value="30">30</option>
  			<option value="31">31</option>
-             </select>
+            </select>
 
    &nbsp;&nbsp;&nbsp;Month:
  			<select name="month" id="month" onchange = "school_year()">
@@ -269,5 +263,17 @@ function descriptionsOnSchoolYear() {
 
 
  </form>
+ <script>
+ 
+ var element = document.getElementById("day");
+ element.value = "10";
+ 
+ </script>
+ 
  </body>
  </html>
+ 
+ 
+ 
+ 
+ 

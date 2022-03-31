@@ -32,23 +32,6 @@
 		die("Connection failed: " . $test_conn->connect_error);
 	}
 
-	$test_sql_settings = "select * from settings order by settings_date desc limit 1;";
-	
-	$test_result_settings = $test_conn->query($test_sql_settings)
-	or trigger_error($test_conn->error);
-	$test_row_settings = $test_result_settings->fetch_array(MYSQLI_BOTH);
-	
-	if($test_row_settings['contract_amount_installments'] == 900){
-		echo 'contract_amount_installments is okay. <br>';} 
-	else {
-		echo 'contract_amount_installments is NOT AS EXPECTED, <br>';
-		}
-
-	if($test_row_settings['contract_amount_infull'] == 818){
-		echo 'contract_amount_infull is okay. <br>';} 
-	else {
-		echo 'contract_amount_infull is NOT AS EXPECTED, <br>';
-		}
 
 // - 2. Check if the data needed is there (settings_payment_due_dates table must have correct payment_due_date)
 	
@@ -91,6 +74,7 @@
 	$test_row_payment = $test_result_payment->fetch_array(MYSQLI_BOTH);
 	
 	$num_rows_payment = mysqli_num_rows($test_result_payment);
+	
 	
 	if($num_rows_payment == 0){
 		echo 'Payments (in database) OKAY. <br>';
