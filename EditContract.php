@@ -48,55 +48,6 @@
 	//$action is where the data is submitted to when submit button is pressed
 	if(empty($action)){$action = "CheckBlankContract.php?studentID=" . $studentID;}
 	
-	//setting variables - start date (current date)
-	$day = date("d");
-	$month = date('m');
-	$year = intval(date('Y'));
-	$selectedSemester = "";
-	
-	//
-	
-	
-	if($month < 2 or $month > 9 or ($month == 9 and $day > 1)){
-		$selectedFeb = 'selected = \"selected\"';
-		$selectedSept = '';
-		$selectedSemester = '2-';
-		} else {
-		$selectedFeb = '';
-		$selectedSept = 'selected = \"selected\"';
-		$selectedSemester = '9-';
-	}
-	
-	if($month < 9 or ($month == 9 and $day == 1)){
-		$selectedSemester = $selectedSemester . $year;
-		} else {
-		$selectedSemester = $selectedSemester . ($year + 1);
-	}
-	
-	// REDO to format we use in UpdateClass.php
-	$selected19 = '';
-	$selected20 = '';
-	$selected21 = '';
-	$selected22 = '';
-	$selected23 = '';
-	$selected24 = '';
-	$selected25 = '';
-	$selected26 = '';
-	$selected27 = '';
-	$selected28 = '';
-	
-	if($year == 2019 and $month < 9){$selected19 = 'selected = \"selected\"';}
-	if(($year == 2019 and $month >= 9) or ($year == 2020 and $month < 9)){$selected20 = 'selected = \"selected\"';}
-	if(($year == 2020 and $month >= 9) or ($year == 2021 and $month < 9)){$selected21 = 'selected = \"selected\"';}
-	if(($year == 2021 and $month >= 9) or ($year == 2022 and $month < 9)){$selected22 = 'selected = \"selected\"';}
-	if(($year == 2022 and $month >= 9) or ($year == 2023 and $month < 9)){$selected23 = 'selected = \"selected\"';}
-	if(($year == 2023 and $month >= 9) or ($year == 2024 and $month < 9)){$selected24 = 'selected = \"selected\"';}
-	if(($year == 2024 and $month >= 9) or ($year == 2025 and $month < 9)){$selected25 = 'selected = \"selected\"';}
-	if(($year == 2025 and $month >= 9) or ($year == 2026 and $month < 9)){$selected26 = 'selected = \"selected\"';}
-	if(($year == 2026 and $month >= 9) or ($year == 2027 and $month < 9)){$selected27 = 'selected = \"selected\"';}
-	if(($year == 2027 and $month >= 9) or ($year == 2028 and $month < 9)){$selected28 = 'selected = \"selected\"';}
-	
-	
 	// queries db to get the classes 
 	$sql = 'Select * from englishschooldb.locationgroupslevels';
 	$result = $conn->query($sql)or trigger_error($conn->error);
@@ -200,10 +151,45 @@
 			}
 			-->
 			
+			//take current date and do same check as above with the php
+			
+		    //Gets the dropdowns 
+			function setDefaultStartDate(){
+				var day_dropdown = document.getElementById("day");
+				var month_dropdown = document.getElementById("month");
+				var year_dropdown = document.getElementById("year");
+			
+			    var currentDate = new Date();
+                var cDay = currentDate.getDate();		
+				var cMonth = currentDate.getMonth() + 1;	
+				var cYear = currentDate.getFullYear();
+						
+				if(cMonth > 3 || cMonth < 11){
+						month_dropdown.value = 9;
+					} else {
+						month_dropdown.value = 2;
+					};
+					
+				if(cMonth >= 11){
+					year_dropdown.value = cYear + 1;
+				} else {
+					year_dropdown.value = cYear;
+			    }
+
+			}
+			
+			function init(){
+			    setDefaultStartDate();
+				school_year();
+				
+				}
+			
+			
 		</script>
 	</head>
 	<!-- Creates form - when the page loads, it runs school_year() -->
-	<body onload="school_year();">
+	<body onload="init();">
+	
 		<form action= "<?php echo $action ?>"  method="post" id="form1" name="form1">
 			
 			<br /> <br />
@@ -260,16 +246,16 @@
 			
 			&nbsp;&nbsp;&nbsp;Year:
  		    <select name="year" id="year" onchange = "school_year()">
-				<option value="2019"<?php echo $selected19; ?>>2019</option>
-				<option value="2020"<?php echo $selected20; ?>>2020</option>
-				<option value="2021"<?php echo $selected21; ?>>2021</option>
-				<option value="2022"<?php echo $selected22; ?>>2022</option>
-				<option value="2023"<?php echo $selected23; ?>>2023</option>
-				<option value="2024"<?php echo $selected24; ?>>2024</option>
-				<option value="2025"<?php echo $selected25; ?>>2025</option>
-				<option value="2026"<?php echo $selected26; ?>>2026</option>
-				<option value="2027"<?php echo $selected27; ?>>2027</option>
-				<option value="2028"<?php echo $selected28; ?>>2028</option>
+				<option value="2019">2019</option>
+				<option value="2020">2020</option>
+				<option value="2021">2021</option>
+				<option value="2022">2022</option>
+				<option value="2023">2023</option>
+				<option value="2024">2024</option>
+				<option value="2025">2025</option>
+				<option value="2026">2026</option>
+				<option value="2027">2027</option>
+				<option value="2028">2028</option>
 			</select><br />
 			
 			<br />
