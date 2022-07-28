@@ -69,6 +69,10 @@
 	$result_rates = $conn->query($sql_rates)
 	or trigger_error($conn->error);
 	$row_rates = $result_rates->fetch_array(MYSQLI_BOTH);
+	/*echo "SQL_RATES";
+	echo $sql_rates;
+	echo "row rates";
+	var_dump($row_rates);*/
 	
 	//Variables needed for CalculatePayDates.php
 	$startDate = new DateTime($row_contracts["start_date"]);
@@ -85,8 +89,15 @@
 
 	
 	include 'CalculatePayDates.php';
+	//Variables needed for CalculateNextPayments
+	//$date_array comes from CalculatePayDates.php
+	//$installmentAmount comes from CalculatePayDates.php
 	
-	//$nrPaymentsInstallments = count($date_array) + 1;
+	/*echo "installmentAmount ";
+	echo $installmentAmount;
+	echo "Priceininstallments ";
+	echo $row_rates['price_in_installments'];*/
+
 	
 	include 'CalculateNextPayment.php';
 	
@@ -95,11 +106,11 @@
 		
 		if($row_contracts["payment_type"] == "pay in full" ){
 			
-			if($amountdue > $row_settings['contract_amount_infull']/2){
+			if($amountdue > $row_rates['price_in_full']/2){
 				$nextPaymentDueDate = new DateTime($row_contracts["contract_creation_date"]);
 			}
 			
-			if($amountdue < $row_settings['contract_amount_infull']/2){
+			if($amountdue < $row_rates['price_in_full']/2){
 				if(date_format(new DateTime($row_contracts["start_date"]), "m") >= 2 && date_format(new DateTime($row_contracts["start_date"]), "m") <= 6){
 					$nextPaymentDueDate = new DateTime($row_contracts["contract_creation_date"]);
 					} else {
@@ -112,7 +123,7 @@
 			}
 			
 			
-			if($amountdue == $row_settings['contract_amount_infull']/2){
+			if($amountdue == $row_rates['price_in_full']/2){
 				if (!is_null($february)){
 					$nextPaymentDueDate = $february;
 					} else {

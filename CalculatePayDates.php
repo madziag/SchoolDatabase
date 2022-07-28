@@ -24,17 +24,20 @@
 	or trigger_error($conn2->error);
 	$row_sql_payDate_settings2 = $result_sql_payDate_settings2->fetch_array(MYSQLI_BOTH);
 	
-	$sql_settings2 = "select * from settings order by settings_date desc limit 1;";
-	$result_sql_settings2 = $conn2->query($sql_settings2)
-	or trigger_error($conn2->error);
-	$row_sql_settings2 = $result_sql_settings2->fetch_array(MYSQLI_BOTH);
-	
-	
-	$sql_contracts = "select contract_creation_date from contracts where contract_id = " . $contract_id . " ;";
+	$sql_contracts = "select * from contracts where contract_id = " . $contract_id . " ;";
 	$result_sql_contracts = $conn2->query($sql_contracts)
 	or trigger_error($conn2->error);
 	$row_sql_contracts = $result_sql_contracts->fetch_array(MYSQLI_BOTH);
 	$contract_creation_date = new DateTime($row_sql_contracts["contract_creation_date"]);
+	$class_description = $row_sql_contracts["class_description"];
+	//$school_year is defined by the caller
+
+	
+	// Get rates from locationgroupslevels
+    $sql_rates = "select * from locationgroupslevels where school_year = '" . $school_year . "' and class_description = '" . $class_description . "';";
+	$result_rates = $conn->query($sql_rates)
+	or trigger_error($conn->error);
+	$row_rates = $result_rates->fetch_array(MYSQLI_BOTH);
 	
 	//Pay in installments option:
 	// Assumption: Nr payments = Nr of payment due dates left in the school year + 1
@@ -59,10 +62,21 @@
 	// If date is a few days in the future we dont count it
 	// If date is not in the school year, we dont count it/If start date is in this school year, we count it
 	
+	//$counter = 0; 
+	
 	while(!is_null($row_sql_payDate_settings2)){
 	
 		$staticStartDate = new DateTime($startDate -> format('Y-m-d'));
 		$startDatePlus10 = $staticStartDate ->add(new DateInterval('P10D'));
+		/*echo "<br>";
+	    echo "START DATE PLUS10 BEFORE!!!!";
+		echo $startDatePlus10 -> format('Y-m-d');
+		echo "<br>";
+		echo "<br>";
+	    echo "STATIC START DATE!!!!";
+		echo $staticStartDate-> format('Y-m-d');
+		echo "<br>";*/
+		
 		
 		//if pay date is between start date of contract and end of school year, then we keep it. 
 		$payDate =  new DateTime($row_sql_payDate_settings2['due_year'] . "-" . $row_sql_payDate_settings2['due_month'] . "-" . $row_sql_payDate_settings2['due_day']);
@@ -79,6 +93,17 @@
 			$school_year_date_array[] = $payDate;
 			}
 		
+		/*$counter = $counter+1;
+		
+		echo "counter: " . $counter;
+	    echo "START DATE PLUS10!";
+		echo $startDatePlus10 -> format('Y-m-d');
+		echo "END DATE!";
+		echo $endschooldate -> format('Y-m-d');
+		echo "PAY DATE";
+		echo $payDate -> format('Y-m-d');*/
+		
+		
 		//Get the next date from the results array
 		$row_sql_payDate_settings2 = $result_sql_payDate_settings2->fetch_array(MYSQLI_BOTH);
 	}
@@ -94,12 +119,13 @@
 		var_dump($date_array);
 		echo '<br>';*/
 		
-	$installmentAmount = $row_sql_settings2['contract_amount_installments']/(count($school_year_date_array) + 1);
+	$nrInstallmentsPerYear = count($school_year_date_array) + 1;
+	$installmentAmount = $row_rates['price_in_installments']/$nrInstallmentsPerYear;
 	
 	/*echo '<br>';
 	echo 'contract amount installments';
 	echo '<br>';
-	echo $row_sql_settings2['contract_amount_installments'];
+	echo $row_rates['price_in_installments'];
 	echo '<br>';
 	echo '(count($school_year_date_array) + 1)';
 	echo '<br>';
@@ -108,9 +134,9 @@
 	echo '$installmentAmount';
 	echo '<br>';
 	echo $installmentAmount;
+	echo '<br>'; 
+	echo "installmentsPERYEAR " . $nrInstallmentsPerYear;
 	echo '<br>'; */
-	
-	
 	$conn2->close();
 	
 ?>

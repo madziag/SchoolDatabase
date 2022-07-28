@@ -1,8 +1,10 @@
-12/8/2021# We completed inserting classes into db + update + testing functionality!!!
-Next: Change contracts to be able to use our new class format!!
+28/7/2022: Check if we can find a php test framework!!!! 
 
-1/18/2022: Continue changing contacts (see above) - currently working on changing rates. Create contract sends school year and description to executeinsertcontract. Use this to get rate from the database. Change code to use this rate instead. 
 
+4/13/2022:
+1. Edit EditContract.php so that only javascript is selecting from the dropdowns 
+2. Add a place to specify the book and the starter fee and then add them to the amount due. 
+3. Add sensible error handling if drop down is not chosen (e.g. create contract page) 
 
 
 

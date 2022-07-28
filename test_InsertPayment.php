@@ -35,7 +35,7 @@
 
 // - 2. Check if the data needed is there (settings_payment_due_dates table must have correct payment_due_date)
 	
-	$test_sql_settings_payment_due_dates = "select * from settings_payment_due_dates;";
+	$test_sql_settings_payment_due_dates = "select * from settings_payment_due_dates where (due_year = 2021 and due_month=11) or (due_year = 2022 and due_month < 6);";
 	
 	$test_result_settings_payment_due_dates = $test_conn->query($test_sql_settings_payment_due_dates)
 	or trigger_error($test_conn->error);

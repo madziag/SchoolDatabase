@@ -17,13 +17,19 @@
   	   die("Connection failed: " . $conn->connect_error);
     }
 
-if ($_POST['starter'] == "Yes"){$starterint = 1;} else {$starterint = 0;}
-if ($_POST['book'] == "Yes"){$bookint = 1;} else {$bookint = 0;}
+if (isset($_POST['starter'])){$starterint = 1;} else {$starterint = 0;}
+if (isset($_POST['book'])){$bookint = 1;} else {$bookint = 0;}
+
+$startdate_string = $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'];
+
+$startDate=DateTime::createFromFormat('Y-m-d',$startdate_string);
+
+include "CalculateNrOfPayments.php";
 
 $sql = "UPDATE contracts SET ";
-	$sql = $sql . "start_date = '" . $_POST['contractStartDate'] . "', class_description = '" . $_POST['descriptionSelect'] . "',
+	$sql = $sql . "start_date = '" . $startdate_string. "', class_description = '" . $_POST['descriptionSelect'] . "',
 	payment_type = '" . $_POST['rate'] . "',
-	nrpayments = '" . $_POST['nrpayments'] . "',
+	nrpayments = '" . $nrOfPayments . "',
 	starter = '" . $starterint . "',
 	book = '" . $bookint . "',
 	comments = '" . $_POST['comments'] . "'
@@ -33,7 +39,8 @@ $result = $conn->query($sql)
 		        or trigger_error($conn->error);
 		        if ($result == TRUE){
 		        	echo 'Record has been updated';
-		    		header("Refresh: 2; URL = DisplayPrintContract.php?studentID=".$studentID."&contractID=".$contractID);}
+		    		header("Refresh: 2; URL = DisplayPrintContract.php?studentID=".$studentID."&contractID=".$contractID);
+					}
 		        else{echo $sql;}
 
 
