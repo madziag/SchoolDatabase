@@ -18,7 +18,6 @@
     }
 
 if (isset($_POST['starter'])){$starterint = 1;} else {$starterint = 0;}
-if (isset($_POST['book'])){$bookint = 1;} else {$bookint = 0;}
 
 $startdate_string = $_POST['year'] . "-" . $_POST['month'] . "-" . $_POST['day'];
 
@@ -31,7 +30,6 @@ $sql = "UPDATE contracts SET ";
 	payment_type = '" . $_POST['rate'] . "',
 	nrpayments = '" . $nrOfPayments . "',
 	starter = '" . $starterint . "',
-	book = '" . $bookint . "',
 	comments = '" . $_POST['comments'] . "'
 	where student_id = " . $studentID . " and contract_id = " . $contractID . " ;";
 

@@ -151,7 +151,6 @@
 		$nextPaymentDueDate = $todays_date;
 	}
 	
-	var_dump($date_array);
 	// echo 'NPDD: ' . $nextPaymentDueDate;
 	
 	$sql_updateNextPayment = "UPDATE englishschooldb.nextpayment SET nextPaymentDate = '" . date_format($nextPaymentDueDate, "Y-m-d") . "', nextPaymentAmount = " . $nextpayment . " where contractID = " . $_POST["contract_id"] . ";";

@@ -23,6 +23,44 @@
 		}
 
 	
+    $sql_payment = "select * from payment where payment.contract_id = " . $_POST["contract_id"] . "and payment_type = 'starter'";
+	
+	
+	$result_payment = $conn->query($sql_payment)
+	or trigger_error($conn->error);
+	$row_payment = $result_payment->fetch_array(MYSQLI_BOTH);
+	
+	$payment_starter =0;
+	
+    for($i = 1; $i <= $num_rows; $i++){
+		$row_payment = $row;
+		$payment_starter += $row["amount"];
+		$row = $result->fetch_array(MYSQLI_BOTH);
+	}
+
+	
+	$sql_settings = "select starter_fee from settings order by settings_date desc limit 1";
+	$result_settings = $conn->query($sql_settings)
+	or trigger_error($conn->error);
+	$row_settings = $result_settings->fetch_array(MYSQLI_BOTH);
+    $starter_fee = $row_settings["starter_fee"];	
+	
+	$sql_contracts = "select * from contracts where contracts.contract_id = " . $_POST["contract_id"];
+	
+	$result_contracts = $conn->query($sql_contracts)
+	or trigger_error($conn->error);
+	$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
+	
+	if($row_contracts["starter"]==1){
+		//TODO 
+		// Take starter fee, subtract the payment starter 
+		// if that result >0 then take the amount paid - remaining starter fee
+		//if that result is positive, then apply the remaining starter fee as payment_type starter and apply remaining amount as payment type NULL
+		//if that result is negative or 0, apply  amount as starter fee
+		
+		}
+	
+	
 	$sql = "INSERT INTO englishschooldb.payment (contract_id, amount, received_date) VALUES (" . $_POST["contract_id"] . "," . $_POST["PaymentAmount"] . ",'" . $todays_date -> format('Y-m-d') . "');";
 	
 	$sql2 = "INSERT INTO englishschooldb.payment (contract_id, amount, received_date) VALUES (,,'');";
@@ -43,11 +81,7 @@
 	$currentYear = $todays_date -> format('Y');
 	$currentMonth = $todays_date -> format('m');
 	
-	$sql_contracts = "select * from contracts where contracts.contract_id = " . $_POST["contract_id"];
-	
-	$result_contracts = $conn->query($sql_contracts)
-	or trigger_error($conn->error);
-	$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
+
 	
 	$contractStatus = "Active";
 	$class_description = $row_contracts["class_description"];

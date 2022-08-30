@@ -136,6 +136,22 @@
 				return true;
 			}
 			
+			// Function to populate year drop down
+			// get current year -> populate drop down with a couple of years in the past/future 	
+			function yearBoxPopulate(){
+				// get current date/year
+				var currentDate = new Date();
+				var cYear = currentDate.getFullYear();
+			    //Clear Current options in year
+				document.form1.year.options.length = 0;
+				//sets years dynamically
+				document.form1.year.options[0] = new Option(cYear - 2, cYear - 2);
+				document.form1.year.options[1] = new Option(cYear - 1, cYear - 1);
+				document.form1.year.options[2] = new Option(cYear, cYear);
+				document.form1.year.options[3] = new Option(cYear + 1, cYear + 1);
+				document.form1.year.options[4] = new Option(cYear + 2, cYear + 2);
+				}
+			
 			//creates an invisible dropdown box - user cannot update it - prevents from changing values in box 
 			function submitWithSchoolYear() {
 				var form = document.getElementById('form1');//retrieve the form as a DOM element
@@ -179,6 +195,7 @@
 			}
 			
 			function init(){
+			    yearBoxPopulate();
 			    setDefaultStartDate();
 				school_year();
 				
@@ -246,8 +263,6 @@
 			
 			&nbsp;&nbsp;&nbsp;Year:
  		    <select name="year" id="year" onchange = "school_year()">
-				<option value="2019">2019</option>
-				<option value="2020">2020</option>
 				<option value="2021">2021</option>
 				<option value="2022">2022</option>
 				<option value="2023">2023</option>
@@ -256,6 +271,8 @@
 				<option value="2026">2026</option>
 				<option value="2027">2027</option>
 				<option value="2028">2028</option>
+			    <option value="2029">2029</option>
+				<option value="2030">2030</option>
 			</select><br />
 			
 			<br />
@@ -276,11 +293,7 @@
 			
 			Starter Pack:
 			<input type="checkbox" name="starter" id="starter" checked = "checked"> <br />
-			
-			
-			Book:
-			<input type="checkbox" name="book" id="book" checked = "checked"> <br />
-			
+					
 			<label>Comments</label>
 			<textarea id = "comments"
 			name = "comments"
@@ -328,14 +341,6 @@
 				var starter_checkbox = document.getElementById("starter");
 				if(starter_pack==0){starter_pack_bool = false;} else {starter_pack_bool = true;}	
 				starter_checkbox.checked = starter_pack_bool;
-				
-				// book
-				var book = result_contract[0]["book"];
-				
-				var book_checkbox = document.getElementById("book");
-				
-				if(book==0){book_bool = false;} else {book_bool = true;}	
-				book_checkbox.checked = book_bool;
 				
 				//comment box
 			    var comments = result_contract[0]["comments"];

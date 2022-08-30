@@ -32,7 +32,6 @@ echo "<table border =\"1\">
 	<td> Nr Payments </td>
 	<td> Total Paid </td>
 	<td> Total Amount </td>
-	<td> Book </td>
 	<td> Starter </td>
 	<td> Description </td>
 	</tr>";
@@ -57,7 +56,6 @@ for($i = 1; $i <= $num_rows; $i++){
 				<td> " . $row["nrpayments"] . "  </td>
 				<td> " . number_format((float)$total_amount_paid, 2, '.', '') . "  </td>
 				<td> " . $row["totalamount"] . "  </td>
-				<td> " . $row["book"] . "  </td>
 				<td> " . $row["starter"] . "  </td>
 				<td> " . $row["class_description"] . "  </td>
 				</tr>";

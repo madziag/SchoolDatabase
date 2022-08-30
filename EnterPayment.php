@@ -33,7 +33,6 @@
 	<td> Nr Payments </td>
 	<td> Total Paid </td>
 	<td> Total Amount </td>
-	<td> Book </td>
 	<td> Starter </td>
 	<td> Location </td>
 	<td> Age Group </td>
@@ -77,7 +76,6 @@
 		<td> " . $row_contracts["nrpayments"] . "  </td>
 		<td> " . number_format((float)$total_amount_paid, 2, '.', '') . "  </td>
 		<td> " . $row_contracts["totalamount"] . "  </td>
-		<td> " . $row_contracts["book"] . "  </td>
 		<td> " . $row_contracts["starter"] . "  </td>
 		<td> " . $row_contracts["location"] . "  </td>
 		<td> " . $row_contracts["age_group"] . "  </td>

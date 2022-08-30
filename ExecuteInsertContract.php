@@ -23,11 +23,6 @@
 		$starter = 1;
 	}
 	
-	$book = 0;
-	if(isset($_POST["book"])){
-		$book = 1;
-	}
-	
 	$school_year = $_POST["SchoolYear"];
 	
 	$class_description = $_POST['descriptionSelect'];
@@ -95,12 +90,11 @@
 	
 	// SQL Query
 	
-	$sql =  "INSERT INTO englishschooldb.contracts (student_id, class_description, payment_type, starter, book, nrpayments, totalamount, contract_signed, comments, lesson_count, start_date, contract_creation_date, school_year) VALUES
+	$sql =  "INSERT INTO englishschooldb.contracts (student_id, class_description, payment_type, starter, nrpayments, totalamount, contract_signed, comments, lesson_count, start_date, contract_creation_date, school_year) VALUES
 	('" . $studentID . "', '"
 	. $class_description . "', '"
 	. $_POST['rate'] . "', "
 	. $starter . ", "
-	. $book . ", "
 	. $nrOfPayments . ", "
 	. $totalContractAmount. ", "
 	. "0, '"
@@ -112,7 +106,7 @@
 
  
 	
-	$sql2 = "INSERT INTO englishschooldb.contracts (student_id, class_description, payment_type, starter, book, nrpayments, totalamount, contract_signed, comments, start_date, contract_creation_date, school_year) VALUES ('', '', '', '', '', 0, 0, 0, 1, 0, 0, '', 60,'--', '". date("Y-m-d")."', '');";
+	$sql2 = "INSERT INTO englishschooldb.contracts (student_id, class_description, payment_type, starter, nrpayments, totalamount, contract_signed, comments, start_date, contract_creation_date, school_year) VALUES ('', '', '', '', '', 0, 0, 1, 0, 0, '', 60,'--', '". date("Y-m-d")."', '');";
 	
 	if($sql != $sql2){
 		$result = $conn->query($sql)

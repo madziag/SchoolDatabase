@@ -19,7 +19,7 @@
     }
 
 $sql = "SELECT * from englishschooldb.contracts where student_id = " . $studentID . " and contract_id = " . $contractID . " ;";
-// student_id, class_description, payment_type, starter, book, nrpayments, contract_signed, comments, start_date
+// student_id, class_description, payment_type, starter, nrpayments, contract_signed, comments, start_date
 $sql_student = "SELECT first_name, last_name  from englishschooldb.students where student_id = " . $studentID . ";";
 $sql_guardian = "SELECT guardian_first_name, guardian_last_name from englishschooldb.guardians join englishschooldb.student_guardian on guardians.guardian_id = student_guardian.guardian_id where student_id = " . $studentID . ";";
 
@@ -96,11 +96,6 @@ a.button {
 			echo "Starter kit: Yes";
 			} else {
 			echo "Starter kit: No";
-			} ?><br/><br/>
-<?php if($row["book"] == 1){
-			echo "Book: Yes";
-			} else {
-			echo "Book: No";
 			} ?><br/><br/>
 <?php echo "Number of Payments: " . $row["nrpayments"] ?><br/><br/>
 <br/><br/>
