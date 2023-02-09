@@ -126,6 +126,8 @@
 	
 	$contractStatus = "Active";
 	
+	//Instead of inserting one value in NextPayment table, the table should hold all the payment values associates with the contract
+	
 	include 'CalculatePayDates.php';
 	include 'CalculateNextPayment.php';
 	

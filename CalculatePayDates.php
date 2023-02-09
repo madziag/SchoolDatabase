@@ -33,11 +33,18 @@
 	//$school_year is defined by the caller
 
 	
+	
 	// Get rates from locationgroupslevels
     $sql_rates = "select * from locationgroupslevels where school_year = '" . $school_year . "' and class_description = '" . $class_description . "';";
 	$result_rates = $conn->query($sql_rates)
 	or trigger_error($conn->error);
 	$row_rates = $result_rates->fetch_array(MYSQLI_BOTH);
+	
+
+	
+	
+	
+
 	
 	//Pay in installments option:
 	// Assumption: Nr payments = Nr of payment due dates left in the school year + 1
@@ -92,17 +99,7 @@
 				}
 			$school_year_date_array[] = $payDate;
 			}
-		
-		/*$counter = $counter+1;
-		
-		echo "counter: " . $counter;
-	    echo "START DATE PLUS10!";
-		echo $startDatePlus10 -> format('Y-m-d');
-		echo "END DATE!";
-		echo $endschooldate -> format('Y-m-d');
-		echo "PAY DATE";
-		echo $payDate -> format('Y-m-d');*/
-		
+				
 		
 		//Get the next date from the results array
 		$row_sql_payDate_settings2 = $result_sql_payDate_settings2->fetch_array(MYSQLI_BOTH);
@@ -111,32 +108,12 @@
 		
 	array_unshift($date_array, $contract_creation_date);
 
-		/*echo 'school year array';
-		echo '<br>';
-		var_dump($school_year_date_array);
-		echo 'date array';
-		echo '<br>';
-		var_dump($date_array);
-		echo '<br>';*/
 		
 	$nrInstallmentsPerYear = count($school_year_date_array) + 1;
 	$installmentAmount = $row_rates['price_in_installments']/$nrInstallmentsPerYear;
+ 
+    
 	
-	/*echo '<br>';
-	echo 'contract amount installments';
-	echo '<br>';
-	echo $row_rates['price_in_installments'];
-	echo '<br>';
-	echo '(count($school_year_date_array) + 1)';
-	echo '<br>';
-	echo (count($school_year_date_array) + 1);
-	echo '<br>';
-	echo '$installmentAmount';
-	echo '<br>';
-	echo $installmentAmount;
-	echo '<br>'; 
-	echo "installmentsPERYEAR " . $nrInstallmentsPerYear;
-	echo '<br>'; */
 	$conn2->close();
 	
 ?>

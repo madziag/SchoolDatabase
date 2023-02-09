@@ -1,8 +1,65 @@
+10/6/2022: We need to check if our test code handles the case where e.g. student starts in september but still has not made payment at the due date of the second scheduled payment. 
+We need to see if next payment amount = installment amount (wrong) or 2 x installment amount (correct).
+11/17/2022:
+Consider changing next payment amount to something that is dynamically calculated rather than stored. 
+We need the next payment amount to be correct if the student has not made any payment i.e missing several due dates. 
+START FROM HERE -> test_insert_payment has been updated with contract 570. Giving error: 
+"Next Payment Date and Amount for 570 entered NOT AS EXPECTED. NextPaymentDate: 2022-01-18NextPaymentAmount: 348.75" 
+-> we do not take into account that a whole payment cycle has been missed!
+
+11/24/2022: 
+We're working on CalculateNextPayment (see line 94) - we're adding missed payments to amount due. We havent done anything yet on pay in full amounts
+
+
+2/2/2023: There are 2 ideas currently in calculatenextPayment about what nextpayment means, The calculation calculates what is overdue while the tests look for the amount 
+that is due at the next due date (whenever that is) the code needs to be reconciled to one of these two definitions) 
+CONCEPT: 
+-> Payment dates and Payment amount for those dates (payment schedule) - e.g. pay in full will have 3 - starter + 2 payments
+-> Have a next amount due (next installment) and an total amount due (what has NOT been paid overall) total amount due vs total amount overdue example
+    student does not pay in september and it is approaching november . Total amount due = november amount, total amount Overdue is September amount 
+	Total amount contract
+	Installments
+	Installments paid or not
+	Total amount due
+	Total amount overdue
+	Next payment (if the total amount overdue is not paid by the next payment date)
+	
+*** Files using CalculateNextPayment.php: 
+1. InsertPayment.php
+2. UpdateAmountDue.php
+3. ExecuteInsertContract.php
+
+** to contracts.php -> add amountOverdue Column
+
+
+
+
+9/8/2022: 
+in test_insertPayment we need to add contracts 567-569 to 7. Check if the update in the nextpayment table worked as expected (we need to change the code in nextpayment.php first for it to work. 
+09/22/2022: We have added this to the test_insertpayment.php. next time we need to adjust in nextpayment.php
+
+
+8/4/2022: 
+- store payment of starter fee separately and consider first payment equal to starter fee to be applied to the starter fee (and not lessons)
+- Add starter fee into the total amount due
+- Adjust first payment with the starter fee 
+--> subsequent payments need to be adjusted correctly depending on if starter fee is paid or not
+- give user a place to enter the starter fee
+
+File insertPayment.php:
+-> check if student has starter checked on current contract
+-> if starter box is checked -> check for any payments tagged starter. 
+If total amount tagged starter < starter fee, then apply  difference between what has been paid and starter fee is applied to the lesson fee
+e.g. starter fee = 100 , student pays 150. Then 100 of the 150 is applied to starter fee (is entered as a payment of type starter), and 50  is applied to lessons (typ = null)
+e.g2. student has already paid 75 (tagged as starter) then pays 150 -> 25 will be tagged as starter, and 125 as null (for lessons)
+
+
+
+
+
 28/7/2022: Check if we can find a php test framework!!!! 
 
-
 4/13/2022:
-1. Edit EditContract.php so that only javascript is selecting from the dropdowns 
 2. Add a place to specify the book and the starter fee and then add them to the amount due. 
 3. Add sensible error handling if drop down is not chosen (e.g. create contract page) 
 

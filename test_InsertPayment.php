@@ -67,7 +67,7 @@
 		}
 		
 // - 3. Check Payments table to see if previous payments are as expected
-	$test_sql_payment = "select * from payment where contract_id >= 539 and contract_id <= 544;";
+	$test_sql_payment = "select * from payment where (contract_id >= 539 and contract_id <= 544) or contract_id in (567, 568, 569, 570)";
 	
 	$test_result_payment = $test_conn->query($test_sql_payment)
 	or trigger_error($test_conn->error);
@@ -83,7 +83,7 @@
 		}
 
 // - 4. Check contract to see if it has the values we need 
-	$test_sql_contracts = "select * from contracts where contract_id = 566 or (contract_id >= 539 and contract_id <= 544);";
+	$test_sql_contracts = "select * from contracts where contract_id in (566, 567, 568, 569, 570) or (contract_id >= 539 and contract_id <= 544);";
 	
 	$test_result_contracts = $test_conn->query($test_sql_contracts)
 	or trigger_error($test_conn->error);
@@ -139,9 +139,9 @@
 
 		if($test_row_contracts['contract_id'] == 544){
 			if($test_row_contracts['start_date'] == '2022-02-01' && $test_row_contracts['payment_type'] == 'pay in full' && $test_row_contracts['contract_creation_date'] == '2021-03-09 00:00:00' && $test_row_contracts['totalamount'] == 409.00) {
-				echo 'Contract 543 Information  OKAY. <br>';
+				echo 'Contract 544 Information  OKAY. <br>';
 				} else {
-				echo 'Contract 543 Information  NOT AS EXPECTED. <br>';
+				echo 'Contract 544 Information  NOT AS EXPECTED. <br>';
 			}
 		}
 		
@@ -152,11 +152,21 @@
 				echo 'Contract 566 Information  NOT AS EXPECTED. <br>';
 			}
 		}
+		
+		if($test_row_contracts['contract_id'] == 567 || $test_row_contracts['contract_id'] == 568 || $test_row_contracts['contract_id'] == 569 || $test_row_contracts['contract_id'] == 570){
+			//totalamount=450
+			if($test_row_contracts['totalamount']== 499.50){
+				echo 'Contract 567,568,569,570 Information  OKAY. <br>';
+				} else {
+				echo 'Contract 567,568,569,570 Information  NOT AS EXPECTED. <br>';
+				}
+			}
+		
 			$test_row_contracts = $test_result_contracts->fetch_array(MYSQLI_BOTH);
 			$counter++;
 	}
 	
-	if($num_rows_contracts == 7){
+	if($num_rows_contracts == 11){
 		echo 'Contracts OKAY. <br>';
 		} else {
 		echo 'Contracts NOT AS EXPECTED. Number of contracts is' .  $num_rows_contracts . '<br>';
@@ -199,6 +209,7 @@
 	$_POST["contract_id"] = 543;
 	$_POST["PaymentAmount"] = 180;
 	
+
 	include 'InsertPayment.php';
 	echo ' <br>';
 	
@@ -334,8 +345,42 @@
 	
 	include 'InsertPayment.php';
 	echo ' <br>';
+	
+    // 9a. Contract 567: First payment is less than starter fee;
+	$_POST["todays_date"] = '2022-01-18';
+	
+	$_POST["contract_id"] = 567;
+	$_POST["PaymentAmount"] = 50;
+	include 'InsertPayment.php';
+	echo ' <br>';
+	
+	// 9b. Contract 568: First payment is equal to starter fee;
+	$_POST["todays_date"] = '2022-01-18';
+	
+	$_POST["contract_id"] = 568;
+	$_POST["PaymentAmount"] = 100;
+	
+	include 'InsertPayment.php';
+	echo ' <br>';
 		
-		
+    // 9c. Contract 569: First payment is greater than starter fee;
+	$_POST["todays_date"] = '2022-01-18';
+	
+	$_POST["contract_id"] = 569;
+	$_POST["PaymentAmount"] = 349.75;
+	
+	include 'InsertPayment.php';
+	echo ' <br>';
+	
+	// 9d. Contract 570: No payments have been made, past due date;
+	$_POST["todays_date"] = '2022-04-18';
+	
+	$_POST["contract_id"] = 570;
+	$_POST["PaymentAmount"] = 1;
+	
+	include 'InsertPayment.php';
+	echo ' <br>';
+	
 // - 6. Check if it inserted the payment as expected
 	//1. Contract 539: Insert First Payment on a contract (infull)
 	$test_sql_payment_ct539 = "select * from payment where contract_id = 539;";
@@ -559,7 +604,73 @@
 		} else {
 		echo 'Payment for 566 entered NOT AS EXPECTED. ' .  $test_row_ct566['amount'] . ' <br>';
 		}
+		
+	// 9a. Contract 567: First payment is less than starter fee
+	$test_sql_payment_ct567 = "select * from payment where contract_id = 567 and payment_type = 'starter'";
+	$test_result_ct567 = $test_conn->query($test_sql_payment_ct567) or trigger_error($test_conn->error);	
+	$test_row_ct567 = $test_result_ct567 ->fetch_array(MYSQLI_BOTH);
 	
+	if($test_row_ct567['amount'] == 50 ){
+		echo 'Payment for 567 entered OKAY. <br>';
+		} else {
+		echo 'Payment for 567 entered NOT AS EXPECTED. ' .  $test_row_ct567['amount'] . ' <br>';
+		}	
+		
+		
+	// 9b. Contract 568: First payment is equal to starter fee
+	$test_sql_payment_ct568 = "select * from payment where contract_id = 568 and payment_type = 'starter'";
+	$test_result_ct568 = $test_conn->query($test_sql_payment_ct568) or trigger_error($test_conn->error);	
+	$test_row_ct568 = $test_result_ct568 ->fetch_array(MYSQLI_BOTH);
+	
+	if($test_row_ct568['amount'] == 100 ){
+		echo 'Payment for 568 entered OKAY. <br>';
+		} else {
+		echo 'Payment for 568 entered NOT AS EXPECTED. ' .  $test_row_ct568['amount'] . ' <br>';
+		}	
+		
+	// 9c. Contract 569: First payment is greater than starter fee
+	$test_sql_payment_ct569 = "select * from payment where contract_id = 569 and payment_type = 'starter'";
+	$test_result_ct569 = $test_conn->query($test_sql_payment_ct569) or trigger_error($test_conn->error);	
+	$test_row_ct569 = $test_result_ct569 ->fetch_array(MYSQLI_BOTH);
+	
+	if($test_row_ct569['amount'] == 100 ){
+		echo ' Starter Payment for 569 entered OKAY. <br>';
+		} else {
+		echo 'Starter Payment for 569 entered NOT AS EXPECTED. ' .  $test_row_ct569['amount'] . ' <br>';
+		}	
+		
+	$test_sql_payment_ct569 = "select * from payment where contract_id = 569 and payment_type is NULL";
+	$test_result_ct569 = $test_conn->query($test_sql_payment_ct569) or trigger_error($test_conn->error);	
+	$test_row_ct569 = $test_result_ct569 ->fetch_array(MYSQLI_BOTH);
+	
+	if($test_row_ct569['amount'] == 249.75 ){
+		echo 'Payment for 569 entered OKAY. <br>';
+		} else {
+		echo 'Payment for 569 entered NOT AS EXPECTED. ' .  $test_row_ct569['amount'] . ' <br>';
+		}	
+		
+		
+    // 9d. Contract 570: No payments made, past due date
+	$test_sql_payment_ct570 = "select * from payment where contract_id = 570 and payment_type = 'starter'";
+	$test_result_ct570 = $test_conn->query($test_sql_payment_ct570) or trigger_error($test_conn->error);	
+	$test_row_ct570 = $test_result_ct570 ->fetch_array(MYSQLI_BOTH);
+	
+	if($test_row_ct570['amount'] == 1 ){
+		echo ' Starter Payment for 570 entered OKAY. <br>';
+		} else {
+		echo 'Starter Payment for 570 entered NOT AS EXPECTED. ' .  $test_row_ct570['amount'] . ' <br>';
+		}	
+		
+	$test_sql_payment_ct570 = "select * from payment where contract_id = 570 and payment_type is NULL";
+	$test_result_ct570 = $test_conn->query($test_sql_payment_ct570) or trigger_error($test_conn->error);	
+	$test_row_ct570 = $test_result_ct570 ->fetch_array(MYSQLI_BOTH);
+	
+	if($test_row_ct570['amount'] == 0 ){
+		echo 'Payment for 570 entered OKAY. <br>';
+		} else {
+		echo 'Payment for 570 entered NOT AS EXPECTED. ' .  $test_row_ct570['amount'] . ' <br>';
+		}	
+		
 	// - 7. Check if the update in the nextpayment table worked as expected
 	//1. Contract 539: Insert First Payment on a contract (infull)
 	$test_sql_nextpayment_ct539 = "select * from nextpayment where contractID = 539;";
@@ -728,7 +839,7 @@
 		echo 'Next Payment Date and Amount for 553  entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct553['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct553['nextPaymentAmount'] . ' <br>';
 		}
 	
-	// 8a. Contract 554: Payment made is less than amount on infull amount - first payment on contract made in September;
+	// 7d. Contract 554: Payment made is less than amount on infull amount - first payment on contract made in September;
 	$test_sql_nextpayment_ct554 = "select * from nextpayment where contractID = 554;";
 	$test_result_nextpayment_ct554 = $test_conn->query($test_sql_nextpayment_ct554) or trigger_error($test_conn->error);
 	$test_row_nextpayment_ct554 = $test_result_nextpayment_ct554  ->fetch_array(MYSQLI_BOTH);
@@ -739,7 +850,7 @@
 		echo 'Next Payment Date and Amount for 554  entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct554['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct554['nextPaymentAmount'] . ' <br>';
 		}
 	
-	// 8b. Contract 555: Payment made is less than amount on installments amount - second payment on contract made in November on time;
+	// 7e. Contract 555: Payment made is less than amount on installments amount - second payment on contract made in November on time;
 	$test_sql_nextpayment_ct555 = "select * from nextpayment where contractID = 555;";
 	$test_result_nextpayment_ct555 = $test_conn->query($test_sql_nextpayment_ct555) or trigger_error($test_conn->error);
 	$test_row_nextpayment_ct555 = $test_result_nextpayment_ct555  ->fetch_array(MYSQLI_BOTH);
@@ -750,7 +861,7 @@
 		echo 'Next Payment Date and Amount for 555  entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct555['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct555['nextPaymentAmount'] . ' <br>';
 		}
 	
-	// 8c. Contract 556: Payment made is more than amount on infull amount - pay whole year in one go ;
+	// 7f. Contract 556: Payment made is more than amount on infull amount - pay whole year in one go ;
 	$test_sql_nextpayment_ct556 = "select * from nextpayment where contractID = 556;";
 	$test_result_nextpayment_ct556 = $test_conn->query($test_sql_nextpayment_ct556) or trigger_error($test_conn->error);
 	$test_row_nextpayment_ct556 = $test_result_nextpayment_ct556  ->fetch_array(MYSQLI_BOTH);
@@ -761,7 +872,7 @@
 		echo 'Next Payment Date and Amount for 556  entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct556['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct556['nextPaymentAmount'] . ' <br>';
 		}
 	
-	// 8d. Contract 557: Payment made is more than amount on installments amount - pay for the semester;
+	// 7g. Contract 557: Payment made is more than amount on installments amount - pay for the semester;
 	$test_sql_nextpayment_ct557 = "select * from nextpayment where contractID = 557;";
 	$test_result_nextpayment_ct557 = $test_conn->query($test_sql_nextpayment_ct557) or trigger_error($test_conn->error);
 	$test_row_nextpayment_ct557 = $test_result_nextpayment_ct557  ->fetch_array(MYSQLI_BOTH);
@@ -772,7 +883,7 @@
 		echo 'Next Payment Date and Amount for 557  entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct557['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct557['nextPaymentAmount'] . ' <br>';
 		}
 	
-	// 8e. Contract 566: Payment made is less than amount on installments amount;
+	// 7h. Contract 566: Payment made is less than amount on installments amount;
 	$test_sql_nextpayment_ct566 = "select * from nextpayment where contractID = 566;";
 	$test_result_nextpayment_ct566 = $test_conn->query($test_sql_nextpayment_ct566) or trigger_error($test_conn->error);
 	$test_row_nextpayment_ct566 = $test_result_nextpayment_ct566  ->fetch_array(MYSQLI_BOTH);
@@ -783,13 +894,57 @@
 		echo 'Next Payment Date and Amount for 566  entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct566['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct566['nextPaymentAmount'] . ' <br>';
 		}
 	 
+	 // 7i. Contract 567: First payment is less than starter fee
+	$test_sql_nextpayment_ct567= "select * from nextpayment where contractID = 567;";
+	$test_result_nextpayment_ct567= $test_conn->query($test_sql_nextpayment_ct567) or trigger_error($test_conn->error);
+	$test_row_nextpayment_ct567= $test_result_nextpayment_ct567 ->fetch_array(MYSQLI_BOTH);
+	
+	if($test_row_nextpayment_ct567['nextPaymentDate'] == '2022-01-18' && $test_row_nextpayment_ct567['nextPaymentAmount'] == 299.75 ){
+		echo 'Next Payment Date and Amount for 567 entered OKAY. <br>';
+		} else {
+		echo 'Next Payment Date and Amount for 567 entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct567['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct567['nextPaymentAmount'] . ' <br>';
+		}
+	 
+	// 7j. Contract 568: First payment is equal to starter fee
+	$test_sql_nextpayment_ct568= "select * from nextpayment where contractID = 568;";
+	$test_result_nextpayment_ct568= $test_conn->query($test_sql_nextpayment_ct568) or trigger_error($test_conn->error);
+	$test_row_nextpayment_ct568= $test_result_nextpayment_ct568 ->fetch_array(MYSQLI_BOTH);
+	
+	if($test_row_nextpayment_ct568['nextPaymentDate'] == '2022-01-18' && $test_row_nextpayment_ct568['nextPaymentAmount'] == 249.75){
+		echo 'Next Payment Date and Amount for 568 entered OKAY. <br>';
+		} else {
+		echo 'Next Payment Date and Amount for 568 entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct568['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct568['nextPaymentAmount'] . ' <br>';
+		}
+	 
+	// 7k. Contract 569: First payment is greater than starter fee
+	$test_sql_nextpayment_ct569= "select * from nextpayment where contractID = 569;";
+	$test_result_nextpayment_ct569= $test_conn->query($test_sql_nextpayment_ct569) or trigger_error($test_conn->error);
+	$test_row_nextpayment_ct569= $test_result_nextpayment_ct569 ->fetch_array(MYSQLI_BOTH);
+	
+	if($test_row_nextpayment_ct569['nextPaymentDate'] == '2022-04-10' && $test_row_nextpayment_ct569['nextPaymentAmount'] == 249.75){
+		echo 'Next Payment Date and Amount for 569 entered OKAY. <br>';
+		} else {
+		echo 'Next Payment Date and Amount for 569 entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct569['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct569['nextPaymentAmount'] . ' <br>';
+		}
+	 
+	 	// 7k. Contract 570: First payment is greater than starter fee
+	$test_sql_nextpayment_ct570= "select * from nextpayment where contractID = 570;";
+	$test_result_nextpayment_ct570= $test_conn->query($test_sql_nextpayment_ct570) or trigger_error($test_conn->error);
+	$test_row_nextpayment_ct570= $test_result_nextpayment_ct570 ->fetch_array(MYSQLI_BOTH);
+	
+	if($test_row_nextpayment_ct570['nextPaymentDate'] == '2022-01-18' && $test_row_nextpayment_ct570['nextPaymentAmount'] == 598.5){
+		echo 'Next Payment Date and Amount for 570 entered OKAY. <br>';
+		} else {
+		echo 'Next Payment Date and Amount for 570 entered NOT AS EXPECTED. NextPaymentDate: ' .  $test_row_nextpayment_ct570['nextPaymentDate'] . 'NextPaymentAmount: ' . $test_row_nextpayment_ct570['nextPaymentAmount'] . ' <br>';
+		}
+		
 // - 8. Clean Up
-	//1. Contract 539: Insert First Payment on a contract (infull)
-	//2. Contract 540: Insert First Payment on a contract (installments)
-	//3a. Contract 541: Insert First Payments if student starts after the beginning of the school year - October Installments
-	//3b. Contract 542: Insert First Payments if student starts after the beginning of the school year - February Installments 
-	//3c.Contract 543: Insert First Payments if student starts after the beginning of the school year - April Installments
-	//3d.Contract 544: Insert First Payments if student starts after the beginning of the school year - February Infull
+	// 1.  Contract 539: Insert First Payment on a contract (infull)
+	// 2.  Contract 540: Insert First Payment on a contract (installments)
+	// 3a. Contract 541: Insert First Payments if student starts after the beginning of the school year - October Installments
+	// 3b. Contract 542: Insert First Payments if student starts after the beginning of the school year - February Installments 
+	// 3c. Contract 543: Insert First Payments if student starts after the beginning of the school year - April Installments
+	// 3d. Contract 544: Insert First Payments if student starts after the beginning of the school year - February Infull
 	// 4a. Contract 545: Insert Payment just before the next payment due date - Infull 
 	// 4b. Contract 546: Insert Payment just before the next payment due date - Installments	
 	// 5a. Contract 547: Insert Payment on the due date - Infull
@@ -804,8 +959,12 @@
 	// 8c. Contract 556: Payment made is more than amount on infull amount - pay whole year in one go ;
 	// 8d. Contract 557: Payment made is more than amount on installments amount - pay for the semester;
 	// 8e. Contract 566: Payment made is less than amount on installments amount;
+	// 9a. Contract 567: First payment is less than starter fee
+	// 9b. Contract 568: First payment is equal to the starter fee
+	// 9c. Contract 569: First payment is greater than starter fee
+	
 
-	$cleanupsql_1 = "delete from payment where contract_id in (539, 540, 541, 542, 543, 544, 554, 556, 557, 566); 
+	$cleanupsql_1 = "delete from payment where contract_id in (539, 540, 541, 542, 543, 544, 554, 556, 557, 566, 567, 568, 569, 570); 
 					 delete from payment where contract_id = 545 and received_date = '2022-01-25'; 
 					 delete from payment where contract_id = 546 and received_date = '2021-10-28'; 
 					 delete from payment where contract_id = 547 and received_date = '2022-02-10'; 
@@ -823,7 +982,9 @@
 					 update nextpayment set nextPaymentAmount = 105 where contractID = 541;
 					 update nextpayment set nextPaymentAmount = 180 where contractID = 543; 
 					 update nextpayment set nextPaymentDate = '2022-02-10', nextPaymentAmount = 409 where contractID  in (545, 547, 549, 551);
-					 update nextpayment set nextPaymentDate = '2021-11-10', nextPaymentAmount = 225 where contractID in (546, 548, 550, 552, 553, 555, 566);";
+					 update nextpayment set nextPaymentDate = '2021-11-10', nextPaymentAmount = 225 where contractID in (546, 548, 550, 552, 553, 555, 566);
+					 update nextpayment set nextPaymentDate = '2022-01-18', nextPaymentAmount = 225 where contractID in (567, 568, 569);
+					 update nextpayment set nextPaymentDate = '2022-01-18', nextPaymentAmount = 599.5 where contractID in (570);";
 	
 	$test_conn ->multi_query($cleanupsql_1)
 	or trigger_error($test_conn->error);

@@ -83,6 +83,8 @@
 	
 	//$nrPaymentsInstallments = count($date_array) + 1;
 	
+	//WE SHOULD NOT USE CALCULATENEXTPAYMENT!
+	
 	include 'CalculateNextPayment.php';
 	
 	if($nextpayment > 0){

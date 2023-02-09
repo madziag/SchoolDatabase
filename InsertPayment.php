@@ -23,19 +23,18 @@
 		}
 
 	
-    $sql_payment = "select * from payment where payment.contract_id = " . $_POST["contract_id"] . "and payment_type = 'starter'";
-	
-	
+    $sql_payment = "select * from payment where payment.contract_id = " . $_POST["contract_id"] . " and payment_type = 'starter'";
 	$result_payment = $conn->query($sql_payment)
 	or trigger_error($conn->error);
 	$row_payment = $result_payment->fetch_array(MYSQLI_BOTH);
 	
-	$payment_starter =0;
+	$payment_starter = 0;
+	$num_rows_payment = mysqli_num_rows($result_payment);
 	
-    for($i = 1; $i <= $num_rows; $i++){
-		$row_payment = $row;
-		$payment_starter += $row["amount"];
-		$row = $result->fetch_array(MYSQLI_BOTH);
+    for($i = 1; $i <= $num_rows_payment; $i++){
+		$payment_starter += $row_payment["amount"];
+		$row_payment = $result_payment->fetch_array(MYSQLI_BOTH);
+		
 	}
 
 	
@@ -51,7 +50,22 @@
 	or trigger_error($conn->error);
 	$row_contracts = $result_contracts->fetch_array(MYSQLI_BOTH);
 	
+	$payment_on_lessons = $_POST["PaymentAmount"];
+	$payment_on_starter = 0;
+	
 	if($row_contracts["starter"]==1){
+	    $remaining_starter = $starter_fee-$payment_starter;
+		
+		if($remaining_starter>0){
+			if( $_POST["PaymentAmount"]>=$remaining_starter){
+				$payment_on_starter = $remaining_starter;
+				$payment_on_lessons = $_POST["PaymentAmount"]-$remaining_starter;
+			} else {
+				$payment_on_starter = $_POST["PaymentAmount"];
+				$payment_on_lessons = 0;
+			}
+		}
+		
 		//TODO 
 		// Take starter fee, subtract the payment starter 
 		// if that result >0 then take the amount paid - remaining starter fee
@@ -61,22 +75,38 @@
 		}
 	
 	
-	$sql = "INSERT INTO englishschooldb.payment (contract_id, amount, received_date) VALUES (" . $_POST["contract_id"] . "," . $_POST["PaymentAmount"] . ",'" . $todays_date -> format('Y-m-d') . "');";
+	$sql = "INSERT INTO englishschooldb.payment (contract_id, amount, received_date) VALUES (" . $_POST["contract_id"] . "," . $payment_on_lessons . ",'" . $todays_date -> format('Y-m-d') . "');";
 	
 	$sql2 = "INSERT INTO englishschooldb.payment (contract_id, amount, received_date) VALUES (,,'');";
 	
-	if($sql != $sql2){
+	$sql_starter = "INSERT INTO englishschooldb.payment (contract_id, amount, received_date, payment_type) VALUES (" . $_POST["contract_id"] . "," . $payment_on_starter . ",'" . $todays_date -> format('Y-m-d') . "','starter');";
+	
+	
+	if($sql != $sql2 && $payment_on_lessons>0){
 		$result = $conn->query($sql)
 		or trigger_error($conn->error);
 		
 		$paymentID = mysqli_insert_id($conn);
 		if(is_numeric($paymentID)){
 			echo 'Payment has been successfully added';
+			echo '<br>';
 		} else {
 			echo 'Error inserting payment!';
 		}
 	}
 	
+	if($payment_on_starter >0){
+		$result_starter = $conn->query($sql_starter)
+		or trigger_error($conn->error);
+		
+		$paymentID_starter = mysqli_insert_id($conn);
+		if(is_numeric($paymentID_starter)){
+			echo 'Starter payment has been successfully added';
+			echo '<br>';
+		} else {
+			echo 'Error inserting starter payment!';
+		}
+	}
 	
 	$currentYear = $todays_date -> format('Y');
 	$currentMonth = $todays_date -> format('m');
@@ -133,18 +163,21 @@
 	echo $row_rates['price_in_installments'];*/
 
 	
+	//WE SHOULD NOT USE CALCULATENEXTPAYMENT!
 	include 'CalculateNextPayment.php';
+	
+
 	
 	if($nextpayment > 0){
 		//Paid in full
 		
 		if($row_contracts["payment_type"] == "pay in full" ){
 			
-			if($amountdue > $row_rates['price_in_full']/2){
+			if($contractamountdue > $row_rates['price_in_full']/2){
 				$nextPaymentDueDate = new DateTime($row_contracts["contract_creation_date"]);
 			}
 			
-			if($amountdue < $row_rates['price_in_full']/2){
+			if($contractamountdue < $row_rates['price_in_full']/2){
 				if(date_format(new DateTime($row_contracts["start_date"]), "m") >= 2 && date_format(new DateTime($row_contracts["start_date"]), "m") <= 6){
 					$nextPaymentDueDate = new DateTime($row_contracts["contract_creation_date"]);
 					} else {
@@ -157,7 +190,7 @@
 			}
 			
 			
-			if($amountdue == $row_rates['price_in_full']/2){
+			if($contractamountdue == $row_rates['price_in_full']/2){
 				if (!is_null($february)){
 					$nextPaymentDueDate = $february;
 					} else {
@@ -170,7 +203,7 @@
 		if($row_contracts["payment_type"] == "installments" ){
 			sort($date_array);
 			$i = count($date_array);
-			$amountLeft = $amountdue;
+			$amountLeft = $contractamountdue;
 			
 			while($i > 0){
 				$amountLeft = $amountLeft - $installmentAmount;
